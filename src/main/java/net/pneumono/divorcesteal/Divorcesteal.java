@@ -16,6 +16,7 @@ public class Divorcesteal implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Divorcesteal");
 
 	public static final Supplier<Integer> MAX_HEARTS = () -> 20;
+	public static final Supplier<Integer> DEFAULT_HEARTS = () -> 20;
 
 	@Override
 	public void onInitialize() {
