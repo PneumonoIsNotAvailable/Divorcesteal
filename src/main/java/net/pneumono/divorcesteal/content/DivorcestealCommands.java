@@ -177,6 +177,6 @@ public class DivorcestealCommands {
             source.sendFeedback(() -> Text.literal("Withdrew " + heartsWithdrawn + " hearts"), false);
         }
 
-        return amount;
+        return heartsWithdrawn;
     }
 }
