@@ -8,10 +8,14 @@ import net.pneumono.divorcesteal.content.DivorcestealRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Supplier;
+
 public class Divorcesteal implements ModInitializer {
 	public static final String MOD_ID = "divorcesteal";
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Divorcesteal");
+
+	public static final Supplier<Integer> MAX_HEARTS = () -> 20;
 
 	@Override
 	public void onInitialize() {
