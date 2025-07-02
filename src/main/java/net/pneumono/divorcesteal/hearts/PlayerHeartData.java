@@ -15,6 +15,12 @@ public record PlayerHeartData(UUID uuid, String name, int hearts) {
             Codec.INT.fieldOf("hearts").forGetter(PlayerHeartData::hearts)
     ).apply(builder, PlayerHeartData::new));
 
+    public PlayerHeartData(UUID uuid, String name, int hearts) {
+        this.uuid = uuid;
+        this.name = name;
+        this.hearts = Math.max(hearts, 0);
+    }
+
     public PlayerHeartData(PlayerEntity player, int hearts) {
         this(player.getGameProfile().getId(), player.getGameProfile().getName(), hearts);
     }

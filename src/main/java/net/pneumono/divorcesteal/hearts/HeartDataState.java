@@ -72,6 +72,11 @@ public class HeartDataState extends PersistentState {
     }
 
     private record SimpleHeartData(String name, int hearts) {
+        public SimpleHeartData(String name, int hearts) {
+            this.name = name;
+            this.hearts = Math.max(hearts, 0);
+        }
+
         public SimpleHeartData(PlayerHeartData data) {
             this(data.name(), data.hearts());
         }
