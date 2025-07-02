@@ -31,8 +31,13 @@ public class DivorcestealCommands {
                     )
             )
             .then(literal("set")
-                    .then(argument("players", EntityArgumentType.players())
-                            .then(argument("amount", IntegerArgumentType.integer(0))
+                    .then(argument("amount", IntegerArgumentType.integer(0))
+                            .executes(context -> setHearts(context.getSource(),
+                                    List.of(context.getSource().getPlayerOrThrow()),
+                                    IntegerArgumentType.getInteger(context, "amount"),
+                                    false
+                            ))
+                            .then(argument("players", EntityArgumentType.players())
                                     .executes(context -> setHearts(context.getSource(),
                                             EntityArgumentType.getPlayers(context, "players"),
                                             IntegerArgumentType.getInteger(context, "amount"),
