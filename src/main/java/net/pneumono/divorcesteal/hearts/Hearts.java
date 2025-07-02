@@ -1,7 +1,18 @@
 package net.pneumono.divorcesteal.hearts;
 
+import com.mojang.authlib.GameProfile;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.BannedPlayerEntry;
+import net.minecraft.server.BannedPlayerList;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.pneumono.divorcesteal.Divorcesteal;
 
 public class Hearts {
     public static int getHearts(PlayerEntity player) {
@@ -14,5 +25,56 @@ public class Hearts {
         if (!(player.getWorld() instanceof ServerWorld serverWorld)) throw new IllegalStateException("Cannot set player hearts on the logical client!");
 
         serverWorld.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE).setHeartData(player, hearts);
+        updateHearts(player, hearts);
+    }
+
+    private static final Identifier HEARTS_ID = Divorcesteal.id("hearts");
+    public static void updateHearts(PlayerEntity player, int hearts) {
+        EntityAttributeInstance entityAttributeInstance = player.getAttributes().getCustomInstance(EntityAttributes.MAX_HEALTH);
+        if (entityAttributeInstance != null) {
+            entityAttributeInstance.removeModifier(HEARTS_ID);
+            entityAttributeInstance.addPersistentModifier(new EntityAttributeModifier(HEARTS_ID, (hearts * 2) - 20, EntityAttributeModifier.Operation.ADD_VALUE));
+        }
+
+        MinecraftServer server = player.getServer();
+        if (server != null) {
+            if (hearts == 0) {
+                deathban(server, player);
+            } else {
+                unban(server, player);
+            }
+        }
+    }
+
+    private static void deathban(MinecraftServer server, PlayerEntity player) {
+        BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
+        GameProfile profile = player.getGameProfile();
+
+        if (!bannedPlayerList.contains(profile)) {
+            BannedPlayerEntry bannedPlayerEntry = new BannedPlayerEntry(profile, null, "zero_heart_ban", null, "Zero Heart Deathban (may be revoked at any time via revives)");
+            bannedPlayerList.add(bannedPlayerEntry);
+
+            if (player instanceof ServerPlayerEntity serverPlayer) {
+                serverPlayer.networkHandler.disconnect(Text.literal("You ran out of hearts!"));
+            }
+
+            for (ServerPlayerEntity globalPlayer : server.getPlayerManager().getPlayerList()) {
+                // Add deathban sound!
+                Text banAnnouncement = player.getName().copy().append(Text.literal(" has been deathbanned!"));
+                globalPlayer.sendMessageToClient(banAnnouncement, false);
+            }
+        }
+    }
+
+    private static void unban(MinecraftServer server, PlayerEntity player) {
+        BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
+        GameProfile profile = player.getGameProfile();
+
+        if (bannedPlayerList.contains(profile)) {
+            bannedPlayerList.remove(profile);
+            for (ServerPlayerEntity globalPlayer : server.getPlayerManager().getPlayerList()) {
+                // Add revive sound!
+            }
+        }
     }
 }
