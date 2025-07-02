@@ -5,6 +5,9 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -175,6 +178,15 @@ public class DivorcestealCommands {
             source.sendFeedback(() -> Text.literal("Withdrew 1 heart"), false);
         } else {
             source.sendFeedback(() -> Text.literal("Withdrew " + heartsWithdrawn + " hearts"), false);
+        }
+
+        ItemStack stack = Items.DIAMOND.getDefaultStack().copyWithCount(heartsWithdrawn);
+        if (!stack.isEmpty() && !player.getInventory().insertStack(stack)) {
+            ItemEntity itemEntity = player.dropItem(stack, false);
+            if (itemEntity != null) {
+                itemEntity.resetPickupDelay();
+                itemEntity.setOwner(player.getUuid());
+            }
         }
 
         return heartsWithdrawn;
