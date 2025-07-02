@@ -10,6 +10,7 @@ import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.hearts.Hearts;
 
 import java.util.Collection;
+import java.util.List;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -34,6 +35,30 @@ public class DivorcestealCommands {
                                         )
                                 )
                         )
+                        .then(literal("reset")
+                                .requires(source -> source.hasPermissionLevel(3))
+                                .then(argument("players", EntityArgumentType.players())
+                                        .executes(context -> setHearts(context.getSource(), EntityArgumentType.getPlayers(context, "players"), Divorcesteal.DEFAULT_HEARTS.get()))
+                                )
+                        )
+                        .then(literal("add")
+                                .requires(source -> source.hasPermissionLevel(3))
+                                .then(argument("amount", IntegerArgumentType.integer(0, Divorcesteal.MAX_HEARTS.get()))
+                                        .executes(context -> addHearts(context.getSource(), List.of(context.getSource().getPlayerOrThrow()), IntegerArgumentType.getInteger(context, "amount")))
+                                        .then(argument("players", EntityArgumentType.players())
+                                                .executes(context -> addHearts(context.getSource(), EntityArgumentType.getPlayers(context, "players"), IntegerArgumentType.getInteger(context, "amount")))
+                                        )
+                                )
+                        )
+                        .then(literal("remove")
+                                .requires(source -> source.hasPermissionLevel(3))
+                                .then(argument("amount", IntegerArgumentType.integer(0, Divorcesteal.MAX_HEARTS.get()))
+                                        .executes(context -> addHearts(context.getSource(), List.of(context.getSource().getPlayerOrThrow()), -IntegerArgumentType.getInteger(context, "amount")))
+                                        .then(argument("players", EntityArgumentType.players())
+                                                .executes(context -> addHearts(context.getSource(), EntityArgumentType.getPlayers(context, "players"), -IntegerArgumentType.getInteger(context, "amount")))
+                                        )
+                                )
+                        )
         ));
     }
 
@@ -52,6 +77,18 @@ public class DivorcestealCommands {
             source.sendFeedback(() -> Text.literal("Set ").append(players.toArray(ServerPlayerEntity[]::new)[0].getName()).append(Text.literal(" to " + amount + " hearts")), true);
         } else {
             source.sendFeedback(() -> Text.literal("Set " + players.size() + " players to " + amount + " hearts"), true);
+        }
+        return players.size();
+    }
+
+    private static int addHearts(ServerCommandSource source, Collection<ServerPlayerEntity> players, int amount) {
+        for (ServerPlayerEntity player : players) {
+            Hearts.addHearts(player, amount);
+        }
+        if (players.size() == 1) {
+            source.sendFeedback(() -> Text.literal("Gave ").append(players.toArray(ServerPlayerEntity[]::new)[0].getName()).append(Text.literal(" " + amount + " hearts")), true);
+        } else {
+            source.sendFeedback(() -> Text.literal("Gave " + players.size() + " players " + amount + " hearts"), true);
         }
         return players.size();
     }

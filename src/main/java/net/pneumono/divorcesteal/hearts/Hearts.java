@@ -28,6 +28,15 @@ public class Hearts {
         updateHearts(player, hearts);
     }
 
+    public static void addHearts(PlayerEntity player, int hearts) {
+        if (!(player.getWorld() instanceof ServerWorld serverWorld)) throw new IllegalStateException("Cannot set player hearts on the logical client!");
+
+        HeartDataState heartDataState = serverWorld.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE);
+        int finalHearts = heartDataState.getOrCreateHeartData(player).hearts() + hearts;
+        heartDataState.setHeartData(player, finalHearts);
+        updateHearts(player, finalHearts);
+    }
+
     private static final Identifier HEARTS_ID = Divorcesteal.id("hearts");
     public static void updateHearts(PlayerEntity player, int hearts) {
         EntityAttributeInstance entityAttributeInstance = player.getAttributes().getCustomInstance(EntityAttributes.MAX_HEALTH);
