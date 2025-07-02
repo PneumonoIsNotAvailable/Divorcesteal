@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "divorcesteal",
+	"version": "${version}",
+	"name": "Divorcesteal",
+	"description": "Lifesteal ripoff",
+	"authors": [
+		"Pneumono_"
+	],
+	"license": "MIT",
+	"icon": "assets/divorcesteal/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.pneumono.divorcesteal.Divorcesteal"
+		],
+		"client": [
+			"net.pneumono.divorcesteal.DivorcestealClient"
+		],
+		"fabric-datagen": [
+			"net.pneumono.divorcesteal.DivorcestealDataGenerator"
+		]
+	},
+	"mixins": [
+		"divorcesteal.mixins.json",
+		{
+			"config": "divorcesteal.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.14",
+		"minecraft": ">=1.21.6 <=1.21.7",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
