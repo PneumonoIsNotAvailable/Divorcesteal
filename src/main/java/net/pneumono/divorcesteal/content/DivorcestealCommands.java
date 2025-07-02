@@ -49,6 +49,11 @@ public class DivorcestealCommands {
                     )
             )
             .then(literal("reset")
+                    .executes(context -> setHearts(context.getSource(),
+                            List.of(context.getSource().getPlayerOrThrow()),
+                            Divorcesteal.DEFAULT_HEARTS.get(),
+                            false
+                    ))
                     .then(argument("players", EntityArgumentType.players())
                             .executes(context -> setHearts(context.getSource(),
                                     EntityArgumentType.getPlayers(context, "players"),
