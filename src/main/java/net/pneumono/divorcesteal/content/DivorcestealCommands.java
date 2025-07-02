@@ -1,11 +1,13 @@
 package net.pneumono.divorcesteal.content;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.hearts.Hearts;
 
@@ -16,47 +18,51 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class DivorcestealCommands {
+    private static final ArgumentBuilder<ServerCommandSource, ?> ADMIN = literal("admin")
+            .requires(source -> source.hasPermissionLevel(3))
+            .then(literal("get")
+                    .executes(context -> getHearts(context.getSource(), context.getSource().getPlayerOrThrow()))
+                    .then(argument("player", EntityArgumentType.player())
+                            .executes(context -> getHearts(context.getSource(), EntityArgumentType.getPlayer(context, "player")))
+                    )
+            )
+            .then(literal("set")
+                    .then(argument("players", EntityArgumentType.players())
+                            .then(argument("amount", IntegerArgumentType.integer(0, Divorcesteal.MAX_HEARTS.get()))
+                                    .executes(context -> setHearts(context.getSource(), EntityArgumentType.getPlayers(context, "players"), IntegerArgumentType.getInteger(context, "amount")))
+                            )
+                    )
+            )
+            .then(literal("reset")
+                    .then(argument("players", EntityArgumentType.players())
+                            .executes(context -> setHearts(context.getSource(), EntityArgumentType.getPlayers(context, "players"), Divorcesteal.DEFAULT_HEARTS.get()))
+                    )
+            )
+            .then(literal("add")
+                    .then(argument("amount", IntegerArgumentType.integer(0, Divorcesteal.MAX_HEARTS.get()))
+                            .executes(context -> addHearts(context.getSource(), List.of(context.getSource().getPlayerOrThrow()), IntegerArgumentType.getInteger(context, "amount")))
+                            .then(argument("players", EntityArgumentType.players())
+                                    .executes(context -> addHearts(context.getSource(), EntityArgumentType.getPlayers(context, "players"), IntegerArgumentType.getInteger(context, "amount")))
+                            )
+                    )
+            )
+            .then(literal("remove")
+                    .then(argument("amount", IntegerArgumentType.integer(0, Divorcesteal.MAX_HEARTS.get()))
+                            .executes(context -> addHearts(context.getSource(), List.of(context.getSource().getPlayerOrThrow()), -IntegerArgumentType.getInteger(context, "amount")))
+                            .then(argument("players", EntityArgumentType.players())
+                                    .executes(context -> addHearts(context.getSource(), EntityArgumentType.getPlayers(context, "players"), -IntegerArgumentType.getInteger(context, "amount")))
+                            )
+                    )
+            );
 
     public static void registerDivorcestealCommands() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> dispatcher.register(
                 literal("hearts")
-                        .then(literal("get")
-                                .requires(source -> source.hasPermissionLevel(3))
-                                .executes(context -> getHearts(context.getSource(), context.getSource().getPlayerOrThrow()))
-                                .then(argument("player", EntityArgumentType.player())
-                                        .executes(context -> getHearts(context.getSource(), EntityArgumentType.getPlayer(context, "player")))
-                                )
-                        )
-                        .then(literal("set")
-                                .requires(source -> source.hasPermissionLevel(3))
-                                .then(argument("players", EntityArgumentType.players())
-                                        .then(argument("amount", IntegerArgumentType.integer(0, Divorcesteal.MAX_HEARTS.get()))
-                                                .executes(context -> setHearts(context.getSource(), EntityArgumentType.getPlayers(context, "players"), IntegerArgumentType.getInteger(context, "amount")))
-                                        )
-                                )
-                        )
-                        .then(literal("reset")
-                                .requires(source -> source.hasPermissionLevel(3))
-                                .then(argument("players", EntityArgumentType.players())
-                                        .executes(context -> setHearts(context.getSource(), EntityArgumentType.getPlayers(context, "players"), Divorcesteal.DEFAULT_HEARTS.get()))
-                                )
-                        )
-                        .then(literal("add")
-                                .requires(source -> source.hasPermissionLevel(3))
+                        .then(ADMIN)
+                        .then(literal("withdraw")
+                                .executes(context -> withdrawHearts(context.getSource(), context.getSource().getPlayerOrThrow(), 1))
                                 .then(argument("amount", IntegerArgumentType.integer(0, Divorcesteal.MAX_HEARTS.get()))
-                                        .executes(context -> addHearts(context.getSource(), List.of(context.getSource().getPlayerOrThrow()), IntegerArgumentType.getInteger(context, "amount")))
-                                        .then(argument("players", EntityArgumentType.players())
-                                                .executes(context -> addHearts(context.getSource(), EntityArgumentType.getPlayers(context, "players"), IntegerArgumentType.getInteger(context, "amount")))
-                                        )
-                                )
-                        )
-                        .then(literal("remove")
-                                .requires(source -> source.hasPermissionLevel(3))
-                                .then(argument("amount", IntegerArgumentType.integer(0, Divorcesteal.MAX_HEARTS.get()))
-                                        .executes(context -> addHearts(context.getSource(), List.of(context.getSource().getPlayerOrThrow()), -IntegerArgumentType.getInteger(context, "amount")))
-                                        .then(argument("players", EntityArgumentType.players())
-                                                .executes(context -> addHearts(context.getSource(), EntityArgumentType.getPlayers(context, "players"), -IntegerArgumentType.getInteger(context, "amount")))
-                                        )
+                                        .executes(context -> withdrawHearts(context.getSource(), context.getSource().getPlayerOrThrow(), IntegerArgumentType.getInteger(context, "amount")))
                                 )
                         )
         ));
@@ -91,5 +97,18 @@ public class DivorcestealCommands {
             source.sendFeedback(() -> Text.literal("Gave " + players.size() + " players " + amount + " hearts"), true);
         }
         return players.size();
+    }
+
+    private static int withdrawHearts(ServerCommandSource source, ServerPlayerEntity player, int amount) {
+        int heartsWithdrawn = -Hearts.addHeartsValidated(player, -amount, false);
+        if (heartsWithdrawn == 0) {
+            source.sendFeedback(() -> Text.literal("Could not withdraw any more hearts!").formatted(Formatting.RED), false);
+        } else if (heartsWithdrawn == 1) {
+            source.sendFeedback(() -> Text.literal("Withdrew 1 heart"), false);
+        } else {
+            source.sendFeedback(() -> Text.literal("Withdrew " + heartsWithdrawn + " hearts"), false);
+        }
+
+        return amount;
     }
 }
