@@ -232,13 +232,9 @@ public class DivorcestealCommands {
         if (profiles.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
         GameProfile profile = getFirst(profiles);
-        PlayerHeartDataReference reference = new PlayerHeartDataReference(getHeartDataState(source), profile);
-        if (reference.getHearts() > 0) throw NOT_DEATHBANNED_EXCEPTION.create();
-        int hearts = Hearts.REVIVE_HEARTS.get();
-        reference.setHearts(hearts);
-        Hearts.updateData(null, source.getServer(), profile, hearts);
+        if (!Hearts.revive(source.getWorld(), profile)) throw NOT_DEATHBANNED_EXCEPTION.create();
 
-        source.sendFeedback(() -> Text.translatable("commands.divorcesteal.revive", reference.getName()), true);
+        source.sendFeedback(() -> Text.translatable("commands.divorcesteal.revive", profile.getName()), true);
 
         return 1;
     }

@@ -41,6 +41,20 @@ public class Hearts {
         return finalHearts - currentHearts;
     }
 
+    /**
+     * @return {@code true} if the reviving was successful, {@code false} if the player wasn't revivable
+     */
+    public static boolean revive(ServerWorld world, GameProfile profile) {
+        HeartDataState state = getHeartDataState(world);
+        PlayerHeartDataReference reference = new PlayerHeartDataReference(state, profile);
+        if (reference.getHearts() > 0) return false;
+
+        int hearts = REVIVE_HEARTS.get();
+        reference.setHearts(hearts);
+        updateBan(world.getServer(), profile, hearts);
+        return true;
+    }
+
     public static void updateData(PlayerEntity player) {
         updateData(player, PlayerHeartDataReference.create(player).getHearts());
     }
