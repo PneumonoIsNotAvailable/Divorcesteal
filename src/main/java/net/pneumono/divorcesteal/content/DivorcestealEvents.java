@@ -17,7 +17,7 @@ public class DivorcestealEvents {
     }
 
     private static void join(ServerPlayerEntity player) {
-        Hearts.updateHearts(player);
+        Hearts.updateData(player);
     }
 
     private static void afterDeath(Entity entity, DamageSource damageSource) {
@@ -41,6 +41,6 @@ public class DivorcestealEvents {
     }
 
     private static void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
-        Hearts.updateHearts(newPlayer);
+        Hearts.updateData(newPlayer);
     }
 }
