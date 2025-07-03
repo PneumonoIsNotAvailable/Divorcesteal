@@ -18,14 +18,17 @@ import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.content.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Date;
 import java.util.function.Supplier;
 
 public class Hearts {
     private static final Identifier HEARTS_ID = Divorcesteal.id("hearts");
+    public static final String ZERO_HEART_BAN_ID = "zero_heart_ban";
 
     public static final Supplier<Integer> MAX_HEARTS = () -> 20;
     public static final Supplier<Integer> DEFAULT_HEARTS = () -> 10;
     public static final Supplier<Integer> REVIVE_HEARTS = () -> 3;
+    public static final Supplier<Integer> BAN_TIME = () -> 5;
 
     public static HeartDataState getHeartDataState(ServerWorld world) {
         return world.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE);
@@ -90,7 +93,7 @@ public class Hearts {
         BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
 
         if (!bannedPlayerList.contains(profile)) {
-            BannedPlayerEntry bannedPlayerEntry = new BannedPlayerEntry(profile, null, "zero_heart_ban", null, "Zero-Heart Deathban (may be revoked at any time via revives)");
+            BannedPlayerEntry bannedPlayerEntry = new BannedPlayerEntry(profile, new Date(), ZERO_HEART_BAN_ID, null, "Zero-Heart Deathban (can be revoked at any time via Revive Beacons)");
             bannedPlayerList.add(bannedPlayerEntry);
 
             ServerPlayerEntity player = server.getPlayerManager().getPlayer(profile.getId());
@@ -111,9 +114,6 @@ public class Hearts {
 
         if (bannedPlayerList.contains(profile)) {
             bannedPlayerList.remove(profile);
-            for (ServerPlayerEntity globalPlayer : server.getPlayerManager().getPlayerList()) {
-                globalPlayer.playSoundToPlayer(DivorcestealRegistry.REVIVE_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            }
         }
     }
 }
