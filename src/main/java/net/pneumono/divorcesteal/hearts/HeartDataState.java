@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateType;
-import net.pneumono.divorcesteal.Divorcesteal;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,11 +41,17 @@ public class HeartDataState extends PersistentState {
     }
 
     public PlayerHeartData getOrCreateHeartData(PlayerEntity player) {
-        UUID uuid = player.getUuid();
+        GameProfile profile = player.getGameProfile();
+        return getOrCreateHeartData(profile.getId(), profile.getName());
+    }
+
+    public PlayerHeartData getOrCreateHeartData(UUID uuid, String name) {
         if (dataMap.containsKey(uuid)) {
             return getHeartData(uuid);
         } else {
-            SimpleHeartData simpleData = new SimpleHeartData(player.getGameProfile().getName(), 10);
+            if (name == null) throw new IllegalArgumentException("Cannot create heart data without a name!");
+
+            SimpleHeartData simpleData = new SimpleHeartData(name, 10);
             dataMap.put(uuid, simpleData);
             return simpleData.toPlayerHeartData(uuid);
         }
@@ -55,7 +60,7 @@ public class HeartDataState extends PersistentState {
     /**
      * Throws an {@link IllegalStateException} if no heart data exists for the UUID.
      */
-    private PlayerHeartData getHeartData(UUID uuid) {
+    public PlayerHeartData getHeartData(UUID uuid) {
         SimpleHeartData simpleData = dataMap.get(uuid);
         if (simpleData == null) throw new IllegalStateException("No heart data exists for UUID: " + uuid);
         return simpleData.toPlayerHeartData(uuid);
@@ -66,7 +71,7 @@ public class HeartDataState extends PersistentState {
         setHeartData(profile.getId(), profile.getName(), hearts);
     }
 
-    private void setHeartData(UUID uuid, String name, int hearts) {
+    public void setHeartData(UUID uuid, String name, int hearts) {
         dataMap.put(uuid, new SimpleHeartData(name, hearts));
         markDirty();
     }

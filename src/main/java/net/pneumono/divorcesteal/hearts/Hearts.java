@@ -23,6 +23,10 @@ public class Hearts {
     public static final Supplier<Integer> MAX_HEARTS = () -> 20;
     public static final Supplier<Integer> DEFAULT_HEARTS = () -> 10;
 
+    public static HeartDataState getHeartDataState(ServerWorld world) {
+        return world.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE);
+    }
+
     public static int getHearts(PlayerEntity player) {
         if (!(player.getWorld() instanceof ServerWorld serverWorld)) throw new IllegalStateException("Cannot get player hearts on the logical client!");
 
@@ -37,11 +41,9 @@ public class Hearts {
     }
 
     public static void addHearts(PlayerEntity player, int hearts) {
-        if (!(player.getWorld() instanceof ServerWorld serverWorld)) throw new IllegalStateException("Cannot set player hearts on the logical client!");
-
-        HeartDataState heartDataState = serverWorld.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE);
-        int finalHearts = heartDataState.getOrCreateHeartData(player).hearts() + hearts;
-        heartDataState.setHeartData(player, finalHearts);
+        PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
+        int finalHearts = reference.getHearts() + hearts;
+        reference.setHearts(finalHearts);
         updateHearts(player, finalHearts);
     }
 
@@ -49,12 +51,10 @@ public class Hearts {
      * @return Number of hearts added (may not be equal to {@code hearts} due to validation)
      */
     public static int addHeartsValidated(PlayerEntity player, int hearts, boolean allowDeathban) {
-        if (!(player.getWorld() instanceof ServerWorld serverWorld)) throw new IllegalStateException("Cannot set player hearts on the logical client!");
-
-        HeartDataState heartDataState = serverWorld.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE);
-        int currentHearts = heartDataState.getOrCreateHeartData(player).hearts();
+        PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
+        int currentHearts = reference.getHearts();
         int finalHearts = MathHelper.clamp(currentHearts + hearts, allowDeathban ? 0 : 1, Math.max(MAX_HEARTS.get(), currentHearts));
-        heartDataState.setHeartData(player, finalHearts);
+        reference.setHearts(finalHearts);
         updateHearts(player, finalHearts);
         return finalHearts - currentHearts;
     }
