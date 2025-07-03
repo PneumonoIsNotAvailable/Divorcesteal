@@ -128,8 +128,16 @@ public class DivorcestealCommands {
                         .then(literal("withdraw")
                                 .executes(context -> executeWithdraw(context.getSource(), context.getSource().getPlayerOrThrow(), 1))
                                 .then(argument("amount", IntegerArgumentType.integer(1))
-                                        .executes(context -> executeWithdraw(context.getSource(), context.getSource().getPlayerOrThrow(), IntegerArgumentType.getInteger(context, "amount")))
+                                        .executes(context -> executeWithdraw(context.getSource(),
+                                                context.getSource().getPlayerOrThrow(),
+                                                IntegerArgumentType.getInteger(context, "amount")
+                                        ))
                                 )
+                        )
+                        .then(literal("refresh")
+                                .executes(context -> executeRefresh(context.getSource(),
+                                        context.getSource().getPlayerOrThrow()
+                                ))
                         )
         ));
     }
@@ -203,6 +211,12 @@ public class DivorcestealCommands {
         }
 
         return heartsWithdrawn;
+    }
+
+    private static int executeRefresh(ServerCommandSource source, ServerPlayerEntity player) {
+        Hearts.updateHearts(player);
+        source.sendFeedback(() -> Text.literal("Hearts refreshed"), false);
+        return 1;
     }
 
     private static HeartDataState getHeartDataState(ServerCommandSource source) {
