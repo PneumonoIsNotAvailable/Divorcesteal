@@ -21,8 +21,15 @@ public class DivorcestealLanguageProviders {
         @Override
         public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder builder) {
             builder.add(DivorcestealRegistry.HEART_ITEM, "Heart");
+
+            builder.add(DivorcestealRegistry.USE_HEART_SOUND, "Heart applies");
+            builder.add(DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, "Revive Beacon activates");
+            builder.add(DivorcestealRegistry.DEATHBAN_SOUND, "Deathban echoes");
+            builder.add(DivorcestealRegistry.REVIVE_SOUND, "Revival echoes");
+
             builder.add("divorcesteal.deathban", "You ran out of hearts!");
             builder.add("divorcesteal.deathban_global", "%s ran out of hearts!");
+
             builder.add("commands.divorcesteal.get", "%1$s has %2$s hearts");
             builder.add("commands.divorcesteal.set.single", "Set %1$s to %2$s hearts");
             builder.add("commands.divorcesteal.set.multiple", "Set %1$s players to %2$s hearts");
@@ -37,6 +44,7 @@ public class DivorcestealLanguageProviders {
             builder.add("commands.divorcesteal.withdraw.single", "Withdrew 1 heart");
             builder.add("commands.divorcesteal.withdraw.multiple", "Withdrew %s hearts");
             builder.add("commands.divorcesteal.withdraw.fail", "Could not withdraw any more hearts!");
+
             builder.add("arguments.divorcesteal.all_data", "All data");
             builder.add("arguments.divorcesteal.error.no_data", "No data exists for that player selection!");
             builder.add("arguments.divorcesteal.error.not_deathbanned", "Cannot revive a player that isn't deathbanned!");

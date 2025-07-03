@@ -18,5 +18,9 @@
   "commands.divorcesteal.withdraw.single": "Withdrew 1 heart",
   "divorcesteal.deathban": "You ran out of hearts!",
   "divorcesteal.deathban_global": "%s ran out of hearts!",
-  "item.divorcesteal.heart": "Heart"
+  "item.divorcesteal.heart": "Heart",
+  "subtitles.divorcesteal.event.deathban": "Deathban echoes",
+  "subtitles.divorcesteal.event.revive": "Revival echoes",
+  "subtitles.divorcesteal.item.heart.use": "Heart applies",
+  "subtitles.divorcesteal.item.revive_beacon.use": "Revive Beacon activates"
 }

@@ -24,7 +24,7 @@ public class HeartItem extends Item {
 
         int addedHearts = Hearts.addHeartsValidated(user, 1, false);
         if (addedHearts > 0) {
-            // play heart use sound
+            user.playSound(DivorcestealRegistry.USE_HEART_SOUND);
             ItemStack stack = user.getStackInHand(hand);
             user.getItemCooldownManager().set(stack, 10);
             user.getStackInHand(hand).decrement(1);

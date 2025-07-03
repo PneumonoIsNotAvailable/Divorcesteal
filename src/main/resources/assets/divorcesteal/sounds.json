@@ -1,0 +1,38 @@
+{
+    "item.heart.use": {
+        "sounds": [
+            {
+                "name": "entity.fox.bite",
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.divorcesteal.item.heart.use"
+    },
+    "item.revive_beacon.use": {
+        "sounds": [
+            {
+                "name": "entity.ender_eye.death",
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.divorcesteal.item.revive_beacon.use"
+    },
+    "event.deathban": {
+        "sounds": [
+            {
+                "name": "entity.wither.ambient",
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.divorcesteal.event.deathban"
+    },
+    "event.revive": {
+        "sounds": [
+            {
+                "name": "entity.ender_dragon.ambient",
+                "type": "event"
+            }
+        ],
+        "subtitle": "subtitles.divorcesteal.event.revive"
+    }
+}

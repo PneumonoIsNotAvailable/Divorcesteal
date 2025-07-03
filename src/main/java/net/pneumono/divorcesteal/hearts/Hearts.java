@@ -10,10 +10,12 @@ import net.minecraft.server.BannedPlayerList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.pneumono.divorcesteal.Divorcesteal;
+import net.pneumono.divorcesteal.content.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -97,7 +99,7 @@ public class Hearts {
             }
 
             for (ServerPlayerEntity globalPlayer : server.getPlayerManager().getPlayerList()) {
-                // Add deathban sound!
+                globalPlayer.playSoundToPlayer(DivorcestealRegistry.DEATHBAN_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 Text banAnnouncement = Text.translatable("divorcesteal.deathban_global", profile.getName());
                 globalPlayer.sendMessageToClient(banAnnouncement, false);
             }
@@ -110,7 +112,7 @@ public class Hearts {
         if (bannedPlayerList.contains(profile)) {
             bannedPlayerList.remove(profile);
             for (ServerPlayerEntity globalPlayer : server.getPlayerManager().getPlayerList()) {
-                // Add revive sound!
+                globalPlayer.playSoundToPlayer(DivorcestealRegistry.REVIVE_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
             }
         }
     }
