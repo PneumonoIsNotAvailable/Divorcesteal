@@ -4,9 +4,13 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.GameProfileArgumentType;
 import net.minecraft.entity.ItemEntity;
@@ -18,11 +22,13 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
+import net.pneumono.divorcesteal.hearts.PlayerHeartData;
 import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -37,6 +43,7 @@ public class DivorcestealCommands {
             .then(literal("get")
                     .executes(context -> executeGet(context.getSource(), List.of(context.getSource().getPlayerOrThrow().getGameProfile())))
                     .then(argument("target", GameProfileArgumentType.gameProfile())
+                            .suggests(DivorcestealCommands::suggestions)
                             .executes(context -> executeGet(context.getSource(),
                                     GameProfileArgumentType.getProfileArgument(context, "target")
                             ))
@@ -145,6 +152,16 @@ public class DivorcestealCommands {
                                 ))
                         )
         ));
+    }
+
+    private static CompletableFuture<Suggestions> suggestions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
+        HeartDataState state = Hearts.getHeartDataState(context.getSource().getWorld());
+        return CommandSource.suggestMatching(
+                state.getHeartDataList()
+                        .stream()
+                        .map(PlayerHeartData::name),
+                builder
+        );
     }
 
     private static int executeGet(ServerCommandSource source, Collection<GameProfile> profiles) throws CommandSyntaxException {
