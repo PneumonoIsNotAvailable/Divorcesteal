@@ -14,12 +14,7 @@ import java.util.UUID;
 public class HeartDataState extends PersistentState {
     public static final Codec<HeartDataState> CODEC = PlayerHeartData.CODEC.listOf().xmap(
             HeartDataState::new,
-            data -> data.dataMap.entrySet().stream().map(
-                    entry -> {
-                        SimpleHeartData simpleData = entry.getValue();
-                        return new PlayerHeartData(entry.getKey(), simpleData.name, simpleData.hearts);
-                    }
-            ).toList()
+            HeartDataState::getHeartDataList
     );
 
     public static final PersistentStateType<HeartDataState> STATE_TYPE = new PersistentStateType<>(
@@ -38,6 +33,10 @@ public class HeartDataState extends PersistentState {
         for (PlayerHeartData data : dataList) {
             this.dataMap.put(data.uuid(), new SimpleHeartData(data));
         }
+    }
+
+    public List<PlayerHeartData> getHeartDataList() {
+        return this.dataMap.entrySet().stream().map(entry -> entry.getValue().toPlayerHeartData(entry.getKey())).toList();
     }
 
     public PlayerHeartData getOrCreateHeartData(PlayerEntity player) {
