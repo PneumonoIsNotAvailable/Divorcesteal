@@ -8,6 +8,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.pneumono.divorcesteal.hearts.Hearts;
+import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
 
 public class DivorcestealEvents {
     public static void registerDivorcestealEvents() {
@@ -18,6 +19,7 @@ public class DivorcestealEvents {
 
     private static void join(ServerPlayerEntity player) {
         Hearts.updateData(player);
+        PlayerHeartDataReference.create(player).setName(player.getGameProfile().getName());
     }
 
     private static void afterDeath(Entity entity, DamageSource damageSource) {
