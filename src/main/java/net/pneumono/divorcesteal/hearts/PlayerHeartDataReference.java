@@ -12,6 +12,13 @@ public class PlayerHeartDataReference {
     private String name;
     private int hearts;
 
+    public PlayerHeartDataReference(HeartDataState state, PlayerHeartData data) {
+        this.state = state;
+        this.uuid = data.uuid();
+        this.name = data.name();
+        this.hearts = data.hearts();
+    }
+
     public PlayerHeartDataReference(HeartDataState state, UUID uuid) {
         this.state = state;
         this.uuid = uuid;
@@ -39,6 +46,10 @@ public class PlayerHeartDataReference {
         PlayerHeartData data = state.getOrCreateHeartData(uuid, name);
         this.name = data.name();
         this.hearts = data.hearts();
+    }
+
+    public PlayerHeartData getData() {
+        return new PlayerHeartData(this.uuid, this.name, this.hearts);
     }
 
     public UUID getUUID() {

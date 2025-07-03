@@ -30,14 +30,16 @@ public class DivorcestealLanguageProviders {
             builder.add("commands.divorcesteal.add.multiple", "Gave %1$s hearts to %2$s players");
             builder.add("commands.divorcesteal.remove.single", "Took %1$s hearts from %2$s");
             builder.add("commands.divorcesteal.remove.multiple", "Took %1$s hearts from %2$s players");
-            builder.add("commands.divorcesteal.revive", "Revived %s");
+            builder.add("commands.divorcesteal.revive.single", "Revived %s");
+            builder.add("commands.divorcesteal.revive.multiple", "Revived %s players");
             builder.add("commands.divorcesteal.refresh.single", "Refreshed data for %s");
             builder.add("commands.divorcesteal.refresh.multiple", "Refreshed data for %s players");
             builder.add("commands.divorcesteal.withdraw.single", "Withdrew 1 heart");
             builder.add("commands.divorcesteal.withdraw.multiple", "Withdrew %s hearts");
             builder.add("commands.divorcesteal.withdraw.fail", "Could not withdraw any more hearts!");
-            builder.add("commands.divorcesteal.error.no_data", "No data exists for that player");
-            builder.add("commands.divorcesteal.error.not_deathbanned", "Cannot revive a player that isn't deathbanned");
+            builder.add("arguments.divorcesteal.all_data", "All data");
+            builder.add("arguments.divorcesteal.error.no_data", "No data exists for that player selection!");
+            builder.add("arguments.divorcesteal.error.not_deathbanned", "Cannot revive a player that isn't deathbanned!");
         }
     }
 }
