@@ -21,6 +21,8 @@ public class DivorcestealLanguageProviders {
         @Override
         public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder builder) {
             builder.add(DivorcestealRegistry.HEART_ITEM, "Heart");
+            builder.add("divorcesteal.deathban", "You ran out of hearts!");
+            builder.add("divorcesteal.deathban_global", "%s ran out of hearts!");
             builder.add("commands.divorcesteal.get", "%1$s has %2$s hearts");
             builder.add("commands.divorcesteal.set.single", "Set %1$s to %2$s hearts");
             builder.add("commands.divorcesteal.set.multiple", "Set %1$s players to %2$s hearts");

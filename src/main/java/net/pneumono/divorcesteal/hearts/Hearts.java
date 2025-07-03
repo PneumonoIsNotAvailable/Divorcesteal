@@ -97,12 +97,12 @@ public class Hearts {
 
             ServerPlayerEntity player = server.getPlayerManager().getPlayer(profile.getId());
             if (player != null) {
-                player.networkHandler.disconnect(Text.literal("You ran out of hearts!"));
+                player.networkHandler.disconnect(Text.translatable("divorcesteal.deathban"));
             }
 
             for (ServerPlayerEntity globalPlayer : server.getPlayerManager().getPlayerList()) {
                 // Add deathban sound!
-                Text banAnnouncement = Text.literal(profile.getName() + " has been deathbanned!");
+                Text banAnnouncement = Text.translatable("divorcesteal.deathban_global", profile.getName());
                 globalPlayer.sendMessageToClient(banAnnouncement, false);
             }
         }
