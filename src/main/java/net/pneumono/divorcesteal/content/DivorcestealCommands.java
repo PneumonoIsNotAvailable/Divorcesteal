@@ -135,6 +135,14 @@ public class DivorcestealCommands {
                                     )
                             )
                     )
+            )
+            .then(literal("refresh")
+                    .then(argument("targets", GameProfileArgumentType.gameProfile())
+                            .suggests(DivorcestealCommands::suggestions)
+                            .executes(context -> executeRefresh(context.getSource(),
+                                    GameProfileArgumentType.getProfileArgument(context, "targets")
+                            ))
+                    )
             );
 
     public static void registerDivorcestealCommands() {
@@ -149,11 +157,6 @@ public class DivorcestealCommands {
                                                 IntegerArgumentType.getInteger(context, "amount")
                                         ))
                                 )
-                        )
-                        .then(literal("refresh")
-                                .executes(context -> executeRefresh(context.getSource(),
-                                        context.getSource().getPlayerOrThrow()
-                                ))
                         )
         ));
     }
@@ -228,6 +231,24 @@ public class DivorcestealCommands {
         return references.size();
     }
 
+    private static int executeRefresh(ServerCommandSource source, Collection<GameProfile> profiles) {
+        for (GameProfile profile : profiles) {
+            PlayerHeartDataReference reference = new PlayerHeartDataReference(Hearts.getHeartDataState(source.getWorld()), profile);
+            reference.setName(profile.getName());
+        }
+        for (ServerPlayerEntity player : playersFromProfiles(source, profiles)) {
+            Hearts.updateHearts(player);
+        }
+
+        if (profiles.size() == 1) {
+            source.sendFeedback(() -> Text.translatable("commands.hearts.refresh.single", getFirst(profiles).getName()), true);
+        } else {
+            source.sendFeedback(() -> Text.translatable("commands.hearts.refresh.multiple", profiles.size()), true);
+        }
+
+        return profiles.size();
+    }
+
     private static int executeWithdraw(ServerCommandSource source, ServerPlayerEntity player, int amount) {
         int heartsWithdrawn = -Hearts.addHeartsValidated(player, -amount, false);
         if (heartsWithdrawn == 0) {
@@ -248,12 +269,6 @@ public class DivorcestealCommands {
         }
 
         return heartsWithdrawn;
-    }
-
-    private static int executeRefresh(ServerCommandSource source, ServerPlayerEntity player) {
-        Hearts.updateHearts(player);
-        source.sendFeedback(() -> Text.translatable("commands.hearts.refresh"), false);
-        return 1;
     }
 
     private static HeartDataState getHeartDataState(ServerCommandSource source) {

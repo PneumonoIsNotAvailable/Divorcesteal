@@ -28,10 +28,11 @@ public class DivorcestealLanguageProviders {
             builder.add("commands.hearts.add.multiple", "Gave %1$s hearts to %2$s players");
             builder.add("commands.hearts.remove.single", "Took %1$s hearts from %2$s");
             builder.add("commands.hearts.remove.multiple", "Took %1$s hearts from %2$s players");
+            builder.add("commands.hearts.refresh.single", "Refreshed data for %s");
+            builder.add("commands.hearts.refresh.multiple", "Refreshed data for %s players");
             builder.add("commands.hearts.withdraw.single", "Withdrew 1 heart");
             builder.add("commands.hearts.withdraw.multiple", "Withdrew %s hearts");
             builder.add("commands.hearts.withdraw.fail", "Could not withdraw any more hearts!");
-            builder.add("commands.hearts.refresh", "Hearts refreshed");
             builder.add("commands.hearts.error.no_data", "No data exists for that player");
         }
     }
