@@ -57,6 +57,7 @@ public class DivorcestealCommands {
                                     false
                             ))
                             .then(argument("targets", GameProfileArgumentType.gameProfile())
+                                    .suggests(DivorcestealCommands::suggestions)
                                     .executes(context -> executeSet(context.getSource(),
                                             IntegerArgumentType.getInteger(context, "amount"),
                                             GameProfileArgumentType.getProfileArgument(context, "targets"),
@@ -79,6 +80,7 @@ public class DivorcestealCommands {
                             false
                     ))
                     .then(argument("targets", GameProfileArgumentType.gameProfile())
+                            .suggests(DivorcestealCommands::suggestions)
                             .executes(context -> executeSet(context.getSource(),
                                     Hearts.DEFAULT_HEARTS.get(),
                                     GameProfileArgumentType.getProfileArgument(context, "targets"),
@@ -94,6 +96,7 @@ public class DivorcestealCommands {
                                     false
                             ))
                             .then(argument("targets", GameProfileArgumentType.gameProfile())
+                                    .suggests(DivorcestealCommands::suggestions)
                                     .executes(context -> executeAdd(context.getSource(), true,
                                             IntegerArgumentType.getInteger(context, "amount"),
                                             GameProfileArgumentType.getProfileArgument(context, "targets"),
@@ -117,6 +120,7 @@ public class DivorcestealCommands {
                                     false
                             ))
                             .then(argument("targets", GameProfileArgumentType.gameProfile())
+                                    .suggests(DivorcestealCommands::suggestions)
                                     .executes(context -> executeAdd(context.getSource(), false,
                                             IntegerArgumentType.getInteger(context, "amount"),
                                             GameProfileArgumentType.getProfileArgument(context, "targets"),
