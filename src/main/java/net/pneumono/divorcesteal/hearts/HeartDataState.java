@@ -36,6 +36,10 @@ public class HeartDataState extends PersistentState {
         }
     }
 
+    public boolean hasData(UUID uuid) {
+        return dataMap.containsKey(uuid);
+    }
+
     public List<PlayerHeartData> getHeartDataList() {
         return this.dataMap.entrySet().stream().map(entry -> entry.getValue().toPlayerHeartData(entry.getKey())).toList();
     }

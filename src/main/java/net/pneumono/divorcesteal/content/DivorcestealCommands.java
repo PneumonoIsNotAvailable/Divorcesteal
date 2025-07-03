@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.GameProfileArgumentType;
@@ -146,7 +147,12 @@ public class DivorcestealCommands {
         if (profiles.size() > 1) throw EntityArgumentType.TOO_MANY_PLAYERS_EXCEPTION.create();
         if (profiles.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
-        PlayerHeartDataReference player = new PlayerHeartDataReference(getHeartDataState(source), getFirst(profiles));
+        GameProfile profile = getFirst(profiles);
+        HeartDataState heartDataState = getHeartDataState(source);
+
+        if (!heartDataState.hasData(profile.getId())) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
+
+        PlayerHeartDataReference player = new PlayerHeartDataReference(heartDataState, profile);
         source.sendFeedback(() -> Text.translatable("commands.hearts.get", player.getName(), player.getHearts()), true);
 
         return player.getHearts();
@@ -157,8 +163,11 @@ public class DivorcestealCommands {
 
         int finalAmount = bypassMax ? amount : MathHelper.clamp(amount, 0, Hearts.MAX_HEARTS.get());
 
+        for (PlayerHeartDataReference reference : referencesFromProfiles(source, profiles)) {
+            reference.setHearts(finalAmount);
+        }
         for (ServerPlayerEntity player : playersFromProfiles(source, profiles)) {
-            Hearts.setHearts(player, finalAmount);
+            Hearts.updateHearts(player);
         }
         if (profiles.size() == 1) {
             source.sendFeedback(() -> Text.translatable("commands.hearts.set.single", getFirst(profiles).getName(), finalAmount), true);
@@ -171,25 +180,27 @@ public class DivorcestealCommands {
     private static int executeAdd(ServerCommandSource source, boolean add, int amount, Collection<GameProfile> profiles, boolean bypassMax) throws CommandSyntaxException {
         if (profiles.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
-        List<ServerPlayerEntity> players = playersFromProfiles(source, profiles);
+        List<PlayerHeartDataReference> references = referencesFromProfiles(source, profiles);
 
-        if (bypassMax) {
-            for (ServerPlayerEntity player : players) {
-                Hearts.addHearts(player, add ? amount : -amount);
+        for (PlayerHeartDataReference reference : referencesFromProfiles(source, profiles)) {
+            int hearts = reference.getHearts();
+            int finalAmount = Math.max(hearts + (add ? amount : -amount), 0);
+            if (!bypassMax) {
+                finalAmount = Math.min(finalAmount, Math.max(hearts, Hearts.MAX_HEARTS.get()));
             }
-        } else {
-            for (ServerPlayerEntity player : players) {
-                Hearts.addHeartsValidated(player, add ? amount : -amount, true);
-            }
+            reference.setHearts(finalAmount);
+        }
+        for (ServerPlayerEntity player : playersFromProfiles(source, profiles)) {
+            Hearts.updateHearts(player);
         }
 
         String translation = "commands.hearts." + (add ? "add" : "remove") + ".";
-        if (players.size() == 1) {
-            source.sendFeedback(() -> Text.translatable(translation + "single", amount, players.getFirst().getName()), true);
+        if (references.size() == 1) {
+            source.sendFeedback(() -> Text.translatable(translation + "single", amount, references.getFirst().getName()), true);
         } else {
-            source.sendFeedback(() -> Text.translatable(translation + "multiple", amount, players.size()), true);
+            source.sendFeedback(() -> Text.translatable(translation + "multiple", amount, references.size()), true);
         }
-        return players.size();
+        return references.size();
     }
 
     private static int executeWithdraw(ServerCommandSource source, ServerPlayerEntity player, int amount) {
@@ -226,6 +237,10 @@ public class DivorcestealCommands {
 
     private static GameProfile getFirst(Collection<GameProfile> profiles) {
         return profiles.toArray(GameProfile[]::new)[0];
+    }
+
+    private static List<PlayerHeartDataReference> referencesFromProfiles(ServerCommandSource source, Collection<GameProfile> profiles) {
+        return profiles.stream().map(profile -> new PlayerHeartDataReference(Hearts.getHeartDataState(source.getWorld()), profile)).toList();
     }
 
     private static List<ServerPlayerEntity> playersFromProfiles(ServerCommandSource source, Collection<GameProfile> profiles) {
