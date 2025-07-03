@@ -26,7 +26,7 @@ public class HeartItem extends Item {
         if (addedHearts > 0) {
             // play heart use sound
             ItemStack stack = user.getStackInHand(hand);
-            user.getItemCooldownManager().set(stack, 20);
+            user.getItemCooldownManager().set(stack, 10);
             user.getStackInHand(hand).decrement(1);
         }
 
