@@ -130,13 +130,6 @@ public class DivorcestealCommands {
                                                     GameProfileArgumentType.getProfileArgument(context, "targets"),
                                                     false
                                             ))
-                                            .then(argument("bypassMax", BoolArgumentType.bool())
-                                                    .executes(context -> executeAdd(context.getSource(), false,
-                                                            IntegerArgumentType.getInteger(context, "amount"),
-                                                            GameProfileArgumentType.getProfileArgument(context, "targets"),
-                                                            BoolArgumentType.getBool(context, "bypassMax")
-                                                    ))
-                                            )
                                     )
                             )
                     )
