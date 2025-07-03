@@ -50,7 +50,7 @@ public class HeartDataState extends PersistentState {
         } else {
             if (name == null) throw new IllegalArgumentException("Cannot create heart data without a name!");
 
-            SimpleHeartData simpleData = new SimpleHeartData(name, 10);
+            SimpleHeartData simpleData = new SimpleHeartData(name, Hearts.DEFAULT_HEARTS.get());
             dataMap.put(uuid, simpleData);
             return simpleData.toPlayerHeartData(uuid);
         }
