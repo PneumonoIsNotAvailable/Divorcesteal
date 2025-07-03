@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateType;
+import net.pneumono.divorcesteal.Divorcesteal;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +19,7 @@ public class HeartDataState extends PersistentState {
     );
 
     public static final PersistentStateType<HeartDataState> STATE_TYPE = new PersistentStateType<>(
-            "DivorcestealHearts",
+            Divorcesteal.MOD_ID + "_hearts",
             context -> new HeartDataState(
                     context.getWorldOrThrow().getPlayers().stream().map(player -> new PlayerHeartData(player, Hearts.DEFAULT_HEARTS.get())).toList()
             ),
