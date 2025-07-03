@@ -28,6 +28,10 @@ import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class DivorcestealCommands {
+    public static final SimpleCommandExceptionType NO_DATA_EXCEPTION = new SimpleCommandExceptionType(
+            Text.translatable("commands.hearts.error.no_data")
+    );
+
     private static final ArgumentBuilder<ServerCommandSource, ?> ADMIN = literal("admin")
             .requires(source -> source.hasPermissionLevel(3))
             .then(literal("get")
@@ -150,7 +154,7 @@ public class DivorcestealCommands {
         GameProfile profile = getFirst(profiles);
         HeartDataState heartDataState = getHeartDataState(source);
 
-        if (!heartDataState.hasData(profile.getId())) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
+        if (!heartDataState.hasData(profile.getId())) throw NO_DATA_EXCEPTION.create();
 
         PlayerHeartDataReference player = new PlayerHeartDataReference(heartDataState, profile);
         source.sendFeedback(() -> Text.translatable("commands.hearts.get", player.getName(), player.getHearts()), true);

@@ -32,6 +32,7 @@ public class DivorcestealLanguageProviders {
             builder.add("commands.hearts.withdraw.multiple", "Withdrew %s hearts");
             builder.add("commands.hearts.withdraw.fail", "Could not withdraw any more hearts!");
             builder.add("commands.hearts.refresh", "Hearts refreshed");
+            builder.add("commands.hearts.error.no_data", "No data exists for that player");
         }
     }
 }
