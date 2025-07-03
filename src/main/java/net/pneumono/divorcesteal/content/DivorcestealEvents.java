@@ -20,7 +20,7 @@ public class DivorcestealEvents {
 
         Hearts.addHeartsValidated(player, -1, true);
 
-        if (damageSource.getAttacker() instanceof ServerPlayerEntity attacker && !attacker.getUuid().equals(entity.getUuid())) {
+        if (player.getAttacker() instanceof ServerPlayerEntity attacker && !attacker.getUuid().equals(entity.getUuid())) {
             if (Hearts.addHeartsValidated(attacker, 1, false) == 0) {
 
                 ItemStack stack = DivorcestealRegistry.HEART_ITEM.getDefaultStack();
