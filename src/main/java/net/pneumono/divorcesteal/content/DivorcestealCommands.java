@@ -147,7 +147,7 @@ public class DivorcestealCommands {
         if (profiles.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
         PlayerHeartDataReference player = new PlayerHeartDataReference(getHeartDataState(source), getFirst(profiles));
-        source.sendFeedback(() -> Text.literal(player.getName() + " has " + player.getHearts() + " hearts"), true);
+        source.sendFeedback(() -> Text.translatable("commands.hearts.get", player.getName(), player.getHearts()), true);
 
         return player.getHearts();
     }
@@ -161,9 +161,9 @@ public class DivorcestealCommands {
             Hearts.setHearts(player, finalAmount);
         }
         if (profiles.size() == 1) {
-            source.sendFeedback(() -> Text.literal("Set ").append(getFirst(profiles).getName()).append(Text.literal(" to " + finalAmount + " hearts")), true);
+            source.sendFeedback(() -> Text.translatable("commands.hearts.set.single", getFirst(profiles).getName(), finalAmount), true);
         } else {
-            source.sendFeedback(() -> Text.literal("Set " + profiles.size() + " players to " + finalAmount + " hearts"), true);
+            source.sendFeedback(() -> Text.translatable("commands.hearts.set.multiple", profiles.size(), finalAmount), true);
         }
         return profiles.size();
     }
@@ -184,9 +184,9 @@ public class DivorcestealCommands {
         }
 
         if (players.size() == 1) {
-            source.sendFeedback(() -> Text.literal("Gave ").append(players.toArray(ServerPlayerEntity[]::new)[0].getName()).append(Text.literal(" " + amount + " hearts")), true);
+            source.sendFeedback(() -> Text.translatable("commands.hearts.add.single", amount, players.getFirst().getName()), true);
         } else {
-            source.sendFeedback(() -> Text.literal("Gave " + players.size() + " players " + amount + " hearts"), true);
+            source.sendFeedback(() -> Text.translatable("commands.hearts.add.multiple", amount, players.size()), true);
         }
         return players.size();
     }
@@ -194,11 +194,11 @@ public class DivorcestealCommands {
     private static int executeWithdraw(ServerCommandSource source, ServerPlayerEntity player, int amount) {
         int heartsWithdrawn = -Hearts.addHeartsValidated(player, -amount, false);
         if (heartsWithdrawn == 0) {
-            source.sendFeedback(() -> Text.literal("Could not withdraw any more hearts!").formatted(Formatting.RED), false);
+            source.sendFeedback(() -> Text.translatable("commands.hearts.withdraw.fail").formatted(Formatting.RED), false);
         } else if (heartsWithdrawn == 1) {
-            source.sendFeedback(() -> Text.literal("Withdrew 1 heart"), false);
+            source.sendFeedback(() -> Text.translatable("commands.hearts.withdraw.single"), false);
         } else {
-            source.sendFeedback(() -> Text.literal("Withdrew " + heartsWithdrawn + " hearts"), false);
+            source.sendFeedback(() -> Text.translatable("commands.hearts.withdraw.multiple", heartsWithdrawn), false);
         }
 
         ItemStack stack = DivorcestealRegistry.HEART_ITEM.getDefaultStack().copyWithCount(heartsWithdrawn);
@@ -215,7 +215,7 @@ public class DivorcestealCommands {
 
     private static int executeRefresh(ServerCommandSource source, ServerPlayerEntity player) {
         Hearts.updateHearts(player);
-        source.sendFeedback(() -> Text.literal("Hearts refreshed"), false);
+        source.sendFeedback(() -> Text.translatable("commands.hearts.refresh"), false);
         return 1;
     }
 
