@@ -14,11 +14,6 @@ public class HeartItem extends Item {
     }
 
     @Override
-    public boolean hasGlint(ItemStack stack) {
-        return true;
-    }
-
-    @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
         if (world.isClient()) return ActionResult.SUCCESS_SERVER;
 

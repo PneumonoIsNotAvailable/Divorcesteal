@@ -1,6 +1,7 @@
 package net.pneumono.divorcesteal.content;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
@@ -15,7 +16,9 @@ import net.pneumono.divorcesteal.Divorcesteal;
 import java.util.function.Function;
 
 public class DivorcestealRegistry {
-    public static final HeartItem HEART_ITEM = registerItem("heart", HeartItem::new, new Item.Settings().rarity(Rarity.UNCOMMON));
+    public static final HeartItem HEART_ITEM = registerItem("heart",HeartItem::new,
+            new Item.Settings().rarity(Rarity.UNCOMMON).component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
+    );
 
     public static final SoundEvent USE_HEART_SOUND = registerSoundEvent("item.heart.use");
     public static final SoundEvent USE_REVIVE_BEACON_SOUND = registerSoundEvent("item.revive_beacon.use");
