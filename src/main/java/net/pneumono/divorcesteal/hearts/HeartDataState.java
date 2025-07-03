@@ -1,8 +1,6 @@
 package net.pneumono.divorcesteal.hearts;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateType;
 import net.pneumono.divorcesteal.Divorcesteal;
@@ -44,11 +42,6 @@ public class HeartDataState extends PersistentState {
         return this.dataMap.entrySet().stream().map(entry -> entry.getValue().toPlayerHeartData(entry.getKey())).toList();
     }
 
-    public PlayerHeartData getOrCreateHeartData(PlayerEntity player) {
-        GameProfile profile = player.getGameProfile();
-        return getOrCreateHeartData(profile.getId(), profile.getName());
-    }
-
     public PlayerHeartData getOrCreateHeartData(UUID uuid, String name) {
         if (dataMap.containsKey(uuid)) {
             return getHeartData(uuid);
@@ -68,11 +61,6 @@ public class HeartDataState extends PersistentState {
         SimpleHeartData simpleData = dataMap.get(uuid);
         if (simpleData == null) throw new IllegalStateException("No heart data exists for UUID: " + uuid);
         return simpleData.toPlayerHeartData(uuid);
-    }
-
-    public void setHeartData(PlayerEntity player, int hearts) {
-        GameProfile profile = player.getGameProfile();
-        setHeartData(profile.getId(), profile.getName(), hearts);
     }
 
     public void setHeartData(UUID uuid, String name, int hearts) {
