@@ -3,7 +3,6 @@ package net.pneumono.divorcesteal.content;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -38,127 +37,125 @@ public class DivorcestealCommands {
             Text.translatable("commands.hearts.error.no_data")
     );
 
-    private static final ArgumentBuilder<ServerCommandSource, ?> ADMIN = literal("admin")
-            .requires(source -> source.hasPermissionLevel(3))
-            .then(literal("get")
-                    .executes(context -> executeGet(context.getSource(), List.of(context.getSource().getPlayerOrThrow().getGameProfile())))
-                    .then(argument("target", GameProfileArgumentType.gameProfile())
-                            .suggests(DivorcestealCommands::suggestions)
-                            .executes(context -> executeGet(context.getSource(),
-                                    GameProfileArgumentType.getProfileArgument(context, "target")
-                            ))
+    public static void registerDivorcestealCommands() {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> {
+            dispatcher.register(literal("divorcesteal-admin")
+                    .requires(source -> source.hasPermissionLevel(3))
+                    .then(literal("get")
+                            .executes(context -> executeGet(context.getSource(), List.of(context.getSource().getPlayerOrThrow().getGameProfile())))
+                            .then(argument("target", GameProfileArgumentType.gameProfile())
+                                    .suggests(DivorcestealCommands::suggestions)
+                                    .executes(context -> executeGet(context.getSource(),
+                                            GameProfileArgumentType.getProfileArgument(context, "target")
+                                    ))
+                            )
                     )
-            )
-            .then(literal("set")
-                    .then(argument("amount", IntegerArgumentType.integer(0))
+                    .then(literal("set")
+                            .then(argument("amount", IntegerArgumentType.integer(0))
+                                    .executes(context -> executeSet(context.getSource(),
+                                            IntegerArgumentType.getInteger(context, "amount"),
+                                            List.of(context.getSource().getPlayerOrThrow().getGameProfile()),
+                                            false
+                                    ))
+                                    .then(argument("targets", GameProfileArgumentType.gameProfile())
+                                            .suggests(DivorcestealCommands::suggestions)
+                                            .executes(context -> executeSet(context.getSource(),
+                                                    IntegerArgumentType.getInteger(context, "amount"),
+                                                    GameProfileArgumentType.getProfileArgument(context, "targets"),
+                                                    false
+                                            ))
+                                            .then(argument("bypassMax", BoolArgumentType.bool())
+                                                    .executes(context -> executeSet(context.getSource(),
+                                                            IntegerArgumentType.getInteger(context, "amount"),
+                                                            GameProfileArgumentType.getProfileArgument(context, "targets"),
+                                                            BoolArgumentType.getBool(context, "bypassMax")
+                                                    ))
+                                            )
+                                    )
+                            )
+                    )
+                    .then(literal("reset")
                             .executes(context -> executeSet(context.getSource(),
-                                    IntegerArgumentType.getInteger(context, "amount"),
+                                    Hearts.DEFAULT_HEARTS.get(),
                                     List.of(context.getSource().getPlayerOrThrow().getGameProfile()),
                                     false
                             ))
                             .then(argument("targets", GameProfileArgumentType.gameProfile())
                                     .suggests(DivorcestealCommands::suggestions)
                                     .executes(context -> executeSet(context.getSource(),
-                                            IntegerArgumentType.getInteger(context, "amount"),
+                                            Hearts.DEFAULT_HEARTS.get(),
                                             GameProfileArgumentType.getProfileArgument(context, "targets"),
                                             false
                                     ))
-                                    .then(argument("bypassMax", BoolArgumentType.bool())
-                                            .executes(context -> executeSet(context.getSource(),
-                                                    IntegerArgumentType.getInteger(context, "amount"),
-                                                    GameProfileArgumentType.getProfileArgument(context, "targets"),
-                                                    BoolArgumentType.getBool(context, "bypassMax")
-                                            ))
-                                    )
                             )
                     )
-            )
-            .then(literal("reset")
-                    .executes(context -> executeSet(context.getSource(),
-                            Hearts.DEFAULT_HEARTS.get(),
-                            List.of(context.getSource().getPlayerOrThrow().getGameProfile()),
-                            false
-                    ))
-                    .then(argument("targets", GameProfileArgumentType.gameProfile())
-                            .suggests(DivorcestealCommands::suggestions)
-                            .executes(context -> executeSet(context.getSource(),
-                                    Hearts.DEFAULT_HEARTS.get(),
-                                    GameProfileArgumentType.getProfileArgument(context, "targets"),
-                                    false
-                            ))
-                    )
-            )
-            .then(literal("add")
-                    .then(argument("amount", IntegerArgumentType.integer(0))
-                            .executes(context -> executeAdd(context.getSource(), true,
-                                    IntegerArgumentType.getInteger(context, "amount"),
-                                    List.of(context.getSource().getPlayerOrThrow().getGameProfile()),
-                                    false
-                            ))
-                            .then(argument("targets", GameProfileArgumentType.gameProfile())
-                                    .suggests(DivorcestealCommands::suggestions)
+                    .then(literal("add")
+                            .then(argument("amount", IntegerArgumentType.integer(0))
                                     .executes(context -> executeAdd(context.getSource(), true,
                                             IntegerArgumentType.getInteger(context, "amount"),
-                                            GameProfileArgumentType.getProfileArgument(context, "targets"),
+                                            List.of(context.getSource().getPlayerOrThrow().getGameProfile()),
                                             false
                                     ))
-                                    .then(argument("bypassMax", BoolArgumentType.bool())
+                                    .then(argument("targets", GameProfileArgumentType.gameProfile())
+                                            .suggests(DivorcestealCommands::suggestions)
                                             .executes(context -> executeAdd(context.getSource(), true,
                                                     IntegerArgumentType.getInteger(context, "amount"),
                                                     GameProfileArgumentType.getProfileArgument(context, "targets"),
-                                                    BoolArgumentType.getBool(context, "bypassMax")
+                                                    false
                                             ))
+                                            .then(argument("bypassMax", BoolArgumentType.bool())
+                                                    .executes(context -> executeAdd(context.getSource(), true,
+                                                            IntegerArgumentType.getInteger(context, "amount"),
+                                                            GameProfileArgumentType.getProfileArgument(context, "targets"),
+                                                            BoolArgumentType.getBool(context, "bypassMax")
+                                                    ))
+                                            )
                                     )
                             )
                     )
-            )
-            .then(literal("remove")
-                    .then(argument("amount", IntegerArgumentType.integer(0))
-                            .executes(context -> executeAdd(context.getSource(), false,
-                                    IntegerArgumentType.getInteger(context, "amount"),
-                                    List.of(context.getSource().getPlayerOrThrow().getGameProfile()),
-                                    false
-                            ))
-                            .then(argument("targets", GameProfileArgumentType.gameProfile())
-                                    .suggests(DivorcestealCommands::suggestions)
+                    .then(literal("remove")
+                            .then(argument("amount", IntegerArgumentType.integer(0))
                                     .executes(context -> executeAdd(context.getSource(), false,
                                             IntegerArgumentType.getInteger(context, "amount"),
-                                            GameProfileArgumentType.getProfileArgument(context, "targets"),
+                                            List.of(context.getSource().getPlayerOrThrow().getGameProfile()),
                                             false
                                     ))
-                                    .then(argument("bypassMax", BoolArgumentType.bool())
+                                    .then(argument("targets", GameProfileArgumentType.gameProfile())
+                                            .suggests(DivorcestealCommands::suggestions)
                                             .executes(context -> executeAdd(context.getSource(), false,
                                                     IntegerArgumentType.getInteger(context, "amount"),
                                                     GameProfileArgumentType.getProfileArgument(context, "targets"),
-                                                    BoolArgumentType.getBool(context, "bypassMax")
+                                                    false
                                             ))
+                                            .then(argument("bypassMax", BoolArgumentType.bool())
+                                                    .executes(context -> executeAdd(context.getSource(), false,
+                                                            IntegerArgumentType.getInteger(context, "amount"),
+                                                            GameProfileArgumentType.getProfileArgument(context, "targets"),
+                                                            BoolArgumentType.getBool(context, "bypassMax")
+                                                    ))
+                                            )
                                     )
                             )
                     )
-            )
-            .then(literal("refresh")
-                    .then(argument("targets", GameProfileArgumentType.gameProfile())
-                            .suggests(DivorcestealCommands::suggestions)
-                            .executes(context -> executeRefresh(context.getSource(),
-                                    GameProfileArgumentType.getProfileArgument(context, "targets")
+                    .then(literal("refresh")
+                            .then(argument("targets", GameProfileArgumentType.gameProfile())
+                                    .suggests(DivorcestealCommands::suggestions)
+                                    .executes(context -> executeRefresh(context.getSource(),
+                                            GameProfileArgumentType.getProfileArgument(context, "targets")
+                                    ))
+                            )
+                    )
+            );
+            dispatcher.register(literal("withdraw-hearts")
+                    .executes(context -> executeWithdraw(context.getSource(), context.getSource().getPlayerOrThrow(), 1))
+                    .then(argument("amount", IntegerArgumentType.integer(1))
+                            .executes(context -> executeWithdraw(context.getSource(),
+                                    context.getSource().getPlayerOrThrow(),
+                                    IntegerArgumentType.getInteger(context, "amount")
                             ))
                     )
             );
-
-    public static void registerDivorcestealCommands() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> dispatcher.register(
-                literal("hearts")
-                        .then(ADMIN)
-                        .then(literal("withdraw")
-                                .executes(context -> executeWithdraw(context.getSource(), context.getSource().getPlayerOrThrow(), 1))
-                                .then(argument("amount", IntegerArgumentType.integer(1))
-                                        .executes(context -> executeWithdraw(context.getSource(),
-                                                context.getSource().getPlayerOrThrow(),
-                                                IntegerArgumentType.getInteger(context, "amount")
-                                        ))
-                                )
-                        )
-        ));
+        });
     }
 
     private static CompletableFuture<Suggestions> suggestions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
