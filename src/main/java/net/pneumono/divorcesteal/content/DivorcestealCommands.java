@@ -122,7 +122,7 @@ public class DivorcestealCommands {
                         .then(ADMIN)
                         .then(literal("withdraw")
                                 .executes(context -> withdrawHearts(context.getSource(), context.getSource().getPlayerOrThrow(), 1))
-                                .then(argument("amount", IntegerArgumentType.integer(1, Divorcesteal.MAX_HEARTS.get()))
+                                .then(argument("amount", IntegerArgumentType.integer(1))
                                         .executes(context -> withdrawHearts(context.getSource(), context.getSource().getPlayerOrThrow(), IntegerArgumentType.getInteger(context, "amount")))
                                 )
                         )

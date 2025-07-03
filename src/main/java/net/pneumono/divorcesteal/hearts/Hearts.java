@@ -46,7 +46,7 @@ public class Hearts {
 
         HeartDataState heartDataState = serverWorld.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE);
         int currentHearts = heartDataState.getOrCreateHeartData(player).hearts();
-        int finalHearts = MathHelper.clamp(currentHearts + hearts, allowDeathban ? 0 : 1, Divorcesteal.MAX_HEARTS.get());
+        int finalHearts = MathHelper.clamp(currentHearts + hearts, allowDeathban ? 0 : 1, Math.max(Divorcesteal.MAX_HEARTS.get(), currentHearts));
         heartDataState.setHeartData(player, finalHearts);
         updateHearts(player, finalHearts);
         return finalHearts - currentHearts;
