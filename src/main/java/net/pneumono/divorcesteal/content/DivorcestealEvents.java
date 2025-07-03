@@ -11,8 +11,13 @@ import net.pneumono.divorcesteal.hearts.Hearts;
 
 public class DivorcestealEvents {
     public static void registerDivorcestealEvents() {
+        ServerPlayerEvents.JOIN.register(DivorcestealEvents::join);
         ServerLivingEntityEvents.AFTER_DEATH.register(DivorcestealEvents::afterDeath);
         ServerPlayerEvents.AFTER_RESPAWN.register(DivorcestealEvents::afterRespawn);
+    }
+
+    private static void join(ServerPlayerEntity player) {
+        Hearts.updateHearts(player);
     }
 
     private static void afterDeath(Entity entity, DamageSource damageSource) {
