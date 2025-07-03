@@ -76,19 +76,19 @@ public class DivorcestealCommands {
             )
             .then(literal("add")
                     .then(argument("amount", IntegerArgumentType.integer(0))
-                            .executes(context -> executeAdd(context.getSource(),
+                            .executes(context -> executeAdd(context.getSource(), true,
                                     IntegerArgumentType.getInteger(context, "amount"),
                                     List.of(context.getSource().getPlayerOrThrow().getGameProfile()),
                                     false
                             ))
                             .then(argument("targets", GameProfileArgumentType.gameProfile())
-                                    .executes(context -> executeAdd(context.getSource(),
+                                    .executes(context -> executeAdd(context.getSource(), true,
                                             IntegerArgumentType.getInteger(context, "amount"),
                                             GameProfileArgumentType.getProfileArgument(context, "targets"),
                                             false
                                     ))
                                     .then(argument("bypassMax", BoolArgumentType.bool())
-                                            .executes(context -> executeAdd(context.getSource(),
+                                            .executes(context -> executeAdd(context.getSource(), true,
                                                     IntegerArgumentType.getInteger(context, "amount"),
                                                     GameProfileArgumentType.getProfileArgument(context, "targets"),
                                                     BoolArgumentType.getBool(context, "bypassMax")
@@ -99,20 +99,20 @@ public class DivorcestealCommands {
             )
             .then(literal("remove")
                     .then(argument("amount", IntegerArgumentType.integer(0))
-                            .executes(context -> executeAdd(context.getSource(),
-                                    -IntegerArgumentType.getInteger(context, "amount"),
+                            .executes(context -> executeAdd(context.getSource(), false,
+                                    IntegerArgumentType.getInteger(context, "amount"),
                                     List.of(context.getSource().getPlayerOrThrow().getGameProfile()),
                                     false
                             ))
                             .then(argument("targets", GameProfileArgumentType.gameProfile())
-                                    .executes(context -> executeAdd(context.getSource(),
-                                            -IntegerArgumentType.getInteger(context, "amount"),
+                                    .executes(context -> executeAdd(context.getSource(), false,
+                                            IntegerArgumentType.getInteger(context, "amount"),
                                             GameProfileArgumentType.getProfileArgument(context, "targets"),
                                             false
                                     ))
                                     .then(argument("bypassMax", BoolArgumentType.bool())
-                                            .executes(context -> executeAdd(context.getSource(),
-                                                    -IntegerArgumentType.getInteger(context, "amount"),
+                                            .executes(context -> executeAdd(context.getSource(), false,
+                                                    IntegerArgumentType.getInteger(context, "amount"),
                                                     GameProfileArgumentType.getProfileArgument(context, "targets"),
                                                     BoolArgumentType.getBool(context, "bypassMax")
                                             ))
@@ -168,25 +168,26 @@ public class DivorcestealCommands {
         return profiles.size();
     }
 
-    private static int executeAdd(ServerCommandSource source, int amount, Collection<GameProfile> profiles, boolean bypassMax) throws CommandSyntaxException {
+    private static int executeAdd(ServerCommandSource source, boolean add, int amount, Collection<GameProfile> profiles, boolean bypassMax) throws CommandSyntaxException {
         if (profiles.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
         List<ServerPlayerEntity> players = playersFromProfiles(source, profiles);
 
         if (bypassMax) {
             for (ServerPlayerEntity player : players) {
-                Hearts.addHearts(player, amount);
+                Hearts.addHearts(player, add ? amount : -amount);
             }
         } else {
             for (ServerPlayerEntity player : players) {
-                Hearts.addHeartsValidated(player, amount, true);
+                Hearts.addHeartsValidated(player, add ? amount : -amount, true);
             }
         }
 
+        String translation = "commands.hearts." + (add ? "add" : "remove") + ".";
         if (players.size() == 1) {
-            source.sendFeedback(() -> Text.translatable("commands.hearts.add.single", amount, players.getFirst().getName()), true);
+            source.sendFeedback(() -> Text.translatable(translation + "single", amount, players.getFirst().getName()), true);
         } else {
-            source.sendFeedback(() -> Text.translatable("commands.hearts.add.multiple", amount, players.size()), true);
+            source.sendFeedback(() -> Text.translatable(translation + "multiple", amount, players.size()), true);
         }
         return players.size();
     }
