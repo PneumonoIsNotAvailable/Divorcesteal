@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 
 import net.minecraft.util.Identifier;
 import net.pneumono.divorcesteal.content.DivorcestealCommands;
+import net.pneumono.divorcesteal.content.DivorcestealEvents;
 import net.pneumono.divorcesteal.content.DivorcestealRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ public class Divorcesteal implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("Initializing Divorcesteal");
 		DivorcestealRegistry.registerDivorcestealContent();
+		DivorcestealEvents.registerDivorcestealEvents();
 		DivorcestealCommands.registerDivorcestealCommands();
 	}
 

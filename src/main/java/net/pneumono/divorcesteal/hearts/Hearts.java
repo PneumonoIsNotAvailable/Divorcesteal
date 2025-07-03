@@ -16,6 +16,8 @@ import net.minecraft.util.math.MathHelper;
 import net.pneumono.divorcesteal.Divorcesteal;
 
 public class Hearts {
+    private static final Identifier HEARTS_ID = Divorcesteal.id("hearts");
+
     public static int getHearts(PlayerEntity player) {
         if (!(player.getWorld() instanceof ServerWorld serverWorld)) throw new IllegalStateException("Cannot get player hearts on the logical client!");
 
@@ -52,8 +54,11 @@ public class Hearts {
         return finalHearts - currentHearts;
     }
 
-    private static final Identifier HEARTS_ID = Divorcesteal.id("hearts");
-    public static void updateHearts(PlayerEntity player, int hearts) {
+    public static void updateHearts(PlayerEntity player) {
+        updateHearts(player, getHearts(player));
+    }
+
+    private static void updateHearts(PlayerEntity player, int hearts) {
         EntityAttributeInstance entityAttributeInstance = player.getAttributes().getCustomInstance(EntityAttributes.MAX_HEALTH);
         if (entityAttributeInstance != null) {
             entityAttributeInstance.removeModifier(HEARTS_ID);
