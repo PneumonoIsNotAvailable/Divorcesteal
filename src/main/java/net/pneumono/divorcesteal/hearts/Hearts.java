@@ -50,7 +50,7 @@ public class Hearts {
     }
 
     public static void updateData(@Nullable PlayerEntity player, @Nullable MinecraftServer server, GameProfile profile, int hearts) {
-        if (player != null ) updateHearts(player, hearts);
+        if (player != null) updateHearts(player, hearts);
         if (server != null) updateBan(server, profile, hearts);
     }
 
@@ -62,7 +62,7 @@ public class Hearts {
         }
     }
 
-    public static void updateBan(MinecraftServer server, GameProfile profile, int hearts) {
+    private static void updateBan(MinecraftServer server, GameProfile profile, int hearts) {
         if (hearts == 0) {
             deathban(server, profile);
         } else {
