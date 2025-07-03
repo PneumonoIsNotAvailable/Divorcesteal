@@ -15,8 +15,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.pneumono.divorcesteal.Divorcesteal;
 
+import java.util.function.Supplier;
+
 public class Hearts {
     private static final Identifier HEARTS_ID = Divorcesteal.id("hearts");
+
+    public static final Supplier<Integer> MAX_HEARTS = () -> 20;
+    public static final Supplier<Integer> DEFAULT_HEARTS = () -> 10;
 
     public static int getHearts(PlayerEntity player) {
         if (!(player.getWorld() instanceof ServerWorld serverWorld)) throw new IllegalStateException("Cannot get player hearts on the logical client!");
@@ -48,7 +53,7 @@ public class Hearts {
 
         HeartDataState heartDataState = serverWorld.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE);
         int currentHearts = heartDataState.getOrCreateHeartData(player).hearts();
-        int finalHearts = MathHelper.clamp(currentHearts + hearts, allowDeathban ? 0 : 1, Math.max(Divorcesteal.MAX_HEARTS.get(), currentHearts));
+        int finalHearts = MathHelper.clamp(currentHearts + hearts, allowDeathban ? 0 : 1, Math.max(MAX_HEARTS.get(), currentHearts));
         heartDataState.setHeartData(player, finalHearts);
         updateHearts(player, finalHearts);
         return finalHearts - currentHearts;

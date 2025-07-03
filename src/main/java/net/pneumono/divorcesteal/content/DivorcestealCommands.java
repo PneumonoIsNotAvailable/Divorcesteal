@@ -58,13 +58,13 @@ public class DivorcestealCommands {
             .then(literal("reset")
                     .executes(context -> setHearts(context.getSource(),
                             List.of(context.getSource().getPlayerOrThrow()),
-                            Divorcesteal.DEFAULT_HEARTS.get(),
+                            Hearts.DEFAULT_HEARTS.get(),
                             false
                     ))
                     .then(argument("players", EntityArgumentType.players())
                             .executes(context -> setHearts(context.getSource(),
                                     EntityArgumentType.getPlayers(context, "players"),
-                                    Divorcesteal.DEFAULT_HEARTS.get(),
+                                    Hearts.DEFAULT_HEARTS.get(),
                                     false
                             ))
                     )
@@ -137,7 +137,7 @@ public class DivorcestealCommands {
     }
 
     private static int setHearts(ServerCommandSource source, Collection<ServerPlayerEntity> players, int amount, boolean bypassMax) {
-        int finalAmount = bypassMax ? amount : MathHelper.clamp(amount, 0, Divorcesteal.MAX_HEARTS.get());
+        int finalAmount = bypassMax ? amount : MathHelper.clamp(amount, 0, Hearts.MAX_HEARTS.get());
 
         for (ServerPlayerEntity player : players) {
             Hearts.setHearts(player, finalAmount);

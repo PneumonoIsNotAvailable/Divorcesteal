@@ -26,7 +26,7 @@ public class HeartDataState extends PersistentState {
     public static final PersistentStateType<HeartDataState> STATE_TYPE = new PersistentStateType<>(
             "DivorcestealHearts",
             context -> new HeartDataState(
-                    context.getWorldOrThrow().getPlayers().stream().map(player -> new PlayerHeartData(player, Divorcesteal.DEFAULT_HEARTS.get())).toList()
+                    context.getWorldOrThrow().getPlayers().stream().map(player -> new PlayerHeartData(player, Hearts.DEFAULT_HEARTS.get())).toList()
             ),
             context -> CODEC,
             null
