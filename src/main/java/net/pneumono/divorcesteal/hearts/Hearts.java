@@ -29,24 +29,6 @@ public class Hearts {
         return world.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE);
     }
 
-    public static int getHearts(PlayerEntity player) {
-        PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
-        return reference.getHearts();
-    }
-
-    public static void setHearts(PlayerEntity player, int hearts) {
-        PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
-        reference.setHearts(hearts);
-        updateData(player, hearts);
-    }
-
-    public static void addHearts(PlayerEntity player, int hearts) {
-        PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
-        int finalHearts = reference.getHearts() + hearts;
-        reference.setHearts(finalHearts);
-        updateData(player, finalHearts);
-    }
-
     /**
      * @return Number of hearts added (may not be equal to {@code hearts} due to validation)
      */
@@ -60,7 +42,7 @@ public class Hearts {
     }
 
     public static void updateData(PlayerEntity player) {
-        updateData(player, getHearts(player));
+        updateData(player, PlayerHeartDataReference.create(player).getHearts());
     }
 
     public static void updateData(PlayerEntity player, int hearts) {
