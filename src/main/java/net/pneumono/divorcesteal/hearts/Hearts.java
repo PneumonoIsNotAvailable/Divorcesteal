@@ -22,6 +22,7 @@ public class Hearts {
 
     public static final Supplier<Integer> MAX_HEARTS = () -> 20;
     public static final Supplier<Integer> DEFAULT_HEARTS = () -> 10;
+    public static final Supplier<Integer> REVIVE_HEARTS = () -> 3;
 
     public static HeartDataState getHeartDataState(ServerWorld world) {
         return world.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE);
