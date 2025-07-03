@@ -78,7 +78,10 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
 
     @Override
     public HeartDataArgument parse(StringReader reader) throws CommandSyntaxException {
-        String string = reader.readUnquotedString();
+        int start = reader.getCursor();
+        while (reader.canRead() && (isAllowedInString(reader.peek()))) reader.skip();
+        String string = reader.getString().substring(start, reader.getCursor());
+
         if (!this.singleTarget && string.equals("*")) {
             return source -> {
                 HeartDataState state = DivorcestealCommands.getHeartDataState(source);
@@ -100,20 +103,27 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
         };
     }
 
+    public static boolean isAllowedInString(char c) {
+        return StringReader.isAllowedInUnquotedString(c) || c == '*';
+    }
+
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        if (!(context.getSource() instanceof ServerCommandSource source)) return Suggestions.empty();
+        if (!(context.getSource() instanceof CommandSource source)) return Suggestions.empty();
+        if (!(context.getSource() instanceof ServerCommandSource serverSource)) return source.getCompletions(context);
 
-        if (!this.singleTarget) {
-            builder.suggest("*", Text.translatable("arguments.divorcesteal.all_data"));
-        }
+        HeartDataState state = Hearts.getHeartDataState(serverSource.getWorld());
+        List<String> strings = new ArrayList<>();
+        if (!singleTarget) strings.add("*");
+        strings.addAll(state.getHeartDataList()
+                .stream()
+                .filter(this.filter::test)
+                .map(PlayerHeartData::name)
+                .toList()
+        );
 
-        HeartDataState state = Hearts.getHeartDataState(source.getWorld());
         return CommandSource.suggestMatching(
-                state.getHeartDataList()
-                        .stream()
-                        .filter(this.filter::test)
-                        .map(PlayerHeartData::name),
+                strings,
                 builder
         );
     }
