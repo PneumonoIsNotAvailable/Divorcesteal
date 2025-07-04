@@ -3,6 +3,7 @@ package net.pneumono.divorcesteal.content;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
@@ -22,6 +23,7 @@ public class HeartItem extends Item {
             user.playSound(DivorcestealRegistry.USE_HEART_SOUND);
             ItemStack stack = user.getStackInHand(hand);
             user.getItemCooldownManager().set(stack, 10);
+            user.incrementStat(Stats.USED.getOrCreateStat(this));
             user.getStackInHand(hand).decrement(1);
         }
 
