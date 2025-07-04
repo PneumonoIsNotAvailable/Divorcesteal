@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "minecraft:diamond_block",
+    "/": "minecraft:spyglass",
+    "@": "minecraft:nautilus_shell",
+    "R": "minecraft:red_glazed_terracotta"
+  },
+  "pattern": [
+    "@#@",
+    "R/R",
+    "@#@"
+  ],
+  "result": {
+    "count": 1,
+    "id": "divorcesteal:heart"
+  }
+}
