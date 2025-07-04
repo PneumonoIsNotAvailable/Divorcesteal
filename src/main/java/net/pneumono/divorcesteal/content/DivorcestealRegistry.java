@@ -28,6 +28,10 @@ public class DivorcestealRegistry {
 
     public static final GameRules.Key<GameRules.BooleanRule> DISABLE_ELYTRA_GAMERULE = registerGameRule("disableElytra", GameRuleFactory.createBooleanRule(false));
     public static final GameRules.Key<GameRules.BooleanRule> DISABLE_TOTEMS_GAMERULE = registerGameRule("disableTotems", GameRuleFactory.createBooleanRule(false));
+    public static final GameRules.Key<GameRules.IntRule> HEARTS_MAX_GAMERULE = registerGameRule("heartsMax", GameRuleFactory.createIntRule(20, 1));
+    public static final GameRules.Key<GameRules.IntRule> HEARTS_DEFAULT_GAMERULE = registerGameRule("heartsDefault", GameRuleFactory.createIntRule(10, 1));
+    public static final GameRules.Key<GameRules.IntRule> HEARTS_REVIVE_GAMERULE = registerGameRule("heartsRevive", GameRuleFactory.createIntRule(3, 1));
+    public static final GameRules.Key<GameRules.IntRule> REVIVE_DAYS_GAMERULE = registerGameRule("reviveDays", GameRuleFactory.createIntRule(15, 0));
 
     public static final SoundEvent USE_HEART_SOUND = registerSoundEvent("item.heart.use");
     public static final SoundEvent USE_REVIVE_BEACON_SOUND = registerSoundEvent("item.revive_beacon.use");

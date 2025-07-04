@@ -65,13 +65,13 @@ public class DivorcestealCommands {
                     )
                     .then(literal("reset")
                             .executes(context -> executeSet(context.getSource(),
-                                    Hearts.DEFAULT_HEARTS.get(),
+                                    context.getSource().getWorld().getGameRules().getInt(DivorcestealRegistry.HEARTS_DEFAULT_GAMERULE),
                                     List.of(referenceFromSource(context.getSource())),
                                     false
                             ))
                             .then(argument("targets", HeartDataArgumentType.players())
                                     .executes(context -> executeSet(context.getSource(),
-                                            Hearts.DEFAULT_HEARTS.get(),
+                                            context.getSource().getWorld().getGameRules().getInt(DivorcestealRegistry.HEARTS_DEFAULT_GAMERULE),
                                             HeartDataArgumentType.getPlayers(context, "targets"),
                                             false
                                     ))
@@ -151,7 +151,7 @@ public class DivorcestealCommands {
     private static int executeSet(ServerCommandSource source, int amount, List<PlayerHeartDataReference> references, boolean bypassMax) throws CommandSyntaxException {
         if (references.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
-        int finalAmount = bypassMax ? amount : MathHelper.clamp(amount, 0, Hearts.MAX_HEARTS.get());
+        int finalAmount = bypassMax ? amount : MathHelper.clamp(amount, 0, source.getWorld().getGameRules().getInt(DivorcestealRegistry.HEARTS_MAX_GAMERULE));
 
         for (PlayerHeartDataReference reference : references) {
             reference.setHearts(finalAmount);
@@ -173,7 +173,7 @@ public class DivorcestealCommands {
             int hearts = reference.getHearts();
             int finalAmount = Math.max(hearts + (add ? amount : -amount), 0);
             if (!bypassMax) {
-                finalAmount = Math.min(finalAmount, Math.max(hearts, Hearts.MAX_HEARTS.get()));
+                finalAmount = Math.min(finalAmount, Math.max(hearts, source.getWorld().getGameRules().getInt(DivorcestealRegistry.HEARTS_MAX_GAMERULE)));
             }
             reference.setHearts(finalAmount);
             updateData(source, reference, finalAmount);

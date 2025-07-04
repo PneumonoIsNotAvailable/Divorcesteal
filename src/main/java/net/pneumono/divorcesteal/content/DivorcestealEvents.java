@@ -28,7 +28,7 @@ public class DivorcestealEvents {
     private static void join(ServerPlayerEntity player) {
         PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
         reference.setName(player.getGameProfile().getName());
-        if (reference.getHearts() == 0) reference.setHearts(Hearts.REVIVE_HEARTS.get());
+        if (reference.getHearts() == 0) reference.setHearts(player.getWorld().getGameRules().getInt(DivorcestealRegistry.HEARTS_REVIVE_GAMERULE));
         Hearts.updateData(player);
     }
 
@@ -57,13 +57,13 @@ public class DivorcestealEvents {
     }
 
     private static void startWorldTick(ServerWorld world) {
-        if (world.getTime() % 200 != 0 || Hearts.BAN_TIME.get() < 0) return;
+        if (world.getTime() % 200 != 0 || world.getGameRules().getInt(DivorcestealRegistry.REVIVE_DAYS_GAMERULE) < 0) return;
 
         BannedPlayerList bannedPlayerList = world.getServer().getPlayerManager().getUserBanList();
 
         Date now = new Date();
         for (BannedPlayerEntry entry : bannedPlayerList.values()) {
-            if (entry.getSource().equals(Hearts.ZERO_HEART_BAN_ID) && DateUtils.addDays(entry.getCreationDate(), Hearts.BAN_TIME.get()).before(now)) {
+            if (entry.getSource().equals(Hearts.ZERO_HEART_BAN_ID) && DateUtils.addDays(entry.getCreationDate(), world.getGameRules().getInt(DivorcestealRegistry.REVIVE_DAYS_GAMERULE)).before(now)) {
                 bannedPlayerList.remove(entry);
             }
         }

@@ -1,6 +1,7 @@
 package net.pneumono.divorcesteal.hearts;
 
 import com.mojang.authlib.GameProfile;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -19,19 +20,13 @@ import net.pneumono.divorcesteal.content.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
-import java.util.function.Supplier;
 
 public class Hearts {
     private static final Identifier HEARTS_ID = Divorcesteal.id("hearts");
     public static final String ZERO_HEART_BAN_ID = "zero_heart_ban";
 
-    public static final Supplier<Integer> MAX_HEARTS = () -> 20;
-    public static final Supplier<Integer> DEFAULT_HEARTS = () -> 10;
-    public static final Supplier<Integer> REVIVE_HEARTS = () -> 3;
-    public static final Supplier<Integer> BAN_TIME = () -> 5;
-
     public static HeartDataState getHeartDataState(ServerWorld world) {
-        return world.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE);
+        return HeartDataState.create(world);
     }
 
     /**
@@ -40,7 +35,7 @@ public class Hearts {
     public static int addHeartsValidated(PlayerEntity player, int hearts, boolean allowDeathban) {
         PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
         int currentHearts = reference.getHearts();
-        int finalHearts = MathHelper.clamp(currentHearts + hearts, allowDeathban ? 0 : 1, Math.max(MAX_HEARTS.get(), currentHearts));
+        int finalHearts = MathHelper.clamp(currentHearts + hearts, allowDeathban ? 0 : 1, Math.max(((ServerWorld)player.getWorld()).getGameRules().getInt(DivorcestealRegistry.HEARTS_MAX_GAMERULE), currentHearts));
         reference.setHearts(finalHearts);
         updateData(player, finalHearts);
         return finalHearts - currentHearts;
@@ -54,7 +49,7 @@ public class Hearts {
         PlayerHeartDataReference reference = new PlayerHeartDataReference(state, profile);
         if (reference.getHearts() > 0) return false;
 
-        int hearts = REVIVE_HEARTS.get();
+        int hearts = world.getGameRules().getInt(DivorcestealRegistry.HEARTS_REVIVE_GAMERULE);
         reference.setHearts(hearts);
         updateBan(world.getServer(), profile, hearts);
         return true;
@@ -101,7 +96,7 @@ public class Hearts {
                 player.networkHandler.disconnect(Text.translatable("divorcesteal.deathban"));
             }
 
-            for (ServerPlayerEntity globalPlayer : server.getPlayerManager().getPlayerList()) {
+            for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
                 globalPlayer.playSoundToPlayer(DivorcestealRegistry.DEATHBAN_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 Text banAnnouncement = Text.translatable("divorcesteal.deathban_global", profile.getName());
                 globalPlayer.sendMessageToClient(banAnnouncement, false);

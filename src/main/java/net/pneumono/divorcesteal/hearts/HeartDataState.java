@@ -1,9 +1,11 @@
 package net.pneumono.divorcesteal.hearts;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateType;
 import net.pneumono.divorcesteal.Divorcesteal;
+import net.pneumono.divorcesteal.content.DivorcestealRegistry;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,22 +18,29 @@ public class HeartDataState extends PersistentState {
             HeartDataState::getHeartDataList
     );
 
-    public static final PersistentStateType<HeartDataState> STATE_TYPE = new PersistentStateType<>(
+    private static final PersistentStateType<HeartDataState> STATE_TYPE = new PersistentStateType<>(
             Divorcesteal.MOD_ID + "_hearts",
             context -> new HeartDataState(
-                    context.getWorldOrThrow().getPlayers().stream().map(player -> new PlayerHeartData(player, Hearts.DEFAULT_HEARTS.get())).toList()
+                    context.getWorldOrThrow().getPlayers().stream().map(player -> new PlayerHeartData(player, context.getWorldOrThrow().getGameRules().getInt(DivorcestealRegistry.HEARTS_DEFAULT_GAMERULE))).toList()
             ),
             context -> CODEC,
             null
     );
 
     private final Map<UUID, SimpleHeartData> dataMap;
+    private ServerWorld world;
 
     public HeartDataState(List<PlayerHeartData> dataList) {
         this.dataMap = new HashMap<>();
         for (PlayerHeartData data : dataList) {
             this.dataMap.put(data.uuid(), new SimpleHeartData(data));
         }
+    }
+
+    public static HeartDataState create(ServerWorld world) {
+        HeartDataState state = world.getPersistentStateManager().getOrCreate(STATE_TYPE);
+        state.world = world;
+        return state;
     }
 
     public boolean hasData(UUID uuid) {
@@ -48,7 +57,7 @@ public class HeartDataState extends PersistentState {
         } else {
             if (name == null) throw new IllegalArgumentException("Cannot create heart data without a name!");
 
-            SimpleHeartData simpleData = new SimpleHeartData(name, Hearts.DEFAULT_HEARTS.get());
+            SimpleHeartData simpleData = new SimpleHeartData(name, this.world.getGameRules().getInt(DivorcestealRegistry.HEARTS_DEFAULT_GAMERULE));
             dataMap.put(uuid, simpleData);
             return simpleData.toPlayerHeartData(uuid);
         }

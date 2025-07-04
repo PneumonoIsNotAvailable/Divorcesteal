@@ -39,7 +39,7 @@ public class PlayerHeartDataReference {
     public static PlayerHeartDataReference create(PlayerEntity player) {
         if (!(player.getWorld() instanceof ServerWorld serverWorld)) throw new IllegalStateException("Cannot set player hearts on the logical client!");
 
-        return new PlayerHeartDataReference(serverWorld.getPersistentStateManager().getOrCreate(HeartDataState.STATE_TYPE), player.getGameProfile());
+        return new PlayerHeartDataReference(Hearts.getHeartDataState(serverWorld), player.getGameProfile());
     }
 
     public void refresh() {
