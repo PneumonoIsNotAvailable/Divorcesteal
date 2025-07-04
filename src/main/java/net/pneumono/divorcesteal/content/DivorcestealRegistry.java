@@ -1,5 +1,7 @@
 package net.pneumono.divorcesteal.content;
 
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
@@ -11,6 +13,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
+import net.minecraft.world.GameRules;
 import net.pneumono.divorcesteal.Divorcesteal;
 
 import java.util.function.Function;
@@ -23,14 +26,21 @@ public class DivorcestealRegistry {
             new Item.Settings().rarity(Rarity.RARE).component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
     );
 
+    public static final GameRules.Key<GameRules.BooleanRule> DISABLE_ELYTRA_GAMERULE = registerGameRule("disableElytra", GameRuleFactory.createBooleanRule(false));
+    public static final GameRules.Key<GameRules.BooleanRule> DISABLE_TOTEMS_GAMERULE = registerGameRule("disableTotems", GameRuleFactory.createBooleanRule(false));
+
     public static final SoundEvent USE_HEART_SOUND = registerSoundEvent("item.heart.use");
     public static final SoundEvent USE_REVIVE_BEACON_SOUND = registerSoundEvent("item.revive_beacon.use");
     public static final SoundEvent DEATHBAN_SOUND = registerSoundEvent("event.deathban");
     public static final SoundEvent REVIVE_SOUND = registerSoundEvent("event.revive");
 
-    protected static <T extends Item> T registerItem(String name, Function<Item.Settings, T> factory, Item.Settings settings) {
+    private static <T extends Item> T registerItem(String name, Function<Item.Settings, T> factory, Item.Settings settings) {
         RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, Divorcesteal.id(name));
         return Registry.register(Registries.ITEM, key, factory.apply(settings.registryKey(key)));
+    }
+
+    private static <T extends GameRules.Rule<T>> GameRules.Key<T> registerGameRule(String name, GameRules.Type<T> rule) {
+        return GameRuleRegistry.register(name, GameRules.Category.PLAYER, rule);
     }
 
     private static SoundEvent registerSoundEvent(String name) {
