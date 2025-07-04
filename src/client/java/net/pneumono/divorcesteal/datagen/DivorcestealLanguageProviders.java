@@ -21,6 +21,7 @@ public class DivorcestealLanguageProviders {
         @Override
         public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder builder) {
             builder.add(DivorcestealRegistry.HEART_ITEM, "Heart");
+            builder.add(DivorcestealRegistry.REVIVE_BEACON_ITEM, "Revive Beacon");
 
             builder.add(DivorcestealRegistry.USE_HEART_SOUND, "Heart applies");
             builder.add(DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, "Revive Beacon activates");

@@ -16,8 +16,11 @@ import net.pneumono.divorcesteal.Divorcesteal;
 import java.util.function.Function;
 
 public class DivorcestealRegistry {
-    public static final HeartItem HEART_ITEM = registerItem("heart",HeartItem::new,
+    public static final HeartItem HEART_ITEM = registerItem("heart", HeartItem::new,
             new Item.Settings().rarity(Rarity.UNCOMMON).component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
+    );
+    public static final ReviveBeaconItem REVIVE_BEACON_ITEM = registerItem("revive_beacon", ReviveBeaconItem::new,
+            new Item.Settings().rarity(Rarity.RARE).component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
     );
 
     public static final SoundEvent USE_HEART_SOUND = registerSoundEvent("item.heart.use");
@@ -38,6 +41,7 @@ public class DivorcestealRegistry {
     public static void registerDivorcestealContent() {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.OPERATOR).register(entries -> {
             entries.add(HEART_ITEM);
+            entries.add(REVIVE_BEACON_ITEM);
         });
     }
 }

@@ -19,6 +19,7 @@
   "divorcesteal.deathban": "You ran out of hearts!",
   "divorcesteal.deathban_global": "%s ran out of hearts!",
   "item.divorcesteal.heart": "Heart",
+  "item.divorcesteal.revive_beacon": "Revive Beacon",
   "subtitles.divorcesteal.event.deathban": "Deathban echoes",
   "subtitles.divorcesteal.event.revive": "Revival echoes",
   "subtitles.divorcesteal.item.heart.use": "Heart applies",
