@@ -57,6 +57,10 @@ public class DivorcestealLanguageProviders {
             builder.add("arguments.divorcesteal.error.not_deathbanned", "Cannot revive a player that isn't deathbanned!");
 
             builder.addConfigScreenTitle(Divorcesteal.MOD_ID, "Divorcesteal Configs");
+
+            builder.add("modmenu.nameTranslation.divorcesteal", "Divorcesteal");
+            builder.add("modmenu.summaryTranslation.divorcesteal", "The official mod for Divorcesteal");
+            builder.add("modmenu.descriptionTranslation.divorcesteal", "The official mod for Divorcesteal, not affiliated with the Lifesteal SMP");
         }
     }
 }
