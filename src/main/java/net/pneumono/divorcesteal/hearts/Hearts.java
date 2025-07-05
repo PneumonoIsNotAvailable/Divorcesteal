@@ -110,6 +110,9 @@ public class Hearts {
 
         if (bannedPlayerList.contains(profile)) {
             bannedPlayerList.remove(profile);
+            for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
+                globalPlayer.playSoundToPlayer(DivorcestealRegistry.REVIVE_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            }
         }
     }
 }
