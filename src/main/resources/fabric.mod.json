@@ -19,6 +19,9 @@
 		],
 		"fabric-datagen": [
 			"net.pneumono.divorcesteal.DivorcestealDataGenerator"
+		],
+		"modmenu": [
+			"net.pneumono.divorcesteal.DivorcestealModMenu"
 		]
 	},
 	"mixins": [
