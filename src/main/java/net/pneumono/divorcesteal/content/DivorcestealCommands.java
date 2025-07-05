@@ -8,7 +8,6 @@ import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -64,20 +63,6 @@ public class DivorcestealCommands {
                                     )
                             )
                     )
-                    .then(literal("reset")
-                            .executes(context -> executeSet(context.getSource(),
-                                    DivorcestealConfig.DEFAULT_HEARTS.getValue(),
-                                    List.of(referenceFromSource(context.getSource())),
-                                    false
-                            ))
-                            .then(argument("targets", HeartDataArgumentType.players())
-                                    .executes(context -> executeSet(context.getSource(),
-                                            DivorcestealConfig.DEFAULT_HEARTS.getValue(),
-                                            HeartDataArgumentType.getPlayers(context, "targets"),
-                                            false
-                                    ))
-                            )
-                    )
                     .then(literal("add")
                             .then(argument("amount", IntegerArgumentType.integer(0))
                                     .executes(context -> executeAdd(context.getSource(), true,
@@ -120,13 +105,6 @@ public class DivorcestealCommands {
                     .then(literal("revive")
                             .then(argument("targets", HeartDataArgumentType.bannedPlayers())
                                     .executes(context -> executeRevive(context.getSource(),
-                                            HeartDataArgumentType.getPlayers(context, "targets")
-                                    ))
-                            )
-                    )
-                    .then(literal("refresh")
-                            .then(argument("targets", HeartDataArgumentType.unbannedPlayers())
-                                    .executes(context -> executeRefresh(context.getSource(),
                                             HeartDataArgumentType.getPlayers(context, "targets")
                                     ))
                             )
@@ -203,26 +181,6 @@ public class DivorcestealCommands {
             source.sendFeedback(() -> Text.translatable("commands.divorcesteal.revive.multiple", references.size()), true);
         }
         return 1;
-    }
-
-    private static int executeRefresh(ServerCommandSource source, List<PlayerHeartDataReference> references) throws CommandSyntaxException {
-        if (references.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
-
-        for (PlayerHeartDataReference reference : references) {
-            PlayerEntity player = source.getWorld().getPlayerByUuid(reference.getUUID());
-            if (player != null) {
-                reference.setName(player.getGameProfile().getName());
-            }
-            updateData(source, reference, reference.getHearts());
-        }
-
-        if (references.size() == 1) {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.refresh.single", references.getFirst().getName()), true);
-        } else {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.refresh.multiple", references.size()), true);
-        }
-
-        return references.size();
     }
 
     private static int executeWithdraw(ServerCommandSource source, ServerPlayerEntity player, int amount) {

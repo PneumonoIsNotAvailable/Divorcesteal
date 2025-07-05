@@ -48,8 +48,6 @@ public class DivorcestealLanguageProviders {
             builder.add("commands.divorcesteal.remove.multiple", "Took %1$s hearts from %2$s players");
             builder.add("commands.divorcesteal.revive.single", "Revived %s");
             builder.add("commands.divorcesteal.revive.multiple", "Revived %s players");
-            builder.add("commands.divorcesteal.refresh.single", "Refreshed data for %s");
-            builder.add("commands.divorcesteal.refresh.multiple", "Refreshed data for %s players");
             builder.add("commands.divorcesteal.withdraw.single", "Withdrew 1 heart");
             builder.add("commands.divorcesteal.withdraw.multiple", "Withdrew %s hearts");
             builder.add("commands.divorcesteal.withdraw.fail", "Could not withdraw any more hearts!");

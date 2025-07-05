@@ -5,8 +5,6 @@
   "commands.divorcesteal.add.multiple": "Gave %1$s hearts to %2$s players",
   "commands.divorcesteal.add.single": "Gave %1$s hearts to %2$s",
   "commands.divorcesteal.get": "%1$s has %2$s hearts",
-  "commands.divorcesteal.refresh.multiple": "Refreshed data for %s players",
-  "commands.divorcesteal.refresh.single": "Refreshed data for %s",
   "commands.divorcesteal.remove.multiple": "Took %1$s hearts from %2$s players",
   "commands.divorcesteal.remove.single": "Took %1$s hearts from %2$s",
   "commands.divorcesteal.revive.multiple": "Revived %s players",
