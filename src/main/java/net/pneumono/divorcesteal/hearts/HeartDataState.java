@@ -28,7 +28,6 @@ public class HeartDataState extends PersistentState {
     );
 
     private final Map<UUID, SimpleHeartData> dataMap;
-    private ServerWorld world;
 
     public HeartDataState(List<PlayerHeartData> dataList) {
         this.dataMap = new HashMap<>();
@@ -38,13 +37,7 @@ public class HeartDataState extends PersistentState {
     }
 
     public static HeartDataState create(ServerWorld world) {
-        HeartDataState state = world.getPersistentStateManager().getOrCreate(STATE_TYPE);
-        state.world = world;
-        return state;
-    }
-
-    public boolean hasData(UUID uuid) {
-        return dataMap.containsKey(uuid);
+        return world.getPersistentStateManager().getOrCreate(STATE_TYPE);
     }
 
     public List<PlayerHeartData> getHeartDataList() {

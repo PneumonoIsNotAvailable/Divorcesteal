@@ -1,7 +1,5 @@
 package net.pneumono.divorcesteal.content;
 
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -16,7 +14,6 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
-import net.minecraft.world.GameRules;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.hearts.Hearts;
 
@@ -38,10 +35,6 @@ public class DivorcestealRegistry {
     private static <T extends Item> T registerItem(String name, Function<Item.Settings, T> factory, Item.Settings settings) {
         RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, Divorcesteal.id(name));
         return Registry.register(Registries.ITEM, key, factory.apply(settings.registryKey(key)));
-    }
-
-    private static <T extends GameRules.Rule<T>> GameRules.Key<T> registerGameRule(String name, GameRules.Type<T> rule) {
-        return GameRuleRegistry.register(name, GameRules.Category.PLAYER, rule);
     }
 
     private static SoundEvent registerSoundEvent(String name) {
