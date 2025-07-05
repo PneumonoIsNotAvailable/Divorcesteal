@@ -198,6 +198,7 @@ public class DivorcestealCommands {
             PlayerEntity player = playerFromReference(source, reference);
             if (player != null) {
                 state.getOrCreateHeartData(player.getGameProfile().getId(), player.getGameProfile().getName());
+                Hearts.updateData(player);
             }
         }
 
