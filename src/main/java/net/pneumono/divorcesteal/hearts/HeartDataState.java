@@ -6,11 +6,9 @@ import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateType;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.DivorcestealConfig;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class HeartDataState extends PersistentState {
     public static final Codec<HeartDataState> CODEC = PlayerHeartData.CODEC.listOf().xmap(
@@ -29,7 +27,7 @@ public class HeartDataState extends PersistentState {
 
     private final Map<UUID, SimpleHeartData> dataMap;
 
-    public HeartDataState(List<PlayerHeartData> dataList) {
+    private HeartDataState(List<PlayerHeartData> dataList) {
         this.dataMap = new HashMap<>();
         for (PlayerHeartData data : dataList) {
             this.dataMap.put(data.uuid(), new SimpleHeartData(data));
@@ -50,7 +48,7 @@ public class HeartDataState extends PersistentState {
         } else {
             if (name == null) throw new IllegalArgumentException("Cannot create heart data without a name!");
 
-            SimpleHeartData simpleData = new SimpleHeartData(name, DivorcestealConfig.DEFAULT_HEARTS.getValue());
+            SimpleHeartData simpleData = new SimpleHeartData(name, DivorcestealConfig.DEFAULT_HEARTS.getValue(), null);
             dataMap.put(uuid, simpleData);
             return simpleData.toPlayerHeartData(uuid);
         }
@@ -65,23 +63,24 @@ public class HeartDataState extends PersistentState {
         return simpleData.toPlayerHeartData(uuid);
     }
 
-    public void setHeartData(UUID uuid, String name, int hearts) {
-        dataMap.put(uuid, new SimpleHeartData(name, hearts));
+    public void setHeartData(UUID uuid, String name, int hearts, @Nullable Date banDate) {
+        dataMap.put(uuid, new SimpleHeartData(name, hearts, banDate));
         markDirty();
     }
 
-    private record SimpleHeartData(String name, int hearts) {
-        public SimpleHeartData(String name, int hearts) {
+    private record SimpleHeartData(String name, int hearts, @Nullable Date banDate) {
+        public SimpleHeartData(String name, int hearts, @Nullable Date banDate) {
             this.name = name;
             this.hearts = Math.max(hearts, 0);
+            this.banDate = banDate;
         }
 
         public SimpleHeartData(PlayerHeartData data) {
-            this(data.name(), data.hearts());
+            this(data.name(), data.hearts(), data.banDate());
         }
 
         public PlayerHeartData toPlayerHeartData(UUID uuid) {
-            return new PlayerHeartData(uuid, this.name, this.hearts);
+            return new PlayerHeartData(uuid, this.name, this.hearts, this.banDate);
         }
     }
 }

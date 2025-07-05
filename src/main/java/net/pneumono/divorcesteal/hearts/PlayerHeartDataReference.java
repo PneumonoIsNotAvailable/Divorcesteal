@@ -3,7 +3,9 @@ package net.pneumono.divorcesteal.hearts;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class PlayerHeartDataReference {
@@ -11,19 +13,15 @@ public class PlayerHeartDataReference {
     private final UUID uuid;
     private String name;
     private int hearts;
+    @Nullable
+    private Date banDate;
 
     public PlayerHeartDataReference(HeartDataState state, PlayerHeartData data) {
         this.state = state;
         this.uuid = data.uuid();
         this.name = data.name();
         this.hearts = data.hearts();
-    }
-
-    public PlayerHeartDataReference(HeartDataState state, UUID uuid) {
-        this.state = state;
-        this.uuid = uuid;
-
-        refresh();
+        this.banDate = data.banDate();
     }
 
     public PlayerHeartDataReference(HeartDataState state, GameProfile profile) {
@@ -33,6 +31,7 @@ public class PlayerHeartDataReference {
         PlayerHeartData data = state.getOrCreateHeartData(uuid, profile.getName());
         this.name = data.name();
         this.hearts = data.hearts();
+        this.banDate = data.banDate();
     }
 
 
@@ -42,14 +41,8 @@ public class PlayerHeartDataReference {
         return new PlayerHeartDataReference(Hearts.getHeartDataState(serverWorld), player.getGameProfile());
     }
 
-    public void refresh() {
-        PlayerHeartData data = state.getOrCreateHeartData(uuid, name);
-        this.name = data.name();
-        this.hearts = data.hearts();
-    }
-
-    public PlayerHeartData getData() {
-        return new PlayerHeartData(this.uuid, this.name, this.hearts);
+    public GameProfile getGameProfile() {
+        return new GameProfile(this.uuid, this.name);
     }
 
     public UUID getUUID() {
@@ -65,12 +58,21 @@ public class PlayerHeartDataReference {
     }
 
     public void setName(String name) {
-        this.state.setHeartData(uuid, name, hearts);
         this.name = name;
+        updateHeartData();
     }
 
     public void setHearts(int hearts) {
-        this.state.setHeartData(uuid, name, hearts);
         this.hearts = hearts;
+        updateHeartData();
+    }
+
+    public void setBanDate(@Nullable Date banDate) {
+        this.banDate = banDate;
+        updateHeartData();
+    }
+
+    private void updateHeartData() {
+        this.state.setHeartData(this.uuid, this.name, this.hearts, this.banDate);
     }
 }

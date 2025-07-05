@@ -1,6 +1,5 @@
 package net.pneumono.divorcesteal.content;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -134,7 +133,7 @@ public class DivorcestealCommands {
 
         for (PlayerHeartDataReference reference : references) {
             reference.setHearts(finalAmount);
-            updateData(source, reference, finalAmount);
+            updateData(source, reference);
         }
 
         if (references.size() == 1) {
@@ -155,7 +154,7 @@ public class DivorcestealCommands {
                 finalAmount = Math.min(finalAmount, Math.max(hearts, DivorcestealConfig.MAX_HEARTS.getValue()));
             }
             reference.setHearts(finalAmount);
-            updateData(source, reference, finalAmount);
+            updateData(source, reference);
         }
 
         String translation = "commands.divorcesteal." + (add ? "add" : "remove") + ".";
@@ -171,8 +170,7 @@ public class DivorcestealCommands {
         if (references.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
         for (PlayerHeartDataReference reference : references) {
-            GameProfile profile = profileFromReference(reference);
-            if (!Hearts.revive(source.getWorld(), profile)) throw HeartDataArgumentType.NOT_DEATHBANNED_EXCEPTION.create();
+            if (!Hearts.revive(source.getWorld(), reference.getGameProfile())) throw HeartDataArgumentType.NOT_DEATHBANNED_EXCEPTION.create();
         }
 
         if (references.size() == 1) {
@@ -209,8 +207,8 @@ public class DivorcestealCommands {
         return Hearts.getHeartDataState(source.getWorld());
     }
 
-    private static void updateData(ServerCommandSource source, PlayerHeartDataReference reference, int hearts) {
-        Hearts.updateData(playerFromReference(source, reference), source.getServer(), profileFromReference(reference), hearts);
+    private static void updateData(ServerCommandSource source, PlayerHeartDataReference reference) {
+        Hearts.updateData(playerFromReference(source, reference), source.getServer(), reference);
     }
 
     private static PlayerHeartDataReference referenceFromSource(ServerCommandSource source) throws CommandSyntaxException {
@@ -219,9 +217,5 @@ public class DivorcestealCommands {
 
     private static ServerPlayerEntity playerFromReference(ServerCommandSource source, PlayerHeartDataReference reference) {
         return (ServerPlayerEntity) source.getWorld().getPlayerByUuid(reference.getUUID());
-    }
-
-    private static GameProfile profileFromReference(PlayerHeartDataReference reference) {
-        return new GameProfile(reference.getUUID(), reference.getName());
     }
 }

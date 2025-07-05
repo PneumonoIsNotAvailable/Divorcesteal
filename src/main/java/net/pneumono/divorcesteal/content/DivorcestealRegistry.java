@@ -61,13 +61,13 @@ public class DivorcestealRegistry {
         if (!stack.isOf(DivorcestealRegistry.REVIVE_BEACON_ITEM) || stack.isEmpty()) {
             ItemStack otherStack = player.getOffHandStack();
             if (!otherStack.isOf(DivorcestealRegistry.REVIVE_BEACON_ITEM) || stack.isEmpty()) {
-                Divorcesteal.LOGGER.warn("Player {} attempted to revive {} without holding a revive beacon!", player.getName().getString(), payload.player().getName());
+                Divorcesteal.LOGGER.warn("Player {} attempted to revive {} without holding a revive beacon!", player.getName().getString(), payload.data().name());
                 return;
             }
         }
 
         stack.decrement(1);
         player.getWorld().playSound(null, player.getBlockPos(), USE_REVIVE_BEACON_SOUND, SoundCategory.PLAYERS);
-        Hearts.revive(player.getWorld(), payload.player());
+        Hearts.revive(player.getWorld(), payload.data().gameProfile());
     }
 }

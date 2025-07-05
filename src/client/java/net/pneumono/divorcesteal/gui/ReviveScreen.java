@@ -1,6 +1,5 @@
 package net.pneumono.divorcesteal.gui;
 
-import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -9,6 +8,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.content.RevivePlayerC2SPayload;
+import net.pneumono.divorcesteal.hearts.PlayerHeartData;
 
 import java.util.List;
 
@@ -17,20 +17,20 @@ public class ReviveScreen extends Screen {
     private static final int GUI_WIDTH = 176;
     private static final int GUI_HEIGHT = 133;
 
-    private final List<GameProfile> players;
+    private final List<PlayerHeartData> players;
     private int selectedPlayer = -1;
 
-    public ReviveScreen(List<GameProfile> players) {
+    public ReviveScreen(List<PlayerHeartData> players) {
         super(Text.translatable("divorcesteal.gui.revive.title"));
         this.players = players;
     }
 
     private void reviveSelectedPlayer() {
-        GameProfile player = getSelectedPlayer();
+        PlayerHeartData player = getSelectedPlayer();
         if (player != null) ClientPlayNetworking.send(new RevivePlayerC2SPayload(player));
     }
 
-    public GameProfile getSelectedPlayer() {
+    public PlayerHeartData getSelectedPlayer() {
         if (this.selectedPlayer == -1) return null;
         return this.players.get(this.selectedPlayer);
     }
