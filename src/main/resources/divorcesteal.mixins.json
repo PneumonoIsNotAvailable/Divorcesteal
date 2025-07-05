@@ -3,6 +3,7 @@
     "package": "net.pneumono.divorcesteal.mixin",
     "compatibilityLevel": "JAVA_21",
     "mixins": [
+        "ArmorMaterialsMixin",
         "LivingEntityMixin"
     ],
     "injectors": {
