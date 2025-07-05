@@ -11,6 +11,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
@@ -54,16 +56,18 @@ public class DivorcestealRegistry {
     }
 
     private static void revivePlayer(RevivePlayerC2SPayload payload, ServerPlayNetworking.Context context) {
-        ItemStack stack = context.player().getMainHandStack();
+        ServerPlayerEntity player = context.player();
+        ItemStack stack = player.getMainHandStack();
         if (!stack.isOf(DivorcestealRegistry.REVIVE_BEACON_ITEM) || stack.isEmpty()) {
-            ItemStack otherStack = context.player().getOffHandStack();
+            ItemStack otherStack = player.getOffHandStack();
             if (!otherStack.isOf(DivorcestealRegistry.REVIVE_BEACON_ITEM) || stack.isEmpty()) {
-                Divorcesteal.LOGGER.warn("Player {} attempted to revive {} without holding a revive beacon!", context.player().getName().getString(), payload.player().getName());
+                Divorcesteal.LOGGER.warn("Player {} attempted to revive {} without holding a revive beacon!", player.getName().getString(), payload.player().getName());
                 return;
             }
         }
 
         stack.decrement(1);
-        Hearts.revive(context.player().getWorld(), payload.player());
+        player.getWorld().playSound(null, player.getBlockPos(), USE_REVIVE_BEACON_SOUND, SoundCategory.PLAYERS);
+        Hearts.revive(player.getWorld(), payload.player());
     }
 }
