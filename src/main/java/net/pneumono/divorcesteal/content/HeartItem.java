@@ -3,6 +3,7 @@ package net.pneumono.divorcesteal.content;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -16,17 +17,20 @@ public class HeartItem extends Item {
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        if (world.isClient()) return ActionResult.SUCCESS_SERVER;
+        ItemStack stack = user.getStackInHand(hand);
+        if (world.isClient()) return ActionResult.CONSUME;
 
         int addedHearts = Hearts.addHeartsValidated(user, 1, false);
-        if (addedHearts > 0) {
-            user.playSound(DivorcestealRegistry.USE_HEART_SOUND);
-            ItemStack stack = user.getStackInHand(hand);
-            user.getItemCooldownManager().set(stack, 10);
-            user.incrementStat(Stats.USED.getOrCreateStat(this));
-            user.getStackInHand(hand).decrement(1);
-        }
 
-        return ActionResult.SUCCESS_SERVER;
+        if (addedHearts > 0) {
+            world.playSound(null, user.getBlockPos(), DivorcestealRegistry.USE_HEART_SOUND, SoundCategory.PLAYERS);
+            user.incrementStat(Stats.USED.getOrCreateStat(this));
+            user.getItemCooldownManager().set(stack, 10);
+            stack.decrement(1);
+            return ActionResult.SUCCESS_SERVER;
+
+        } else {
+            return ActionResult.FAIL;
+        }
     }
 }
