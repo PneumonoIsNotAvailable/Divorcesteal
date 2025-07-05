@@ -81,6 +81,13 @@ public class DivorcestealLanguageProviders {
                     "Disable Totems",
                     "Whether Totems of Undying are disabled"
             );
+            builder.addEnumConfig(DivorcestealConfig.DATE_FORMAT,
+                    "Date Format",
+                    "The format of dates in GUI",
+                    "DD/MM/YYYY",
+                    "MM/DD/YYYY",
+                    "YYYY/MM/DD"
+            );
             builder.add("configs.category.divorcesteal.hearts", "Hearts");
             builder.add("configs.category.divorcesteal.rebalances", "Rebalances");
 
