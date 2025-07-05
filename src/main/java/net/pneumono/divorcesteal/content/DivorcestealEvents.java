@@ -11,6 +11,7 @@ import net.minecraft.server.BannedPlayerEntry;
 import net.minecraft.server.BannedPlayerList;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
 import org.apache.commons.lang3.time.DateUtils;
@@ -28,7 +29,7 @@ public class DivorcestealEvents {
     private static void join(ServerPlayerEntity player) {
         PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
         reference.setName(player.getGameProfile().getName());
-        if (reference.getHearts() == 0) reference.setHearts(player.getWorld().getGameRules().getInt(DivorcestealRegistry.HEARTS_REVIVE_GAMERULE));
+        if (reference.getHearts() == 0) reference.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());
         Hearts.updateData(player);
     }
 
@@ -57,13 +58,13 @@ public class DivorcestealEvents {
     }
 
     private static void startWorldTick(ServerWorld world) {
-        if (world.getTime() % 200 != 0 || world.getGameRules().getInt(DivorcestealRegistry.REVIVE_DAYS_GAMERULE) < 0) return;
+        if (world.getTime() % 200 != 0 || DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
 
         BannedPlayerList bannedPlayerList = world.getServer().getPlayerManager().getUserBanList();
 
         Date now = new Date();
         for (BannedPlayerEntry entry : bannedPlayerList.values()) {
-            if (entry.getSource().equals(Hearts.ZERO_HEART_BAN_ID) && DateUtils.addDays(entry.getCreationDate(), world.getGameRules().getInt(DivorcestealRegistry.REVIVE_DAYS_GAMERULE)).before(now)) {
+            if (entry.getSource().equals(Hearts.ZERO_HEART_BAN_ID) && DateUtils.addDays(entry.getCreationDate(), DivorcestealConfig.REVIVE_DAYS.getValue()).before(now)) {
                 bannedPlayerList.remove(entry);
             }
         }

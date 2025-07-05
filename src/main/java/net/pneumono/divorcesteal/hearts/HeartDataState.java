@@ -5,7 +5,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateType;
 import net.pneumono.divorcesteal.Divorcesteal;
-import net.pneumono.divorcesteal.content.DivorcestealRegistry;
+import net.pneumono.divorcesteal.DivorcestealConfig;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +21,7 @@ public class HeartDataState extends PersistentState {
     private static final PersistentStateType<HeartDataState> STATE_TYPE = new PersistentStateType<>(
             Divorcesteal.MOD_ID + "_hearts",
             context -> new HeartDataState(
-                    context.getWorldOrThrow().getPlayers().stream().map(player -> new PlayerHeartData(player, context.getWorldOrThrow().getGameRules().getInt(DivorcestealRegistry.HEARTS_DEFAULT_GAMERULE))).toList()
+                    context.getWorldOrThrow().getPlayers().stream().map(player -> new PlayerHeartData(player, DivorcestealConfig.DEFAULT_HEARTS.getValue())).toList()
             ),
             context -> CODEC,
             null
@@ -57,7 +57,7 @@ public class HeartDataState extends PersistentState {
         } else {
             if (name == null) throw new IllegalArgumentException("Cannot create heart data without a name!");
 
-            SimpleHeartData simpleData = new SimpleHeartData(name, this.world.getGameRules().getInt(DivorcestealRegistry.HEARTS_DEFAULT_GAMERULE));
+            SimpleHeartData simpleData = new SimpleHeartData(name, DivorcestealConfig.DEFAULT_HEARTS.getValue());
             dataMap.put(uuid, simpleData);
             return simpleData.toPlayerHeartData(uuid);
         }

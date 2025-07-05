@@ -16,6 +16,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import net.pneumono.divorcesteal.Divorcesteal;
+import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
@@ -65,13 +66,13 @@ public class DivorcestealCommands {
                     )
                     .then(literal("reset")
                             .executes(context -> executeSet(context.getSource(),
-                                    context.getSource().getWorld().getGameRules().getInt(DivorcestealRegistry.HEARTS_DEFAULT_GAMERULE),
+                                    DivorcestealConfig.DEFAULT_HEARTS.getValue(),
                                     List.of(referenceFromSource(context.getSource())),
                                     false
                             ))
                             .then(argument("targets", HeartDataArgumentType.players())
                                     .executes(context -> executeSet(context.getSource(),
-                                            context.getSource().getWorld().getGameRules().getInt(DivorcestealRegistry.HEARTS_DEFAULT_GAMERULE),
+                                            DivorcestealConfig.DEFAULT_HEARTS.getValue(),
                                             HeartDataArgumentType.getPlayers(context, "targets"),
                                             false
                                     ))
@@ -151,7 +152,7 @@ public class DivorcestealCommands {
     private static int executeSet(ServerCommandSource source, int amount, List<PlayerHeartDataReference> references, boolean bypassMax) throws CommandSyntaxException {
         if (references.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
-        int finalAmount = bypassMax ? amount : MathHelper.clamp(amount, 0, source.getWorld().getGameRules().getInt(DivorcestealRegistry.HEARTS_MAX_GAMERULE));
+        int finalAmount = bypassMax ? amount : MathHelper.clamp(amount, 0, DivorcestealConfig.MAX_HEARTS.getValue());
 
         for (PlayerHeartDataReference reference : references) {
             reference.setHearts(finalAmount);
@@ -173,7 +174,7 @@ public class DivorcestealCommands {
             int hearts = reference.getHearts();
             int finalAmount = Math.max(hearts + (add ? amount : -amount), 0);
             if (!bypassMax) {
-                finalAmount = Math.min(finalAmount, Math.max(hearts, source.getWorld().getGameRules().getInt(DivorcestealRegistry.HEARTS_MAX_GAMERULE)));
+                finalAmount = Math.min(finalAmount, Math.max(hearts, DivorcestealConfig.MAX_HEARTS.getValue()));
             }
             reference.setHearts(finalAmount);
             updateData(source, reference, finalAmount);

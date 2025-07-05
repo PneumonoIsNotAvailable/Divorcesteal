@@ -16,6 +16,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.pneumono.divorcesteal.Divorcesteal;
+import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.content.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +36,7 @@ public class Hearts {
     public static int addHeartsValidated(PlayerEntity player, int hearts, boolean allowDeathban) {
         PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
         int currentHearts = reference.getHearts();
-        int finalHearts = MathHelper.clamp(currentHearts + hearts, allowDeathban ? 0 : 1, Math.max(((ServerWorld)player.getWorld()).getGameRules().getInt(DivorcestealRegistry.HEARTS_MAX_GAMERULE), currentHearts));
+        int finalHearts = MathHelper.clamp(currentHearts + hearts, allowDeathban ? 0 : 1, Math.max(DivorcestealConfig.MAX_HEARTS.getValue(), currentHearts));
         reference.setHearts(finalHearts);
         updateData(player, finalHearts);
         return finalHearts - currentHearts;
@@ -49,7 +50,7 @@ public class Hearts {
         PlayerHeartDataReference reference = new PlayerHeartDataReference(state, profile);
         if (reference.getHearts() > 0) return false;
 
-        int hearts = world.getGameRules().getInt(DivorcestealRegistry.HEARTS_REVIVE_GAMERULE);
+        int hearts = DivorcestealConfig.REVIVE_HEARTS.getValue();
         reference.setHearts(hearts);
         updateBan(world.getServer(), profile, hearts);
         return true;

@@ -9,9 +9,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageType;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
-import net.pneumono.divorcesteal.content.DivorcestealRegistry;
+import net.pneumono.divorcesteal.DivorcestealConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -26,7 +25,7 @@ public abstract class LivingEntityMixin extends Entity {
             at = @At("RETURN")
     )
     private boolean canGlideWithGamerule(boolean original) {
-        if (getWorld() instanceof ServerWorld world && world.getGameRules().getBoolean(DivorcestealRegistry.DISABLE_ELYTRA_GAMERULE)) return false;
+        if (DivorcestealConfig.DISABLE_ELYTRA.getValue()) return false;
         return original;
     }
 
@@ -38,7 +37,7 @@ public abstract class LivingEntityMixin extends Entity {
             )
     )
     private boolean canUseDeathProtectorWithGamerule(DamageSource instance, TagKey<DamageType> tag, Operation<Boolean> original) {
-        if (getWorld() instanceof ServerWorld world && world.getGameRules().getBoolean(DivorcestealRegistry.DISABLE_TOTEMS_GAMERULE)) return true;
+        if (DivorcestealConfig.DISABLE_TOTEMS.getValue()) return true;
         return original.call(instance, tag);
     }
 }
