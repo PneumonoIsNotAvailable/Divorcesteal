@@ -31,7 +31,7 @@ public class DivorcestealCommands {
         ArgumentTypeRegistry.registerArgumentType(Divorcesteal.id("heart_data"), HeartDataArgumentType.class, new HeartDataArgumentType.Serializer());
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> {
-            dispatcher.register(literal("divorcesteal-admin")
+            dispatcher.register(literal("divorcestealadmin")
                     .requires(source -> source.hasPermissionLevel(3))
                     .then(literal("get")
                             .executes(context -> executeGet(context.getSource(), PlayerHeartDataReference.create(context.getSource().getPlayerOrThrow())))
@@ -132,7 +132,7 @@ public class DivorcestealCommands {
                             )
                     )
             );
-            dispatcher.register(literal("withdraw-hearts")
+            dispatcher.register(literal("withdrawhearts")
                     .executes(context -> executeWithdraw(context.getSource(), context.getSource().getPlayerOrThrow(), 1))
                     .then(argument("amount", IntegerArgumentType.integer(1))
                             .executes(context -> executeWithdraw(context.getSource(),
