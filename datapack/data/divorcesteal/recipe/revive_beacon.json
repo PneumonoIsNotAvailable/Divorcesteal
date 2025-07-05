@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "minecraft:diamond_block",
+    "+": "divorcesteal:heart",
+    "4": "minecraft:ominous_trial_key",
+    "B": "minecraft:blue_glazed_terracotta",
+    "H": "minecraft:elytra"
+  },
+  "pattern": [
+    "4#+",
+    "B+B",
+    "+#H"
+  ],
+  "result": {
+    "count": 1,
+    "id": "divorcesteal:revive_beacon"
+  }
+}
