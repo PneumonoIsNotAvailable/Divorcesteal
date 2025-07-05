@@ -86,6 +86,12 @@ public class Hearts {
         BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
 
         if (!bannedPlayerList.contains(profile)) {
+            for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
+                globalPlayer.playSoundToPlayer(DivorcestealRegistry.DEATHBAN_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                Text banAnnouncement = Text.translatable("divorcesteal.deathban_global", profile.getName());
+                globalPlayer.sendMessageToClient(banAnnouncement, false);
+            }
+
             Date date = new Date();
             BannedPlayerEntry bannedPlayerEntry = new BannedPlayerEntry(profile, date, ZERO_HEART_BAN_ID, null, "Zero-Heart Deathban (can be revoked at any time via Revive Beacons)");
             bannedPlayerList.add(bannedPlayerEntry);
@@ -94,12 +100,6 @@ public class Hearts {
             ServerPlayerEntity player = server.getPlayerManager().getPlayer(profile.getId());
             if (player != null) {
                 player.networkHandler.disconnect(Text.translatable("divorcesteal.deathban"));
-            }
-
-            for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
-                globalPlayer.playSoundToPlayer(DivorcestealRegistry.DEATHBAN_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                Text banAnnouncement = Text.translatable("divorcesteal.deathban_global", profile.getName());
-                globalPlayer.sendMessageToClient(banAnnouncement, false);
             }
         }
     }
