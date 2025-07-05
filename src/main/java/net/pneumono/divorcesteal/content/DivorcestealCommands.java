@@ -178,7 +178,7 @@ public class DivorcestealCommands {
         if (references.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
         for (PlayerHeartDataReference reference : references) {
-            if (!Hearts.revive(source.getWorld(), reference.getGameProfile())) throw HeartDataArgumentType.NOT_DEATHBANNED_EXCEPTION.create();
+            Hearts.revive(source.getWorld(), reference.getGameProfile());
         }
 
         if (references.size() == 1) {
