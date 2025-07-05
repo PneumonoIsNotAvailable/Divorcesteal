@@ -68,6 +68,11 @@ public class HeartDataState extends PersistentState {
         markDirty();
     }
 
+    public void deleteHeartData(UUID uuid) {
+        dataMap.remove(uuid);
+        markDirty();
+    }
+
     private record SimpleHeartData(String name, int hearts, @Nullable Date banDate) {
         public SimpleHeartData(String name, int hearts, @Nullable Date banDate) {
             this.name = name;

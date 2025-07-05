@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -108,6 +109,13 @@ public class DivorcestealCommands {
                                     ))
                             )
                     )
+                    .then(literal("delete")
+                            .then(argument("targets", HeartDataArgumentType.players())
+                                    .executes(context -> executeDelete(context.getSource(),
+                                            HeartDataArgumentType.getPlayers(context, "targets")
+                                    ))
+                            )
+                    )
             );
             dispatcher.register(literal("withdrawhearts")
                     .executes(context -> executeWithdraw(context.getSource(), context.getSource().getPlayerOrThrow(), 1))
@@ -178,7 +186,28 @@ public class DivorcestealCommands {
         } else {
             source.sendFeedback(() -> Text.translatable("commands.divorcesteal.revive.multiple", references.size()), true);
         }
-        return 1;
+        return references.size();
+    }
+
+    private static int executeDelete(ServerCommandSource source, List<PlayerHeartDataReference> references) throws CommandSyntaxException {
+        if (references.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
+
+        HeartDataState state = getHeartDataState(source);
+        for (PlayerHeartDataReference reference : references) {
+            state.deleteHeartData(reference.getUUID());
+            PlayerEntity player = playerFromReference(source, reference);
+            if (player != null) {
+                state.getOrCreateHeartData(player.getGameProfile().getId(), player.getGameProfile().getName());
+            }
+        }
+
+        if (references.size() == 1) {
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.delete.single", references.getFirst().getName()), true);
+        } else {
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.delete.multiple", references.size()), true);
+        }
+
+        return references.size();
     }
 
     private static int executeWithdraw(ServerCommandSource source, ServerPlayerEntity player, int amount) {
