@@ -17,6 +17,7 @@ public class Divorcesteal implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Initializing Divorcesteal");
+		DivorcestealConfig.registerDivorcestealConfigs();
 		DivorcestealRegistry.registerDivorcestealContent();
 		DivorcestealEvents.registerDivorcestealEvents();
 		DivorcestealCommands.registerDivorcestealCommands();

@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.registry.RegistryWrapper;
 import net.pneumono.divorcesteal.Divorcesteal;
+import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.content.DivorcestealRegistry;
 import net.pneumono.pneumonocore.datagen.PneumonoCoreTranslationBuilder;
 
@@ -57,6 +58,32 @@ public class DivorcestealLanguageProviders {
             builder.add("arguments.divorcesteal.error.not_deathbanned", "Cannot revive a player that isn't deathbanned!");
 
             builder.addConfigScreenTitle(Divorcesteal.MOD_ID, "Divorcesteal Configs");
+            builder.addConfig(DivorcestealConfig.MAX_HEARTS,
+                    "Max Hearts",
+                    "The maximum number of hearts a player can have"
+            );
+            builder.addConfig(DivorcestealConfig.DEFAULT_HEARTS,
+                    "Default Hearts",
+                    "The number of hearts players start with when they first join"
+            );
+            builder.addConfig(DivorcestealConfig.REVIVE_HEARTS,
+                    "Revive Hearts",
+                    "The number of hearts players start with after being revived"
+            );
+            builder.addConfig(DivorcestealConfig.REVIVE_DAYS,
+                    "Days to Revive",
+                    "How many days have to pass after a player is deathbanned until they are automatically revived. -1 represents auto-revival being disabled"
+            );
+            builder.addConfig(DivorcestealConfig.DISABLE_ELYTRA,
+                    "Disable Elytra",
+                    "Whether Elytra are disabled"
+            );
+            builder.addConfig(DivorcestealConfig.DISABLE_TOTEMS,
+                    "Disable Totems",
+                    "Whether Totems of Undying are disabled"
+            );
+            builder.add("configs.category.divorcesteal.hearts", "Hearts");
+            builder.add("configs.category.divorcesteal.rebalances", "Rebalances");
 
             builder.add("modmenu.nameTranslation.divorcesteal", "Divorcesteal");
             builder.add("modmenu.summaryTranslation.divorcesteal", "The official mod for Divorcesteal");
