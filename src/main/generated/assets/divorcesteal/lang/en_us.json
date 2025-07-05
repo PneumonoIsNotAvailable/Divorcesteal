@@ -25,7 +25,7 @@
   "configs.divorcesteal.max_hearts": "Max Hearts",
   "configs.divorcesteal.max_hearts.tooltip": "The maximum number of hearts a player can have",
   "configs.divorcesteal.revive_days": "Days to Revive",
-  "configs.divorcesteal.revive_days.tooltip": "How many days have to pass after a player is deathbanned until they are automatically revived. -1 represents auto-revival being disabled",
+  "configs.divorcesteal.revive_days.tooltip": "How many real-life days it takes to be automatically revived. -1 represents auto-revival being disabled",
   "configs.divorcesteal.revive_hearts": "Revive Hearts",
   "configs.divorcesteal.revive_hearts.tooltip": "The number of hearts players start with after being revived",
   "configs.divorcesteal.screen_title": "Divorcesteal Configs",

@@ -71,7 +71,7 @@ public class DivorcestealLanguageProviders {
             );
             builder.addConfig(DivorcestealConfig.REVIVE_DAYS,
                     "Days to Revive",
-                    "How many days have to pass after a player is deathbanned until they are automatically revived. -1 represents auto-revival being disabled"
+                    "How many real-life days it takes to be automatically revived. -1 represents auto-revival being disabled"
             );
             builder.addConfig(DivorcestealConfig.DISABLE_ELYTRA,
                     "Disable Elytra",
