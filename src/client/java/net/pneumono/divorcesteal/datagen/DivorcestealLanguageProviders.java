@@ -23,6 +23,8 @@ public class DivorcestealLanguageProviders {
             builder.add(DivorcestealRegistry.HEART_ITEM, "Heart");
             builder.add(DivorcestealRegistry.REVIVE_BEACON_ITEM, "Revive Beacon");
 
+            builder.add("divorcesteal.gui.revive.title", "Revive Player");
+
             builder.add(DivorcestealRegistry.USE_HEART_SOUND, "Heart applies");
             builder.add(DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, "Revive Beacon activates");
             builder.add(DivorcestealRegistry.DEATHBAN_SOUND, "Deathban echoes");
