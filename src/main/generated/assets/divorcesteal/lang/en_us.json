@@ -16,6 +16,7 @@
   "commands.divorcesteal.withdraw.fail": "Could not withdraw any more hearts!",
   "commands.divorcesteal.withdraw.multiple": "Withdrew %s hearts",
   "commands.divorcesteal.withdraw.single": "Withdrew 1 heart",
+  "configs.divorcesteal.screen_title": "Divorcesteal Configs",
   "divorcesteal.deathban": "You ran out of hearts!",
   "divorcesteal.deathban_global": "%s ran out of hearts!",
   "divorcesteal.gui.revive.title": "Revive Player",

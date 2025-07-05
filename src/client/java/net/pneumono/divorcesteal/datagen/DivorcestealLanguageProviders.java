@@ -4,7 +4,9 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.registry.RegistryWrapper;
+import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.content.DivorcestealRegistry;
+import net.pneumono.pneumonocore.datagen.PneumonoCoreTranslationBuilder;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -19,16 +21,18 @@ public class DivorcestealLanguageProviders {
         }
 
         @Override
-        public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder builder) {
+        public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
+            PneumonoCoreTranslationBuilder builder = new PneumonoCoreTranslationBuilder(translationBuilder);
+
             builder.add(DivorcestealRegistry.HEART_ITEM, "Heart");
             builder.add(DivorcestealRegistry.REVIVE_BEACON_ITEM, "Revive Beacon");
 
             builder.add("divorcesteal.gui.revive.title", "Revive Player");
 
-            builder.add(DivorcestealRegistry.USE_HEART_SOUND, "Heart applies");
-            builder.add(DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, "Revive Beacon activates");
-            builder.add(DivorcestealRegistry.DEATHBAN_SOUND, "Deathban echoes");
-            builder.add(DivorcestealRegistry.REVIVE_SOUND, "Revival echoes");
+            builder.addSubtitle(DivorcestealRegistry.USE_HEART_SOUND, "Heart applies");
+            builder.addSubtitle(DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, "Revive Beacon activates");
+            builder.addSubtitle(DivorcestealRegistry.DEATHBAN_SOUND, "Deathban echoes");
+            builder.addSubtitle(DivorcestealRegistry.REVIVE_SOUND, "Revival echoes");
 
             builder.add("divorcesteal.deathban", "You ran out of hearts!");
             builder.add("divorcesteal.deathban_global", "%s ran out of hearts!");
@@ -51,6 +55,8 @@ public class DivorcestealLanguageProviders {
             builder.add("arguments.divorcesteal.all_data", "All data");
             builder.add("arguments.divorcesteal.error.no_data", "No data exists for that player selection!");
             builder.add("arguments.divorcesteal.error.not_deathbanned", "Cannot revive a player that isn't deathbanned!");
+
+            builder.addConfigScreenTitle(Divorcesteal.MOD_ID, "Divorcesteal Configs");
         }
     }
 }
