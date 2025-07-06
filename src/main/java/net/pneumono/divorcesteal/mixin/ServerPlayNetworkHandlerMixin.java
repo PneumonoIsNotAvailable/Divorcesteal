@@ -16,12 +16,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayNetworkHandler.class)
-public abstract class ServerPlayNetworkHandlerMixin extends ServerCommonNetworkHandler {
+public abstract class ServerPlayNetworkHandlerMixin {
     @Shadow public abstract ServerPlayerEntity getPlayer();
-
-    public ServerPlayNetworkHandlerMixin(MinecraftServer server, ClientConnection connection, ConnectedClientData clientData) {
-        super(server, connection, clientData);
-    }
 
     @Inject(
             method = "onClientStatus",
