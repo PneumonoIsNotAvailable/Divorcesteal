@@ -144,8 +144,8 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
 
     public enum Filter {
         ALL(0, "all", data -> true),
-        BANNED_ONLY(1, "banned_only", data -> data.hearts() == 0),
-        UNBANNED_ONLY(2, "unbanned_only", data -> data.hearts() != 0);
+        BANNED_ONLY(1, "banned_only", PlayerHeartData::isBanned),
+        UNBANNED_ONLY(2, "unbanned_only", data -> !data.isBanned());
 
         private final int id;
         private final String name;

@@ -45,7 +45,7 @@ public class Hearts {
     public static boolean revive(ServerWorld world, GameProfile profile) {
         HeartDataState state = getHeartDataState(world);
         PlayerHeartDataReference reference = new PlayerHeartDataReference(state, profile);
-        if (reference.getHearts() > 0) return false;
+        if (!reference.isBanned()) return false;
 
         int hearts = DivorcestealConfig.REVIVE_HEARTS.getValue();
         reference.setHearts(hearts);
@@ -71,7 +71,7 @@ public class Hearts {
     }
 
     private static void updateBan(MinecraftServer server, PlayerHeartDataReference reference) {
-        if (reference.getHearts() == 0) {
+        if (reference.isBanned()) {
             deathban(server, reference);
         } else {
             unban(server, reference);

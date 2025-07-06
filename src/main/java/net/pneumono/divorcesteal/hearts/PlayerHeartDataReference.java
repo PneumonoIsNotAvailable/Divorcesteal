@@ -41,6 +41,10 @@ public class PlayerHeartDataReference {
         return new PlayerHeartDataReference(Hearts.getHeartDataState(serverWorld), player.getGameProfile());
     }
 
+    public boolean isBanned() {
+        return this.hearts == 0 || this.banDate != null;
+    }
+
     public GameProfile getGameProfile() {
         return new GameProfile(this.uuid, this.name);
     }

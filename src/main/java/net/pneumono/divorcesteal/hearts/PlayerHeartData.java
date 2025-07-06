@@ -41,6 +41,10 @@ public record PlayerHeartData(UUID uuid, String name, int hearts, @Nullable Date
         this.banDate = banDate;
     }
 
+    public boolean isBanned() {
+        return this.hearts == 0 || this.banDate != null;
+    }
+
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static PlayerHeartData deserialize(UUID uuid, String name, int hearts, Optional<Long> banDate) {
         return new PlayerHeartData(uuid, name, hearts, banDate.map(Date::new).orElse(null));
