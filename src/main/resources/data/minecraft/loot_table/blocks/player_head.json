@@ -15,7 +15,8 @@
                                 "minecraft:custom_name",
                                 "minecraft:lore",
                                 "minecraft:item_name",
-                                "minecraft:custom_data"
+                                "minecraft:custom_data",
+                                "divorcesteal:killer"
                             ],
                             "source": "block_entity"
                         }

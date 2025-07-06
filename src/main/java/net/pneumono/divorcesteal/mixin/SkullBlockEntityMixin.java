@@ -14,6 +14,8 @@ import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.math.BlockPos;
+import net.pneumono.divorcesteal.content.KillerComponent;
+import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -36,6 +38,9 @@ public class SkullBlockEntityMixin extends BlockEntity {
     @Unique
     @Nullable
     private NbtComponent customData;
+    @Unique
+    @Nullable
+    private KillerComponent killer;
 
     @Inject(
             method = "writeData",
@@ -45,6 +50,7 @@ public class SkullBlockEntityMixin extends BlockEntity {
         view.putNullable("lore", LoreComponent.CODEC, this.lore);
         view.putNullable("item_name", TextCodecs.CODEC, this.itemName);
         view.putNullable("custom_data", NbtComponent.CODEC, this.customData);
+        view.putNullable("killer", KillerComponent.CODEC, this.killer);
     }
 
     @Inject(
@@ -55,16 +61,18 @@ public class SkullBlockEntityMixin extends BlockEntity {
         this.lore = view.read("lore", LoreComponent.CODEC).orElse(null);
         this.itemName = tryParseCustomName(view, "item_name");
         this.customData = view.read("custom_data", NbtComponent.CODEC).orElse(null);
+        this.killer = view.read("killer", KillerComponent.CODEC).orElse(null);
     }
 
     @Inject(
             method = "readComponents",
             at = @At("RETURN")
     )
-    private void addExtraComponents(ComponentsAccess components, CallbackInfo ci) {
+    private void readExtraComponents(ComponentsAccess components, CallbackInfo ci) {
         this.lore = components.get(DataComponentTypes.LORE);
         this.itemName = components.get(DataComponentTypes.ITEM_NAME);
         this.customData = components.get(DataComponentTypes.CUSTOM_DATA);
+        this.killer = components.get(DivorcestealRegistry.KILLER);
     }
 
     @Inject(
@@ -75,13 +83,14 @@ public class SkullBlockEntityMixin extends BlockEntity {
         builder.add(DataComponentTypes.LORE, this.lore);
         builder.add(DataComponentTypes.ITEM_NAME, this.itemName);
         builder.add(DataComponentTypes.CUSTOM_DATA, this.customData);
+        builder.add(DivorcestealRegistry.KILLER, this.killer);
     }
 
     @Inject(
             method = "removeFromCopiedStackData",
             at = @At("RETURN")
     )
-    private void removeExtraComponents(WriteView view, CallbackInfo ci) {
+    private void removeExtraFromCopiedStackData(WriteView view, CallbackInfo ci) {
         view.remove("lore");
         view.remove("item_name");
         view.remove("custom_data");

@@ -27,6 +27,7 @@ public class DivorcestealLanguageProviders {
 
             builder.add(DivorcestealRegistry.HEART_ITEM, "Heart");
             builder.add(DivorcestealRegistry.REVIVE_BEACON_ITEM, "Revive Beacon");
+            builder.add("divorcesteal.item.player_head.killer", "Killed by %s");
 
             builder.add("divorcesteal.gui.revive.title", "Revive Player");
 

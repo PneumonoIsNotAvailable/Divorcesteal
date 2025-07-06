@@ -1,8 +1,10 @@
 package net.pneumono.divorcesteal.registry;
 
+import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -17,10 +19,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.pneumono.divorcesteal.Divorcesteal;
-import net.pneumono.divorcesteal.content.HeartItem;
-import net.pneumono.divorcesteal.content.RevivablePlayersS2CPayload;
-import net.pneumono.divorcesteal.content.ReviveBeaconItem;
-import net.pneumono.divorcesteal.content.RevivePlayerC2SPayload;
+import net.pneumono.divorcesteal.content.*;
 import net.pneumono.divorcesteal.hearts.Hearts;
 
 import java.util.function.Function;
@@ -31,6 +30,11 @@ public class DivorcestealRegistry {
     );
     public static final ReviveBeaconItem REVIVE_BEACON_ITEM = registerItem("revive_beacon", ReviveBeaconItem::new,
             new Item.Settings().rarity(Rarity.RARE).component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
+    );
+
+    public static final ComponentType<KillerComponent> KILLER = Registry.register(Registries.DATA_COMPONENT_TYPE,
+            Divorcesteal.id("killer"),
+            ComponentType.<KillerComponent>builder().codec(KillerComponent.CODEC).packetCodec(KillerComponent.PACKET_CODEC).build()
     );
 
     public static final SoundEvent USE_HEART_SOUND = registerSoundEvent("item.heart.use");
@@ -57,6 +61,8 @@ public class DivorcestealRegistry {
             entries.add(HEART_ITEM);
             entries.add(REVIVE_BEACON_ITEM);
         });
+
+        ComponentTooltipAppenderRegistry.addFirst(KILLER);
     }
 
     private static void revivePlayer(RevivePlayerC2SPayload payload, ServerPlayNetworking.Context context) {
