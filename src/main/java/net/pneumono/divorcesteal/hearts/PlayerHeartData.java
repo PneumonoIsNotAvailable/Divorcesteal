@@ -4,9 +4,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.dynamic.Codecs;
 import org.jetbrains.annotations.Nullable;
@@ -22,17 +19,6 @@ public record PlayerHeartData(UUID uuid, String name, int hearts, @Nullable Date
             Codec.INT.fieldOf("hearts").forGetter(PlayerHeartData::hearts),
             Codec.LONG.optionalFieldOf("banDate").forGetter(data -> data.banDate == null ? Optional.empty() : Optional.of(data.banDate.getTime()))
     ).apply(builder, PlayerHeartData::deserialize));
-    public static final PacketCodec<RegistryByteBuf, PlayerHeartData> PACKET_CODEC = PacketCodec.tuple(
-            Uuids.PACKET_CODEC,
-            PlayerHeartData::uuid,
-            PacketCodecs.string(16),
-            PlayerHeartData::name,
-            PacketCodecs.VAR_INT,
-            PlayerHeartData::hearts,
-            PacketCodecs.VAR_LONG.collect(PacketCodecs::optional),
-            data -> data.banDate == null ? Optional.empty() : Optional.of(data.banDate.getTime()),
-            PlayerHeartData::deserialize
-    );
 
     public PlayerHeartData(UUID uuid, String name, int hearts, Date banDate) {
         this.uuid = uuid;

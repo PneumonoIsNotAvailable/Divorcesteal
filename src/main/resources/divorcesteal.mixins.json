@@ -5,6 +5,7 @@
     "mixins": [
         "ArmorMaterialsMixin",
         "LivingEntityMixin",
+        "ServerPlayNetworkHandlerMixin",
         "SkullBlockEntityMixin",
         "ToolMaterialMixin"
     ],

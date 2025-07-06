@@ -29,6 +29,7 @@ public class DivorcestealLanguageProviders {
             builder.add(DivorcestealRegistry.REVIVE_BEACON_ITEM, "Revive Beacon");
             builder.add("divorcesteal.item.player_head.killer", "Killed by %s");
 
+            builder.add("divorcesteal.gui.deathban.title", "You ran out of hearts!");
             builder.add("divorcesteal.gui.revive.title", "Revive Player");
 
             builder.addSubtitle(DivorcestealRegistry.USE_HEART_SOUND, "Heart applies");

@@ -47,9 +47,7 @@ public class Hearts {
         PlayerHeartDataReference reference = new PlayerHeartDataReference(state, profile);
         if (!reference.isBanned()) return false;
 
-        int hearts = DivorcestealConfig.REVIVE_HEARTS.getValue();
-        reference.setHearts(hearts);
-        updateBan(world.getServer(), reference);
+        unban(world.getServer(), reference);
         return true;
     }
 
@@ -58,11 +56,13 @@ public class Hearts {
     }
 
     public static void updateData(@Nullable PlayerEntity player, @Nullable MinecraftServer server, PlayerHeartDataReference reference) {
+        reference.setHearts(reference.getHearts());
+        reference.setName(reference.getName());
         if (player != null) updateHearts(player, reference.getHearts());
         if (server != null) updateBan(server, reference);
     }
 
-    private static void updateHearts(PlayerEntity player, int hearts) {
+    public static void updateHearts(PlayerEntity player, int hearts) {
         EntityAttributeInstance entityAttributeInstance = player.getAttributes().getCustomInstance(EntityAttributes.MAX_HEALTH);
         if (entityAttributeInstance != null) {
             entityAttributeInstance.removeModifier(HEARTS_ID);
@@ -70,7 +70,7 @@ public class Hearts {
         }
     }
 
-    private static void updateBan(MinecraftServer server, PlayerHeartDataReference reference) {
+    public static void updateBan(MinecraftServer server, PlayerHeartDataReference reference) {
         if (reference.isBanned()) {
             deathban(server, reference);
         } else {
@@ -78,7 +78,7 @@ public class Hearts {
         }
     }
 
-    private static void deathban(MinecraftServer server, PlayerHeartDataReference reference) {
+    public static void deathban(MinecraftServer server, PlayerHeartDataReference reference) {
         GameProfile profile = reference.getGameProfile();
         BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
 
@@ -92,22 +92,18 @@ public class Hearts {
             Date date = new Date();
             BannedPlayerEntry bannedPlayerEntry = new BannedPlayerEntry(profile, date, ZERO_HEART_BAN_ID, null, "Zero-Heart Deathban (can be revoked at any time via Revive Beacons)");
             bannedPlayerList.add(bannedPlayerEntry);
-            reference.setBanDate(date);
-
-            ServerPlayerEntity player = server.getPlayerManager().getPlayer(profile.getId());
-            if (player != null) {
-                player.networkHandler.disconnect(Text.translatable("divorcesteal.deathban"));
-            }
+            reference.setHearts(0);
         }
     }
 
-    private static void unban(MinecraftServer server, PlayerHeartDataReference reference) {
+    public static void unban(MinecraftServer server, PlayerHeartDataReference reference) {
         GameProfile profile = reference.getGameProfile();
         BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
 
-        if (bannedPlayerList.contains(profile)) {
+        BannedPlayerEntry entry = bannedPlayerList.get(profile);
+        if (entry != null && entry.getSource().equals(Hearts.ZERO_HEART_BAN_ID)) {
             bannedPlayerList.remove(profile);
-            reference.setBanDate(null);
+            reference.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());
 
             for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
                 globalPlayer.playSoundToPlayer(DivorcestealRegistry.REVIVE_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);

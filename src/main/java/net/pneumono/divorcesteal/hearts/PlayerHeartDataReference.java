@@ -6,6 +6,7 @@ import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 public class PlayerHeartDataReference {
@@ -61,6 +62,10 @@ public class PlayerHeartDataReference {
         return this.hearts;
     }
 
+    public Optional<Date> getBanDate() {
+        return Optional.ofNullable(banDate);
+    }
+
     public void setName(String name) {
         this.name = name;
         updateHeartData();
@@ -68,6 +73,8 @@ public class PlayerHeartDataReference {
 
     public void setHearts(int hearts) {
         this.hearts = hearts;
+        if (hearts > 0) setBanDate(null);
+        if (hearts == 0 && this.banDate == null) setBanDate(new Date());
         updateHeartData();
     }
 

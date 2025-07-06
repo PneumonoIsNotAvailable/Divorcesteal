@@ -10,12 +10,11 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.server.BannedPlayerEntry;
-import net.minecraft.server.BannedPlayerList;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.content.KillerComponent;
+import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
 import org.apache.commons.lang3.time.DateUtils;
@@ -33,7 +32,6 @@ public class DivorcestealEvents {
     private static void join(ServerPlayerEntity player) {
         PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
         reference.setName(player.getGameProfile().getName());
-        if (reference.getHearts() == 0) reference.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());
         Hearts.updateData(player);
     }
 
@@ -67,14 +65,19 @@ public class DivorcestealEvents {
     }
 
     private static void startWorldTick(ServerWorld world) {
-        if (world.getTime() % 200 != 0 || DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
+        if (world.getTime() % 200 != 0) return;
 
-        BannedPlayerList bannedPlayerList = world.getServer().getPlayerManager().getUserBanList();
+        if (DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
 
-        Date now = new Date();
-        for (BannedPlayerEntry entry : bannedPlayerList.values()) {
-            if (entry.getSource().equals(Hearts.ZERO_HEART_BAN_ID) && DateUtils.addDays(entry.getCreationDate(), DivorcestealConfig.REVIVE_DAYS.getValue()).before(now)) {
-                bannedPlayerList.remove(entry);
+        HeartDataState state = Hearts.getHeartDataState(world);
+        for (PlayerHeartDataReference reference : state.getHeartDataList().stream().map(data -> new PlayerHeartDataReference(state, data)).toList()) {
+
+            if (reference.getBanDate().isPresent() && DateUtils.addDays(
+                    reference.getBanDate().get(), DivorcestealConfig.REVIVE_DAYS.getValue()
+            ).before(new Date())) {
+
+                Hearts.unban(world.getServer(), reference);
+                Hearts.updateData(null, world.getServer(), reference);
             }
         }
     }
