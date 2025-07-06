@@ -40,16 +40,17 @@ public class DivorcestealEvents {
 
         Hearts.addHeartsValidated(player, -1, true);
 
-        if (player.getAttacker() instanceof ServerPlayerEntity attacker) {
+        if (player.getAttacker() instanceof ServerPlayerEntity attacker && !attacker.getUuid().equals(entity.getUuid())) {
+
             ItemStack headStack = Items.PLAYER_HEAD.getDefaultStack().copy();
             headStack.set(DataComponentTypes.PROFILE, new ProfileComponent(player.getGameProfile()));
             headStack.set(DivorcestealRegistry.KILLER, new KillerComponent(attacker.getDisplayName()));
             player.dropItem(headStack, true, false);
 
-            if (!attacker.getUuid().equals(entity.getUuid()) && Hearts.addHeartsValidated(attacker, 1, false) == 0) {
+            if (Hearts.addHeartsValidated(attacker, 1, false) == 0) {
 
                 ItemStack heartStack = DivorcestealRegistry.HEART_ITEM.getDefaultStack();
-                if (!heartStack.isEmpty() && !attacker.getInventory().insertStack(heartStack)) {
+                if (!attacker.getInventory().insertStack(heartStack)) {
                     ItemEntity itemEntity = attacker.dropItem(heartStack, false);
                     if (itemEntity != null) {
                         itemEntity.resetPickupDelay();
