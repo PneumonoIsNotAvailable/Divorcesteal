@@ -237,6 +237,8 @@ public class DivorcestealCommands {
             }
         }
 
+        player.increaseStat(DivorcestealRegistry.WITHDRAW_HEART_STAT, heartsWithdrawn);
+
         return heartsWithdrawn;
     }
 

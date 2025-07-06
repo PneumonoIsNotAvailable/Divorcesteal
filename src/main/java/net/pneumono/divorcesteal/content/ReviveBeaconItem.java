@@ -41,6 +41,7 @@ public class ReviveBeaconItem extends Item {
         ItemStack stack = reviver.getMainHandStack();
         stack.decrement(1);
         world.playSound(null, reviver.getBlockPos(), DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, SoundCategory.PLAYERS);
+        reviver.incrementStat(DivorcestealRegistry.REVIVE_PLAYER_STAT);
         Hearts.revive(world, revived.gameProfile());
     }
 

@@ -13,6 +13,8 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.stat.StatFormatter;
+import net.minecraft.stat.Stats;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.pneumono.divorcesteal.Divorcesteal;
@@ -43,6 +45,12 @@ public class DivorcestealRegistry {
     public static final SoundEvent DEATHBAN_SOUND = registerSoundEvent("event.deathban");
     public static final SoundEvent REVIVE_SOUND = registerSoundEvent("event.revive");
 
+    public static final Identifier STEAL_LIFE_STAT = registerStat("steal_life");
+    public static final Identifier WITHDRAW_HEART_STAT = registerStat("withdraw_heart");
+    public static final Identifier REVIVE_PLAYER_STAT = registerStat("revive_player");
+    public static final Identifier DEATHBAN_PLAYER_STAT = registerStat("deathban_player");
+    public static final Identifier DEATHBAN_SELF_STAT = registerStat("deathban_self");
+
     private static <T extends Item> T registerItem(String name, Function<Item.Settings, T> factory, Item.Settings settings) {
         RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, Divorcesteal.id(name));
         return Registry.register(Registries.ITEM, key, factory.apply(settings.registryKey(key)));
@@ -51,6 +59,13 @@ public class DivorcestealRegistry {
     private static SoundEvent registerSoundEvent(String name) {
         Identifier id = Divorcesteal.id(name);
         return Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(id));
+    }
+
+    private static Identifier registerStat(String name) {
+        Identifier id = Divorcesteal.id(name);
+        Registry.register(Registries.CUSTOM_STAT, name, id);
+        Stats.CUSTOM.getOrCreateStat(id, StatFormatter.DEFAULT);
+        return id;
     }
 
     public static void registerDivorcestealContent() {

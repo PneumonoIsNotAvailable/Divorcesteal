@@ -41,6 +41,12 @@ public class DivorcestealLanguageProviders {
             builder.add("divorcesteal.deathban_global", "%s ran out of hearts!");
             builder.add("divorcesteal.revive_global", "%s has been revived!");
 
+            builder.add(DivorcestealRegistry.STEAL_LIFE_STAT, "Lives Stolen", "stat");
+            builder.add(DivorcestealRegistry.WITHDRAW_HEART_STAT, "Hearts Withdrawn", "stat");
+            builder.add(DivorcestealRegistry.REVIVE_PLAYER_STAT, "Players Revived", "stat");
+            builder.add(DivorcestealRegistry.DEATHBAN_PLAYER_STAT, "Players Deathbanned", "stat");
+            builder.add(DivorcestealRegistry.DEATHBAN_SELF_STAT, "Times Deathbanned", "stat");
+
             builder.add("commands.divorcesteal.get", "%1$s has %2$s hearts");
             builder.add("commands.divorcesteal.set.single", "Set %1$s to %2$s hearts");
             builder.add("commands.divorcesteal.set.multiple", "Set %1$s players to %2$s hearts");

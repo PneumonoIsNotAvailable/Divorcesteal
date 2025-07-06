@@ -47,6 +47,12 @@ public class DivorcestealEvents {
             headStack.set(DivorcestealRegistry.KILLER, new KillerComponent(attacker.getDisplayName()));
             player.dropItem(headStack, true, false);
 
+            if (PlayerHeartDataReference.create(player).isBanned()) {
+                player.incrementStat(DivorcestealRegistry.DEATHBAN_SELF_STAT);
+                attacker.incrementStat(DivorcestealRegistry.DEATHBAN_PLAYER_STAT);
+            }
+
+            attacker.incrementStat(DivorcestealRegistry.STEAL_LIFE_STAT);
             if (Hearts.addHeartsValidated(attacker, 1, false) == 0) {
 
                 ItemStack heartStack = DivorcestealRegistry.HEART_ITEM.getDefaultStack();
