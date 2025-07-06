@@ -3,15 +3,19 @@ package net.pneumono.divorcesteal.registry;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.server.BannedPlayerEntry;
 import net.minecraft.server.BannedPlayerList;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.pneumono.divorcesteal.DivorcestealConfig;
+import net.pneumono.divorcesteal.content.KillerComponent;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
 import org.apache.commons.lang3.time.DateUtils;
@@ -38,12 +42,17 @@ public class DivorcestealEvents {
 
         Hearts.addHeartsValidated(player, -1, true);
 
-        if (player.getAttacker() instanceof ServerPlayerEntity attacker && !attacker.getUuid().equals(entity.getUuid())) {
-            if (Hearts.addHeartsValidated(attacker, 1, false) == 0) {
+        if (player.getAttacker() instanceof ServerPlayerEntity attacker) {
+            ItemStack headStack = Items.PLAYER_HEAD.getDefaultStack().copy();
+            headStack.set(DataComponentTypes.PROFILE, new ProfileComponent(player.getGameProfile()));
+            headStack.set(DivorcestealRegistry.KILLER, new KillerComponent(attacker.getDisplayName()));
+            player.dropItem(headStack, true, false);
 
-                ItemStack stack = DivorcestealRegistry.HEART_ITEM.getDefaultStack();
-                if (!stack.isEmpty() && !attacker.getInventory().insertStack(stack)) {
-                    ItemEntity itemEntity = attacker.dropItem(stack, false);
+            if (!attacker.getUuid().equals(entity.getUuid()) && Hearts.addHeartsValidated(attacker, 1, false) == 0) {
+
+                ItemStack heartStack = DivorcestealRegistry.HEART_ITEM.getDefaultStack();
+                if (!heartStack.isEmpty() && !attacker.getInventory().insertStack(heartStack)) {
+                    ItemEntity itemEntity = attacker.dropItem(heartStack, false);
                     if (itemEntity != null) {
                         itemEntity.resetPickupDelay();
                         itemEntity.setOwner(attacker.getUuid());
