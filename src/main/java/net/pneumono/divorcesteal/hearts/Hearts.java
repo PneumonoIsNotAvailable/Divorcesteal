@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Date;
 
 public class Hearts {
-    private static final Identifier HEARTS_ID = Divorcesteal.id("hearts");
+    public static final Identifier HEARTS_MODIFIER_ID = Divorcesteal.id("hearts");
     public static final String ZERO_HEART_BAN_ID = "zero_heart_ban";
 
     public static HeartDataState getHeartDataState(ServerWorld world) {
@@ -65,8 +65,8 @@ public class Hearts {
     public static void updateHearts(PlayerEntity player, int hearts) {
         EntityAttributeInstance entityAttributeInstance = player.getAttributes().getCustomInstance(EntityAttributes.MAX_HEALTH);
         if (entityAttributeInstance != null) {
-            entityAttributeInstance.removeModifier(HEARTS_ID);
-            entityAttributeInstance.addPersistentModifier(new EntityAttributeModifier(HEARTS_ID, (hearts * 2) - 20, EntityAttributeModifier.Operation.ADD_VALUE));
+            entityAttributeInstance.removeModifier(HEARTS_MODIFIER_ID);
+            entityAttributeInstance.addPersistentModifier(new EntityAttributeModifier(HEARTS_MODIFIER_ID, (hearts * 2) - 20, EntityAttributeModifier.Operation.ADD_VALUE));
         }
     }
 

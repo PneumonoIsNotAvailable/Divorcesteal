@@ -28,6 +28,8 @@ repositories {
 }
 
 loom {
+	accessWidenerPath = file("src/main/resources/divorcesteal.accesswidener")
+
 	splitEnvironmentSourceSets()
 
 	mods {
