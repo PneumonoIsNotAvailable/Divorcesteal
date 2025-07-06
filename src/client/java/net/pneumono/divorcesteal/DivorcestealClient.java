@@ -1,13 +1,13 @@
 package net.pneumono.divorcesteal;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.pneumono.divorcesteal.content.RevivablePlayersS2CPayload;
-import net.pneumono.divorcesteal.gui.ReviveScreen;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
+import net.pneumono.divorcesteal.gui.ReviveBeaconScreen;
+import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 
 public class DivorcestealClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.registerGlobalReceiver(RevivablePlayersS2CPayload.PAYLOAD_ID, (payload, context) -> context.client().setScreen(new ReviveScreen(payload.players())));
+		HandledScreens.register(DivorcestealRegistry.REVIVE_BEACON_SCREEN_HANDLER, ReviveBeaconScreen::new);
 	}
 }
