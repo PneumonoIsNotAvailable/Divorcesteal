@@ -16,7 +16,7 @@ import net.minecraft.data.recipe.RecipeGenerator;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
-import net.pneumono.divorcesteal.content.DivorcestealRegistry;
+import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import net.pneumono.divorcesteal.datagen.DivorcestealLanguageProviders;
 
 import java.util.concurrent.CompletableFuture;

@@ -19,6 +19,7 @@ import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.PlayerHeartData;
 import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
+import net.pneumono.divorcesteal.registry.DivorcestealCommands;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;

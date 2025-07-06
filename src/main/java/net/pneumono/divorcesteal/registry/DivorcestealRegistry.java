@@ -1,4 +1,4 @@
-package net.pneumono.divorcesteal.content;
+package net.pneumono.divorcesteal.registry;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -17,6 +17,10 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.pneumono.divorcesteal.Divorcesteal;
+import net.pneumono.divorcesteal.content.HeartItem;
+import net.pneumono.divorcesteal.content.RevivablePlayersS2CPayload;
+import net.pneumono.divorcesteal.content.ReviveBeaconItem;
+import net.pneumono.divorcesteal.content.RevivePlayerC2SPayload;
 import net.pneumono.divorcesteal.hearts.Hearts;
 
 import java.util.function.Function;

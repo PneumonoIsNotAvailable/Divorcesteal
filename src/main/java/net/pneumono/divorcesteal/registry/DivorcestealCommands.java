@@ -1,4 +1,4 @@
-package net.pneumono.divorcesteal.content;
+package net.pneumono.divorcesteal.registry;
 
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -16,6 +16,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.DivorcestealConfig;
+import net.pneumono.divorcesteal.content.HeartDataArgumentType;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;

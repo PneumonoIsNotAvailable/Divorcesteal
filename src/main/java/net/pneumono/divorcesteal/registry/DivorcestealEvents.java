@@ -1,4 +1,4 @@
-package net.pneumono.divorcesteal.content;
+package net.pneumono.divorcesteal.registry;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;

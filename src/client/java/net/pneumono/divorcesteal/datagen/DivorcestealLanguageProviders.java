@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.registry.RegistryWrapper;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.DivorcestealConfig;
-import net.pneumono.divorcesteal.content.DivorcestealRegistry;
+import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import net.pneumono.pneumonocore.datagen.PneumonoCoreTranslationBuilder;
 
 import java.util.concurrent.CompletableFuture;

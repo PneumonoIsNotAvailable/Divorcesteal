@@ -9,6 +9,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.pneumono.divorcesteal.hearts.Hearts;
+import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 
 public class HeartItem extends Item {
     public HeartItem(Settings settings) {
