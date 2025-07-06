@@ -42,14 +42,15 @@ public class Hearts {
         return finalHearts - currentHearts;
     }
 
-    public static void revive(ServerWorld world, GameProfile profile) {
+    public static boolean revive(ServerWorld world, GameProfile profile) {
         HeartDataState state = getHeartDataState(world);
         PlayerHeartDataReference reference = new PlayerHeartDataReference(state, profile);
-        if (reference.getHearts() > 0) return;
+        if (reference.getHearts() > 0) return false;
 
         int hearts = DivorcestealConfig.REVIVE_HEARTS.getValue();
         reference.setHearts(hearts);
         updateBan(world.getServer(), reference);
+        return true;
     }
 
     public static void updateData(PlayerEntity player) {

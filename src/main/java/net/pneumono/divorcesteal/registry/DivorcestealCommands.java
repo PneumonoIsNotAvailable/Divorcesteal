@@ -178,8 +178,14 @@ public class DivorcestealCommands {
     private static int executeRevive(ServerCommandSource source, List<PlayerHeartDataReference> references) throws CommandSyntaxException {
         if (references.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
-        for (PlayerHeartDataReference reference : references) {
-            Hearts.revive(source.getWorld(), reference.getGameProfile());
+        boolean single = references.size() == 1;
+        if (single) {
+            if (!Hearts.revive(source.getWorld(), references.getFirst().getGameProfile())) throw HeartDataArgumentType.NOT_DEATHBANNED_EXCEPTION.create();
+
+        } else {
+            for (PlayerHeartDataReference reference : references) {
+                Hearts.revive(source.getWorld(), reference.getGameProfile());
+            }
         }
 
         if (references.size() == 1) {
