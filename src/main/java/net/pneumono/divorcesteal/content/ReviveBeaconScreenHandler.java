@@ -1,5 +1,6 @@
 package net.pneumono.divorcesteal.content;
 
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -16,17 +17,19 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
     private final PlayerInventory playerInventory;
     private final ScreenHandlerContext context;
     private final List<PlayerHeartData> players;
+    private final ProfileComponent target;
     private int selectedPlayer = -1;
 
     public ReviveBeaconScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, ScreenHandlerContext.EMPTY, List.of());
+        this(syncId, playerInventory, ScreenHandlerContext.EMPTY, List.of(), null);
     }
 
-    public ReviveBeaconScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context, List<PlayerHeartData> players) {
+    public ReviveBeaconScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context, List<PlayerHeartData> players, ProfileComponent target) {
         super(DivorcestealRegistry.REVIVE_BEACON_SCREEN_HANDLER, syncId);
         this.playerInventory = playerInventory;
         this.context = context;
         this.players = players;
+        this.target = target;
     }
 
     private void reviveSelectedPlayer() {

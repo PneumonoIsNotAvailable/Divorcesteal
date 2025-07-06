@@ -1,11 +1,15 @@
 package net.pneumono.divorcesteal.registry;
 
+import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -30,9 +34,11 @@ public class DivorcestealRegistry {
             new Item.Settings().rarity(Rarity.RARE).component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
     );
 
-    public static final ComponentType<KillerComponent> KILLER = Registry.register(Registries.DATA_COMPONENT_TYPE,
-            Divorcesteal.id("killer"),
-            ComponentType.<KillerComponent>builder().codec(KillerComponent.CODEC).packetCodec(KillerComponent.PACKET_CODEC).build()
+    public static final ComponentType<KillerComponent> KILLER = registerDataComponentType(
+            "killer", KillerComponent.CODEC, KillerComponent.PACKET_CODEC
+    );
+    public static final ComponentType<ProfileComponent> KILL_TARGET = registerDataComponentType(
+            "kill_target", ProfileComponent.CODEC, ProfileComponent.PACKET_CODEC
     );
 
     public static final ScreenHandlerType<ReviveBeaconScreenHandler> REVIVE_BEACON_SCREEN_HANDLER = Registry.register(Registries.SCREEN_HANDLER,
@@ -54,6 +60,13 @@ public class DivorcestealRegistry {
     private static <T extends Item> T registerItem(String name, Function<Item.Settings, T> factory, Item.Settings settings) {
         RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, Divorcesteal.id(name));
         return Registry.register(Registries.ITEM, key, factory.apply(settings.registryKey(key)));
+    }
+
+    private static <T> ComponentType<T> registerDataComponentType(String name, Codec<T> codec, PacketCodec<? super RegistryByteBuf, T> packetCodec) {
+        return Registry.register(Registries.DATA_COMPONENT_TYPE,
+                Divorcesteal.id(name),
+                ComponentType.<T>builder().codec(codec).packetCodec(packetCodec).build()
+        );
     }
 
     private static SoundEvent registerSoundEvent(String name) {
