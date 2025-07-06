@@ -5,6 +5,7 @@
     "mixins": [
         "ArmorMaterialsMixin",
         "LivingEntityMixin",
+        "SkullBlockEntityMixin",
         "ToolMaterialMixin"
     ],
     "injectors": {
