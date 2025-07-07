@@ -1,0 +1,8 @@
+{
+	"parent": "block/beacon",
+	"textures": {
+		"particle": "block/tinted_glass",
+		"glass": "block/tinted_glass",
+		"beacon": "divorcesteal:block/revive_beacon"
+	}
+}
