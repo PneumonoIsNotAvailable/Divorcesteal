@@ -2,16 +2,17 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": "minecraft:diamond_block",
-    "+": "divorcesteal:heart",
-    "4": "minecraft:ominous_trial_key",
-    "B": "minecraft:blue_glazed_terracotta",
-    "H": "minecraft:elytra"
+    "#": "minecraft:end_crystal",
+    "+": "minecraft:nether_star",
+    "B": "minecraft:netherite_block",
+    "C": "minecraft:sculk_catalyst",
+    "H": "minecraft:creaking_heart",
+    "P": "minecraft:dragon_breath"
   },
   "pattern": [
-    "4#+",
+    "P#P",
     "B+B",
-    "+#H"
+    "CHC"
   ],
   "result": {
     "count": 1,

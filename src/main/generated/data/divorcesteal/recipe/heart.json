@@ -2,15 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": "minecraft:diamond_block",
-    "/": "minecraft:spyglass",
-    "@": "minecraft:nautilus_shell",
-    "R": "minecraft:red_glazed_terracotta"
+    "#": "minecraft:end_crystal",
+    "I": "minecraft:netherite_ingot",
+    "T": "minecraft:totem_of_undying",
+    "U": "minecraft:netherite_upgrade_smithing_template"
   },
   "pattern": [
-    "@#@",
-    "R/R",
-    "@#@"
+    "I#I",
+    "UTU",
+    "I#I"
   ],
   "result": {
     "count": 1,
