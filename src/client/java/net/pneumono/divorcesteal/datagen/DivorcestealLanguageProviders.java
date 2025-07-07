@@ -39,7 +39,6 @@ public class DivorcestealLanguageProviders {
 
             builder.add("divorcesteal.deathban", "You ran out of hearts!");
             builder.add("divorcesteal.deathban_global", "%s ran out of hearts!");
-            builder.add("divorcesteal.revive_global", "%s has been revived!");
 
             builder.add(DivorcestealRegistry.STEAL_LIFE_STAT, "Lives Stolen", "stat");
             builder.add(DivorcestealRegistry.WITHDRAW_HEART_STAT, "Hearts Withdrawn", "stat");

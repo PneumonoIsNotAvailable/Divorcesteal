@@ -107,8 +107,6 @@ public class Hearts {
 
             for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
                 globalPlayer.playSoundToPlayer(DivorcestealRegistry.REVIVE_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                Text banAnnouncement = Text.translatable("divorcesteal.revive_global", profile.getName());
-                globalPlayer.sendMessageToClient(banAnnouncement, false);
             }
         }
     }
