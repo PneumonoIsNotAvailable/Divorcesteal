@@ -14,7 +14,7 @@ import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.math.BlockPos;
-import net.pneumono.divorcesteal.content.KillerComponent;
+import net.pneumono.divorcesteal.content.KilledByComponent;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,7 +40,7 @@ public abstract class SkullBlockEntityMixin extends BlockEntity {
     private NbtComponent customData;
     @Unique
     @Nullable
-    private KillerComponent killer;
+    private KilledByComponent killer;
 
     @Inject(
             method = "writeData",
@@ -50,7 +50,7 @@ public abstract class SkullBlockEntityMixin extends BlockEntity {
         view.putNullable("lore", LoreComponent.CODEC, this.lore);
         view.putNullable("item_name", TextCodecs.CODEC, this.itemName);
         view.putNullable("custom_data", NbtComponent.CODEC, this.customData);
-        view.putNullable("killer", KillerComponent.CODEC, this.killer);
+        view.putNullable("killer", KilledByComponent.CODEC, this.killer);
     }
 
     @Inject(
@@ -61,7 +61,7 @@ public abstract class SkullBlockEntityMixin extends BlockEntity {
         this.lore = view.read("lore", LoreComponent.CODEC).orElse(null);
         this.itemName = tryParseCustomName(view, "item_name");
         this.customData = view.read("custom_data", NbtComponent.CODEC).orElse(null);
-        this.killer = view.read("killer", KillerComponent.CODEC).orElse(null);
+        this.killer = view.read("killer", KilledByComponent.CODEC).orElse(null);
     }
 
     @Inject(

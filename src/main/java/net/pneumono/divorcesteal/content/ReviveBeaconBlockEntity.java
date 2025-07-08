@@ -6,7 +6,6 @@ import net.minecraft.block.entity.BeamEmitter;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentsAccess;
-import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
@@ -34,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenHandlerFactory, BeamEmitter {
-    private ProfileComponent target;
+    private KillTargetComponent target;
 
     public ReviveBeaconBlockEntity(BlockPos pos, BlockState state) {
         super(DivorcestealRegistry.REVIVE_BEACON_ENTITY, pos, state);
@@ -49,13 +48,13 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
         return List.of();
     }
 
-    public ProfileComponent getOrCreateTarget() {
+    public KillTargetComponent getOrCreateTarget() {
         if (this.target != null) return target;
 
         if (this.getWorld() instanceof ServerWorld serverWorld) {
             GameProfile randomTarget = getRandomTarget(serverWorld).orElse(null);
             if (randomTarget != null) {
-                this.target = new ProfileComponent(randomTarget);
+                this.target = new KillTargetComponent(randomTarget);
                 return this.target;
             }
         }
@@ -83,7 +82,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
     public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
         if (!(getWorld() instanceof ServerWorld serverWorld)) return null;
 
-        ProfileComponent target = getOrCreateTarget();
+        KillTargetComponent target = getOrCreateTarget();
         return new ReviveBeaconScreenHandler(syncId, playerInventory,
                 ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()),
                 getRevivablePlayers(serverWorld),
@@ -94,13 +93,13 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
     @Override
     protected void readData(ReadView view) {
         super.readData(view);
-        this.target = view.read("target", ProfileComponent.CODEC).orElse(null);
+        this.target = view.read("target", KillTargetComponent.CODEC).orElse(null);
     }
 
     @Override
     protected void writeData(WriteView view) {
         super.writeData(view);
-        view.putNullable("target", ProfileComponent.CODEC, getOrCreateTarget());
+        view.putNullable("target", KillTargetComponent.CODEC, getOrCreateTarget());
     }
 
     @Override

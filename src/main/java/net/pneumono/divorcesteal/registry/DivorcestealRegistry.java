@@ -12,7 +12,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -50,11 +49,11 @@ public class DivorcestealRegistry {
             FabricBlockEntityTypeBuilder.create(ReviveBeaconBlockEntity::new, REVIVE_BEACON_BLOCK).build()
     );
 
-    public static final ComponentType<KillerComponent> KILLER = registerDataComponentType(
-            "killer", KillerComponent.CODEC, KillerComponent.PACKET_CODEC
+    public static final ComponentType<KilledByComponent> KILLER = registerDataComponentType(
+            "killer", KilledByComponent.CODEC, KilledByComponent.PACKET_CODEC
     );
-    public static final ComponentType<ProfileComponent> KILL_TARGET = registerDataComponentType(
-            "kill_target", ProfileComponent.CODEC, ProfileComponent.PACKET_CODEC
+    public static final ComponentType<KillTargetComponent> KILL_TARGET = registerDataComponentType(
+            "kill_target", KillTargetComponent.CODEC, KillTargetComponent.PACKET_CODEC
     );
 
     public static final ScreenHandlerType<ReviveBeaconScreenHandler> REVIVE_BEACON_SCREEN_HANDLER = Registry.register(Registries.SCREEN_HANDLER,
@@ -117,5 +116,6 @@ public class DivorcestealRegistry {
         });
 
         ComponentTooltipAppenderRegistry.addFirst(KILLER);
+        ComponentTooltipAppenderRegistry.addFirst(KILL_TARGET);
     }
 }

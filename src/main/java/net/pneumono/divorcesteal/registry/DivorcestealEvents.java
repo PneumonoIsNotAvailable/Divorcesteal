@@ -13,7 +13,7 @@ import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.pneumono.divorcesteal.DivorcestealConfig;
-import net.pneumono.divorcesteal.content.KillerComponent;
+import net.pneumono.divorcesteal.content.KilledByComponent;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
@@ -44,7 +44,7 @@ public class DivorcestealEvents {
 
             ItemStack headStack = Items.PLAYER_HEAD.getDefaultStack().copy();
             headStack.set(DataComponentTypes.PROFILE, new ProfileComponent(player.getGameProfile()));
-            headStack.set(DivorcestealRegistry.KILLER, new KillerComponent(attacker.getDisplayName()));
+            headStack.set(DivorcestealRegistry.KILLER, new KilledByComponent(attacker.getDisplayName()));
             player.dropItem(headStack, true, false);
 
             if (PlayerHeartDataReference.create(player).isBanned()) {

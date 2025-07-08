@@ -13,16 +13,16 @@ import net.minecraft.util.Formatting;
 
 import java.util.function.Consumer;
 
-public record KillerComponent(Text name) implements TooltipAppender {
-    public static final Codec<KillerComponent> CODEC = TextCodecs.CODEC.xmap(KillerComponent::new, KillerComponent::name);
-    public static final PacketCodec<ByteBuf, KillerComponent> PACKET_CODEC = PacketCodec.tuple(
+public record KilledByComponent(Text name) implements TooltipAppender {
+    public static final Codec<KilledByComponent> CODEC = TextCodecs.CODEC.xmap(KilledByComponent::new, KilledByComponent::name);
+    public static final PacketCodec<ByteBuf, KilledByComponent> PACKET_CODEC = PacketCodec.tuple(
             TextCodecs.PACKET_CODEC,
-            KillerComponent::name,
-            KillerComponent::new
+            KilledByComponent::name,
+            KilledByComponent::new
     );
 
     @Override
     public void appendTooltip(Item.TooltipContext context, Consumer<Text> textConsumer, TooltipType type, ComponentsAccess components) {
-        textConsumer.accept(Text.translatable("divorcesteal.item.player_head.killer", this.name()).formatted(Formatting.GRAY));
+        textConsumer.accept(Text.translatable("item.divorcesteal.player_head.killer", this.name()).formatted(Formatting.GRAY));
     }
 }
