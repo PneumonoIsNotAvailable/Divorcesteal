@@ -23,6 +23,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.pneumono.divorcesteal.content.component.KillTargetComponent;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.PlayerHeartData;
@@ -105,14 +106,14 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
     @Override
     protected void readComponents(ComponentsAccess components) {
         super.readComponents(components);
-        this.target = components.get(DivorcestealRegistry.KILL_TARGET);
+        this.target = components.get(DivorcestealRegistry.KILL_TARGET_COMPONENT);
     }
 
     @Override
     protected void addComponents(ComponentMap.Builder builder) {
         super.addComponents(builder);
         if (getOrCreateTarget() != null) {
-            builder.add(DivorcestealRegistry.KILL_TARGET, this.target);
+            builder.add(DivorcestealRegistry.KILL_TARGET_COMPONENT, this.target);
         }
     }
 

@@ -14,7 +14,7 @@ import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextCodecs;
 import net.minecraft.util.math.BlockPos;
-import net.pneumono.divorcesteal.content.KilledByComponent;
+import net.pneumono.divorcesteal.content.component.KilledByComponent;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -72,7 +72,7 @@ public abstract class SkullBlockEntityMixin extends BlockEntity {
         this.lore = components.get(DataComponentTypes.LORE);
         this.itemName = components.get(DataComponentTypes.ITEM_NAME);
         this.customData = components.get(DataComponentTypes.CUSTOM_DATA);
-        this.killer = components.get(DivorcestealRegistry.KILLER);
+        this.killer = components.get(DivorcestealRegistry.KILLER_COMPONENT);
     }
 
     @Inject(
@@ -83,7 +83,7 @@ public abstract class SkullBlockEntityMixin extends BlockEntity {
         builder.add(DataComponentTypes.LORE, this.lore);
         builder.add(DataComponentTypes.ITEM_NAME, this.itemName);
         builder.add(DataComponentTypes.CUSTOM_DATA, this.customData);
-        builder.add(DivorcestealRegistry.KILLER, this.killer);
+        builder.add(DivorcestealRegistry.KILLER_COMPONENT, this.killer);
     }
 
     @Inject(

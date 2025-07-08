@@ -30,6 +30,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.content.*;
+import net.pneumono.divorcesteal.content.component.KillTargetComponent;
+import net.pneumono.divorcesteal.content.component.KilledByComponent;
 
 import java.util.function.Function;
 
@@ -49,10 +51,10 @@ public class DivorcestealRegistry {
             FabricBlockEntityTypeBuilder.create(ReviveBeaconBlockEntity::new, REVIVE_BEACON_BLOCK).build()
     );
 
-    public static final ComponentType<KilledByComponent> KILLER = registerDataComponentType(
+    public static final ComponentType<KilledByComponent> KILLER_COMPONENT = registerDataComponentType(
             "killer", KilledByComponent.CODEC, KilledByComponent.PACKET_CODEC
     );
-    public static final ComponentType<KillTargetComponent> KILL_TARGET = registerDataComponentType(
+    public static final ComponentType<KillTargetComponent> KILL_TARGET_COMPONENT = registerDataComponentType(
             "kill_target", KillTargetComponent.CODEC, KillTargetComponent.PACKET_CODEC
     );
 
@@ -115,7 +117,7 @@ public class DivorcestealRegistry {
             entries.add(REVIVE_BEACON_ITEM);
         });
 
-        ComponentTooltipAppenderRegistry.addFirst(KILLER);
-        ComponentTooltipAppenderRegistry.addFirst(KILL_TARGET);
+        ComponentTooltipAppenderRegistry.addFirst(KILLER_COMPONENT);
+        ComponentTooltipAppenderRegistry.addFirst(KILL_TARGET_COMPONENT);
     }
 }

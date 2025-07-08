@@ -1,4 +1,4 @@
-package net.pneumono.divorcesteal.content;
+package net.pneumono.divorcesteal.content.component;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;

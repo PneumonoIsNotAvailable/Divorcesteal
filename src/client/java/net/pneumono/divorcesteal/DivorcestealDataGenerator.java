@@ -67,7 +67,7 @@ public class DivorcestealDataGenerator implements DataGeneratorEntrypoint {
 									.with(
 											ItemEntry.builder(DivorcestealRegistry.REVIVE_BEACON_ITEM)
 													.apply(CopyComponentsLootFunction.builder(CopyComponentsLootFunction.Source.BLOCK_ENTITY).include(DataComponentTypes.CUSTOM_NAME))
-													.apply(CopyComponentsLootFunction.builder(CopyComponentsLootFunction.Source.BLOCK_ENTITY).include(DivorcestealRegistry.KILL_TARGET))
+													.apply(CopyComponentsLootFunction.builder(CopyComponentsLootFunction.Source.BLOCK_ENTITY).include(DivorcestealRegistry.KILL_TARGET_COMPONENT))
 									)
 					))
 			);
