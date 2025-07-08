@@ -35,7 +35,7 @@ public class DivorcestealDataGenerator implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateBlockStateModels(BlockStateModelGenerator generator) {
-			generator.registerItemModel(DivorcestealRegistry.REVIVE_BEACON_ITEM, Divorcesteal.id("block/revive_beacon"));
+			generator.registerSimpleState(DivorcestealRegistry.REVIVE_BEACON_BLOCK);
 		}
 
 		@Override
