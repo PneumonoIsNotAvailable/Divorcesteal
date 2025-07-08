@@ -13,6 +13,9 @@
     "I#I"
   ],
   "result": {
+    "components": {
+      "divorcesteal:crafted": {}
+    },
     "count": 1,
     "id": "divorcesteal:heart"
   }

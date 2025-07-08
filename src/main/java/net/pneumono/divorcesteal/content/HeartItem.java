@@ -1,8 +1,10 @@
 package net.pneumono.divorcesteal.content;
 
+import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
@@ -19,7 +21,9 @@ public class HeartItem extends Item {
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
         ItemStack stack = user.getStackInHand(hand);
-        if (world.isClient()) return ActionResult.CONSUME;
+        if (!(world instanceof ServerWorld serverWorld)) return ActionResult.CONSUME;
+
+        if (stack.contains(DivorcestealRegistry.CRAFTED_COMPONENT) && getHearts(serverWorld, user) >= 7) return ActionResult.FAIL;
 
         int addedHearts = Hearts.addHeartsValidated(user, 1, false);
 
@@ -33,5 +37,10 @@ public class HeartItem extends Item {
         } else {
             return ActionResult.FAIL;
         }
+    }
+
+    private static int getHearts(ServerWorld world, PlayerEntity user) {
+        GameProfile profile = user.getGameProfile();
+        return Hearts.getHeartDataState(world).getOrCreateHeartData(profile.getId(), profile.getName()).hearts();
     }
 }

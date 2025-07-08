@@ -30,6 +30,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.content.*;
+import net.pneumono.divorcesteal.content.component.CraftedComponent;
 import net.pneumono.divorcesteal.content.component.KillTargetComponent;
 import net.pneumono.divorcesteal.content.component.KilledByComponent;
 
@@ -56,6 +57,9 @@ public class DivorcestealRegistry {
     );
     public static final ComponentType<KillTargetComponent> KILL_TARGET_COMPONENT = registerDataComponentType(
             "kill_target", KillTargetComponent.CODEC, KillTargetComponent.PACKET_CODEC
+    );
+    public static final ComponentType<CraftedComponent> CRAFTED_COMPONENT = registerDataComponentType(
+            "crafted", CraftedComponent.CODEC, CraftedComponent.PACKET_CODEC
     );
 
     public static final ScreenHandlerType<ReviveBeaconScreenHandler> REVIVE_BEACON_SCREEN_HANDLER = Registry.register(Registries.SCREEN_HANDLER,
@@ -119,5 +123,6 @@ public class DivorcestealRegistry {
 
         ComponentTooltipAppenderRegistry.addFirst(KILLER_COMPONENT);
         ComponentTooltipAppenderRegistry.addFirst(KILL_TARGET_COMPONENT);
+        ComponentTooltipAppenderRegistry.addFirst(CRAFTED_COMPONENT);
     }
 }

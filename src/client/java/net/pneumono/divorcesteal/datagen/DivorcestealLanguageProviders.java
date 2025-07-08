@@ -26,6 +26,7 @@ public class DivorcestealLanguageProviders {
             PneumonoCoreTranslationBuilder builder = new PneumonoCoreTranslationBuilder(translationBuilder);
 
             builder.add(DivorcestealRegistry.HEART_ITEM, "Heart");
+            builder.add("item.divorcesteal.heart.crafted", "Crafted");
             builder.add(DivorcestealRegistry.REVIVE_BEACON_ITEM, "Revive Beacon");
             builder.add("item.divorcesteal.revive_beacon.target", "Target: %s");
             builder.add("item.divorcesteal.player_head.killer", "Killed by %s");

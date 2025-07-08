@@ -13,6 +13,8 @@ import net.minecraft.client.data.Models;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -20,7 +22,11 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.CopyComponentsLootFunction;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.book.RecipeCategory;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
+import net.pneumono.divorcesteal.content.component.CraftedComponent;
+import net.pneumono.divorcesteal.datagen.ShapedStackRecipeJsonBuilder;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import net.pneumono.divorcesteal.datagen.DivorcestealLanguageProviders;
 
@@ -84,7 +90,11 @@ public class DivorcestealDataGenerator implements DataGeneratorEntrypoint {
 			return new RecipeGenerator(wrapperLookup, recipeExporter) {
 				@Override
 				public void generate() {
-					createShaped(RecipeCategory.COMBAT, DivorcestealRegistry.HEART_ITEM)
+					RegistryEntryLookup<Item> itemLookup = registries.getOrThrow(RegistryKeys.ITEM);
+					ItemStack outputStack = DivorcestealRegistry.HEART_ITEM.getDefaultStack();
+					outputStack.set(DivorcestealRegistry.CRAFTED_COMPONENT, CraftedComponent.INSTANCE);
+
+					ShapedStackRecipeJsonBuilder.create(itemLookup, RecipeCategory.COMBAT, outputStack)
 							.pattern("I#I")
 							.pattern("UTU")
 							.pattern("I#I")
