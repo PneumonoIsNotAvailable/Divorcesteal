@@ -4,14 +4,21 @@ import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.advancement.criterion.TickCriterion;
 import net.minecraft.client.data.BlockStateModelGenerator;
 import net.minecraft.client.data.ItemModelGenerator;
 import net.minecraft.client.data.Models;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.data.recipe.RecipeExporter;
 import net.minecraft.data.recipe.RecipeGenerator;
 import net.minecraft.item.Items;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.function.CopyComponentsLootFunction;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.RegistryWrapper;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
@@ -25,6 +32,7 @@ public class DivorcestealDataGenerator implements DataGeneratorEntrypoint {
 		FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
 		pack.addProvider(ModelProvider::new);
 		pack.addProvider(RecipeProvider::new);
+		pack.addProvider(LootTableProvider::new);
 		DivorcestealLanguageProviders.addProviders(pack);
 	}
 
@@ -41,6 +49,28 @@ public class DivorcestealDataGenerator implements DataGeneratorEntrypoint {
 		@Override
 		public void generateItemModels(ItemModelGenerator generator) {
 			generator.register(DivorcestealRegistry.HEART_ITEM, Models.GENERATED);
+		}
+	}
+
+	public static class LootTableProvider extends FabricBlockLootTableProvider {
+		public LootTableProvider(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+			super(dataOutput, registryLookup);
+		}
+
+		@Override
+		public void generate() {
+			addDrop(DivorcestealRegistry.REVIVE_BEACON_BLOCK, LootTable.builder().pool(
+					this.addSurvivesExplosionCondition(
+							DivorcestealRegistry.REVIVE_BEACON_ITEM,
+							LootPool.builder()
+									.rolls(ConstantLootNumberProvider.create(1.0F))
+									.with(
+											ItemEntry.builder(DivorcestealRegistry.REVIVE_BEACON_ITEM)
+													.apply(CopyComponentsLootFunction.builder(CopyComponentsLootFunction.Source.BLOCK_ENTITY).include(DataComponentTypes.CUSTOM_NAME))
+													.apply(CopyComponentsLootFunction.builder(CopyComponentsLootFunction.Source.BLOCK_ENTITY).include(DivorcestealRegistry.KILL_TARGET))
+									)
+					))
+			);
 		}
 	}
 
