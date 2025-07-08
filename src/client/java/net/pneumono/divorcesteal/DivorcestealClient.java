@@ -11,6 +11,6 @@ public class DivorcestealClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		HandledScreens.register(DivorcestealRegistry.REVIVE_BEACON_SCREEN_HANDLER, ReviveBeaconScreen::new);
-		BlockRenderLayerMap.putBlock(DivorcestealRegistry.REVIVE_BEACON_BLOCK, BlockRenderLayer.TRANSLUCENT);
+		BlockRenderLayerMap.putBlock(DivorcestealRegistry.REVIVE_BEACON_BLOCK, BlockRenderLayer.CUTOUT);
 	}
 }
