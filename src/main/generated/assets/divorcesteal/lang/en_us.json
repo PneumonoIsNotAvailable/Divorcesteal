@@ -39,7 +39,7 @@
   "divorcesteal.deathban": "You ran out of hearts!",
   "divorcesteal.deathban_global": "%s ran out of hearts!",
   "divorcesteal.gui.deathban.title": "You ran out of hearts!",
-  "divorcesteal.gui.revive.title": "Revive Player",
+  "divorcesteal.gui.revive.title": "Revive Beacon",
   "divorcesteal.item.player_head.killer": "Killed by %s",
   "item.divorcesteal.heart": "Heart",
   "item.divorcesteal.revive_beacon": "Revive Beacon",

@@ -3,9 +3,17 @@ package net.pneumono.divorcesteal.registry;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.MapColor;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.enums.NoteBlockInstrument;
 import net.minecraft.component.ComponentType;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ProfileComponent;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.network.RegistryByteBuf;
@@ -27,11 +35,19 @@ import net.pneumono.divorcesteal.content.*;
 import java.util.function.Function;
 
 public class DivorcestealRegistry {
+    public static final ReviveBeaconBlock REVIVE_BEACON_BLOCK = registerReviveBeaconBlock();
+
     public static final HeartItem HEART_ITEM = registerItem("heart", HeartItem::new,
             new Item.Settings().rarity(Rarity.UNCOMMON).component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
     );
-    public static final ReviveBeaconItem REVIVE_BEACON_ITEM = registerItem("revive_beacon", ReviveBeaconItem::new,
+    public static final BlockItem REVIVE_BEACON_ITEM = registerItem("revive_beacon",
+            settings -> new BlockItem(REVIVE_BEACON_BLOCK, settings),
             new Item.Settings().rarity(Rarity.RARE).component(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true)
+    );
+
+    public static final BlockEntityType<ReviveBeaconBlockEntity> REVIVE_BEACON_ENTITY = Registry.register(Registries.BLOCK_ENTITY_TYPE,
+            Divorcesteal.id("revive_beacon"),
+            FabricBlockEntityTypeBuilder.create(ReviveBeaconBlockEntity::new, REVIVE_BEACON_BLOCK).build()
     );
 
     public static final ComponentType<KillerComponent> KILLER = registerDataComponentType(
@@ -56,6 +72,19 @@ public class DivorcestealRegistry {
     public static final Identifier REVIVE_PLAYER_STAT = registerStat("revive_player");
     public static final Identifier DEATHBAN_PLAYER_STAT = registerStat("deathban_player");
     public static final Identifier DEATHBAN_SELF_STAT = registerStat("deathban_self");
+
+    private static ReviveBeaconBlock registerReviveBeaconBlock() {
+        RegistryKey<Block> key = RegistryKey.of(RegistryKeys.BLOCK, Divorcesteal.id("revive_beacon"));
+        AbstractBlock.Settings settings = AbstractBlock.Settings.create()
+                .mapColor(MapColor.PINK)
+                .instrument(NoteBlockInstrument.HAT)
+                .strength(3.0F)
+                .luminance(state -> 15)
+                .nonOpaque()
+                .solidBlock(Blocks::never)
+                .registryKey(key);
+        return Registry.register(Registries.BLOCK, key, new ReviveBeaconBlock(settings));
+    }
 
     private static <T extends Item> T registerItem(String name, Function<Item.Settings, T> factory, Item.Settings settings) {
         RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, Divorcesteal.id(name));
