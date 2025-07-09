@@ -44,7 +44,7 @@ public class DivorcestealEvents {
 
             ItemStack headStack = Items.PLAYER_HEAD.getDefaultStack().copy();
             headStack.set(DataComponentTypes.PROFILE, new ProfileComponent(player.getGameProfile()));
-            headStack.set(DivorcestealRegistry.KILLER_COMPONENT, new KilledByComponent(attacker.getDisplayName()));
+            headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(attacker.getGameProfile()));
             player.dropItem(headStack, true, false);
 
             if (PlayerHeartDataReference.create(player).isBanned()) {

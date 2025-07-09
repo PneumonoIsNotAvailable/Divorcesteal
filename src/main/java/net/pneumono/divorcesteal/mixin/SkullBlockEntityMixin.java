@@ -72,7 +72,7 @@ public abstract class SkullBlockEntityMixin extends BlockEntity {
         this.lore = components.get(DataComponentTypes.LORE);
         this.itemName = components.get(DataComponentTypes.ITEM_NAME);
         this.customData = components.get(DataComponentTypes.CUSTOM_DATA);
-        this.killer = components.get(DivorcestealRegistry.KILLER_COMPONENT);
+        this.killer = components.get(DivorcestealRegistry.KILLED_BY_COMPONENT);
     }
 
     @Inject(
@@ -83,7 +83,7 @@ public abstract class SkullBlockEntityMixin extends BlockEntity {
         builder.add(DataComponentTypes.LORE, this.lore);
         builder.add(DataComponentTypes.ITEM_NAME, this.itemName);
         builder.add(DataComponentTypes.CUSTOM_DATA, this.customData);
-        builder.add(DivorcestealRegistry.KILLER_COMPONENT, this.killer);
+        builder.add(DivorcestealRegistry.KILLED_BY_COMPONENT, this.killer);
     }
 
     @Inject(

@@ -14,10 +14,13 @@ import net.minecraft.util.Formatting;
 
 import java.util.function.Consumer;
 
-// Ew wrapper class
 public record KillTargetComponent(ProfileComponent profile) implements TooltipAppender {
-    public static final Codec<KillTargetComponent> CODEC = ProfileComponent.CODEC.xmap(KillTargetComponent::new, KillTargetComponent::profile);
-    public static final PacketCodec<ByteBuf, KillTargetComponent> PACKET_CODEC = ProfileComponent.PACKET_CODEC.xmap(KillTargetComponent::new, KillTargetComponent::profile);
+    public static final Codec<KillTargetComponent> CODEC = ProfileComponent.CODEC.xmap(
+            KillTargetComponent::new, KillTargetComponent::profile
+    );
+    public static final PacketCodec<ByteBuf, KillTargetComponent> PACKET_CODEC = ProfileComponent.PACKET_CODEC.xmap(
+            KillTargetComponent::new, KillTargetComponent::profile
+    );
 
     public KillTargetComponent(GameProfile profile) {
         this(new ProfileComponent(profile));
@@ -29,6 +32,9 @@ public record KillTargetComponent(ProfileComponent profile) implements TooltipAp
 
     @Override
     public void appendTooltip(Item.TooltipContext context, Consumer<Text> textConsumer, TooltipType type, ComponentsAccess components) {
-        textConsumer.accept(Text.translatable("item.divorcesteal.revive_beacon.target", this.profile().name().orElse("???")).formatted(Formatting.GRAY));
+        textConsumer.accept(Text.translatable(
+                "item.divorcesteal.revive_beacon.target",
+                this.profile().name().orElse("???")
+        ).formatted(Formatting.GRAY));
     }
 }

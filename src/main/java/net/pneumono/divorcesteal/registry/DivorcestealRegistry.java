@@ -52,7 +52,7 @@ public class DivorcestealRegistry {
             FabricBlockEntityTypeBuilder.create(ReviveBeaconBlockEntity::new, REVIVE_BEACON_BLOCK).build()
     );
 
-    public static final ComponentType<KilledByComponent> KILLER_COMPONENT = registerDataComponentType(
+    public static final ComponentType<KilledByComponent> KILLED_BY_COMPONENT = registerDataComponentType(
             "killer", KilledByComponent.CODEC, KilledByComponent.PACKET_CODEC
     );
     public static final ComponentType<KillTargetComponent> KILL_TARGET_COMPONENT = registerDataComponentType(
@@ -121,7 +121,7 @@ public class DivorcestealRegistry {
             entries.add(REVIVE_BEACON_ITEM);
         });
 
-        ComponentTooltipAppenderRegistry.addFirst(KILLER_COMPONENT);
+        ComponentTooltipAppenderRegistry.addFirst(KILLED_BY_COMPONENT);
         ComponentTooltipAppenderRegistry.addFirst(KILL_TARGET_COMPONENT);
         ComponentTooltipAppenderRegistry.addFirst(CRAFTED_COMPONENT);
     }
