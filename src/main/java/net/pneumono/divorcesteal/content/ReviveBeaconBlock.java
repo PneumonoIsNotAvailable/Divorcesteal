@@ -2,17 +2,17 @@ package net.pneumono.divorcesteal.content;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.MapCodec;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -20,6 +20,8 @@ import net.minecraft.world.World;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.OptionalInt;
 
 public class ReviveBeaconBlock extends BlockWithEntity {
     public static final MapCodec<ReviveBeaconBlock> CODEC = createCodec(ReviveBeaconBlock::new);
@@ -47,26 +49,29 @@ public class ReviveBeaconBlock extends BlockWithEntity {
 
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        if (!world.isClient && world.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity) {
-            player.openHandledScreen(blockEntity);
-            player.incrementStat(Stats.INTERACT_WITH_BEACON);
+        if (!world.isClient && world.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity && blockEntity.canOpen()) {
+            OptionalInt optionalInt = player.openHandledScreen(blockEntity);
+            if (player instanceof ServerPlayerEntity serverPlayer && optionalInt.isPresent()) {
+                ServerPlayNetworking.send(serverPlayer, new ReviveBeaconTargetS2CPayload(
+                        optionalInt.getAsInt(),
+                        blockEntity.getOrCreateTarget().profile()
+                ));
+            }
         }
 
         return ActionResult.SUCCESS;
     }
 
-    public static void revivePlayer(ServerWorld world, GameProfile revived, ServerPlayerEntity reviver) {
-        if (!canUse(reviver)) return;
-
-        ItemStack stack = reviver.getMainHandStack();
-        stack.decrement(1);
-        world.playSound(null, reviver.getBlockPos(), DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, SoundCategory.PLAYERS);
+    public static void revivePlayer(ServerWorld world, BlockPos pos, GameProfile revived, PlayerEntity reviver) {
+        world.playSound(null, pos, DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, SoundCategory.PLAYERS);
         reviver.incrementStat(DivorcestealRegistry.REVIVE_PLAYER_STAT);
         Hearts.revive(world, revived);
     }
 
-    public static boolean canUse(PlayerEntity player) {
-        return player.getMainHandStack().isOf(DivorcestealRegistry.REVIVE_BEACON_ITEM) || player.getOffHandStack().isOf(DivorcestealRegistry.REVIVE_BEACON_ITEM);
+    @Nullable
+    @Override
+    protected NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
+        return super.createScreenHandlerFactory(state, world, pos);
     }
 
     /*

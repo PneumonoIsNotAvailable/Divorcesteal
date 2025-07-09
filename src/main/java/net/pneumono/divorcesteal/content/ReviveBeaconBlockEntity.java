@@ -6,6 +6,7 @@ import net.minecraft.block.entity.BeamEmitter;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentsAccess;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
@@ -41,7 +42,14 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, ReviveBeaconBlockEntity blockEntity) {
+        if (!world.isClient() && blockEntity.target == null) {
+            blockEntity.getOrCreateTarget();
+            world.updateListeners(pos, state, state, ReviveBeaconBlock.NOTIFY_ALL);
+        }
+    }
 
+    public boolean canOpen() {
+        return this.target != null;
     }
 
     @Override
@@ -56,6 +64,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
             GameProfile randomTarget = getRandomTarget(serverWorld).orElse(null);
             if (randomTarget != null) {
                 this.target = new KillTargetComponent(randomTarget);
+                markDirty();
                 return this.target;
             }
         }
@@ -63,9 +72,9 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
         return this.target;
     }
 
-    public static List<GameProfile> getRevivablePlayers(ServerWorld world) {
+    public static List<ProfileComponent> getRevivablePlayers(ServerWorld world) {
         HeartDataState state = Hearts.getHeartDataState(world);
-        return state.getHeartDataList().stream().filter(data -> !data.isBanned()).map(PlayerHeartData::gameProfile).toList();
+        return state.getHeartDataList().stream().filter(data -> !data.isBanned()).map(data -> new ProfileComponent(data.gameProfile())).toList();
     }
 
     public static Optional<GameProfile> getRandomTarget(ServerWorld world) {
@@ -84,10 +93,12 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
         if (!(getWorld() instanceof ServerWorld serverWorld)) return null;
 
         KillTargetComponent target = getOrCreateTarget();
+        if (target == null) return null;
+
         return new ReviveBeaconScreenHandler(syncId, playerInventory,
-                ScreenHandlerContext.create(player.getWorld(), player.getBlockPos()),
+                ScreenHandlerContext.create(serverWorld, this.getPos()),
                 getRevivablePlayers(serverWorld),
-                target == null ? null : target.gameProfile()
+                target.profile()
         );
     }
 
@@ -100,7 +111,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
     @Override
     protected void writeData(WriteView view) {
         super.writeData(view);
-        view.putNullable("target", KillTargetComponent.CODEC, getOrCreateTarget());
+        view.putNullable("target", KillTargetComponent.CODEC, this.getOrCreateTarget());
     }
 
     @Override
@@ -112,7 +123,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
     @Override
     protected void addComponents(ComponentMap.Builder builder) {
         super.addComponents(builder);
-        if (getOrCreateTarget() != null) {
+        if (this.getOrCreateTarget() != null) {
             builder.add(DivorcestealRegistry.KILL_TARGET_COMPONENT, this.target);
         }
     }
@@ -125,7 +136,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
 
     @Override
     public Text getDisplayName() {
-        return Text.translatable("divorcesteal.gui.revive.title");
+        return Text.translatable("divorcesteal.gui.revive_beacon.title");
     }
 
     @Nullable
@@ -136,6 +147,6 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
 
     @Override
     public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
-        return this.createComponentlessNbt(registries);
+        return this.createNbt(registries);
     }
 }
