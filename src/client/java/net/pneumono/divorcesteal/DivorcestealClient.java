@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.render.BlockRenderLayer;
 import net.minecraft.screen.ScreenHandler;
 import net.pneumono.divorcesteal.content.ReviveBeaconScreenHandler;
-import net.pneumono.divorcesteal.content.ReviveBeaconTargetS2CPayload;
+import net.pneumono.divorcesteal.content.ReviveBeaconInfoS2CPayload;
 import net.pneumono.divorcesteal.gui.ReviveBeaconScreen;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 
@@ -15,18 +15,19 @@ public class DivorcestealClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		HandledScreens.register(DivorcestealRegistry.REVIVE_BEACON_SCREEN_HANDLER, ReviveBeaconScreen::new);
-		ClientPlayNetworking.registerGlobalReceiver(ReviveBeaconTargetS2CPayload.ID, DivorcestealClient::syncReviveBeaconTarget);
+		ClientPlayNetworking.registerGlobalReceiver(ReviveBeaconInfoS2CPayload.ID, DivorcestealClient::syncReviveBeaconTarget);
 
 		BlockRenderLayerMap.putBlock(DivorcestealRegistry.REVIVE_BEACON_BLOCK, BlockRenderLayer.CUTOUT);
 	}
 
-	private static void syncReviveBeaconTarget(ReviveBeaconTargetS2CPayload payload, ClientPlayNetworking.Context context) {
+	private static void syncReviveBeaconTarget(ReviveBeaconInfoS2CPayload payload, ClientPlayNetworking.Context context) {
 		ScreenHandler currentScreenHandler = context.player().currentScreenHandler;
 		if (currentScreenHandler.syncId != payload.syncId() || !(currentScreenHandler instanceof ReviveBeaconScreenHandler beaconHandler)) {
 			Divorcesteal.LOGGER.warn("Failed to sync revive beacon target!");
 			return;
 		}
 
-		beaconHandler.setTarget(payload.profileComponent());
+		beaconHandler.setTarget(payload.target());
+		beaconHandler.setRevivablePlayers(payload.revivablePlayers());
 	}
 }

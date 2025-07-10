@@ -49,12 +49,13 @@ public class ReviveBeaconBlock extends BlockWithEntity {
 
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        if (!world.isClient && world.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity && blockEntity.canOpen()) {
+        if (world instanceof ServerWorld serverWorld && world.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity && blockEntity.canOpen()) {
             OptionalInt optionalInt = player.openHandledScreen(blockEntity);
             if (player instanceof ServerPlayerEntity serverPlayer && optionalInt.isPresent()) {
-                ServerPlayNetworking.send(serverPlayer, new ReviveBeaconTargetS2CPayload(
+                ServerPlayNetworking.send(serverPlayer, new ReviveBeaconInfoS2CPayload(
                         optionalInt.getAsInt(),
-                        blockEntity.getOrCreateTarget().profile()
+                        blockEntity.getOrCreateTarget().profile(),
+                        ReviveBeaconBlockEntity.getRevivablePlayers(serverWorld)
                 ));
             }
         }

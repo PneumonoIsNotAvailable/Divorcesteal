@@ -30,7 +30,7 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
     private final Slot leftHeartSlot;
     private final Slot rightHeartSlot;
     private final Slot headSlot;
-    public final List<ProfileComponent> revivablePlayers;
+    public List<ProfileComponent> revivablePlayers;
     private ProfileComponent target;
     private final Property selectedPlayer = Property.create();
 
@@ -106,6 +106,10 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
 
     public int getSelectedPlayer() {
         return this.selectedPlayer.get();
+    }
+
+    public void setRevivablePlayers(List<ProfileComponent> revivablePlayers) {
+        this.revivablePlayers = revivablePlayers;
     }
 
     public void setTarget(ProfileComponent target) {

@@ -117,7 +117,7 @@ public class DivorcestealRegistry {
     }
 
     public static void registerDivorcestealContent() {
-        PayloadTypeRegistry.playS2C().register(ReviveBeaconTargetS2CPayload.ID, ReviveBeaconTargetS2CPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(ReviveBeaconInfoS2CPayload.ID, ReviveBeaconInfoS2CPayload.CODEC);
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.OPERATOR).register(entries -> {
             entries.add(HEART_ITEM);
