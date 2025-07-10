@@ -26,10 +26,6 @@ public record KillTargetComponent(ProfileComponent profile) implements TooltipAp
         this(new ProfileComponent(profile));
     }
 
-    public GameProfile gameProfile() {
-        return this.profile.gameProfile();
-    }
-
     @Override
     public void appendTooltip(Item.TooltipContext context, Consumer<Text> textConsumer, TooltipType type, ComponentsAccess components) {
         textConsumer.accept(Text.translatable(
