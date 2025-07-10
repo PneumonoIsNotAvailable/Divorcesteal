@@ -28,6 +28,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.pneumono.divorcesteal.content.component.CraftedComponent;
 import net.pneumono.divorcesteal.datagen.DivorcestealEnPtProvider;
 import net.pneumono.divorcesteal.datagen.DivorcestealEnUsProvider;
+import net.pneumono.divorcesteal.datagen.DivorcestealLolUsProvider;
 import net.pneumono.divorcesteal.datagen.ShapedStackRecipeJsonBuilder;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 
@@ -43,6 +44,7 @@ public class DivorcestealDataGenerator implements DataGeneratorEntrypoint {
 
 		pack.addProvider(DivorcestealEnUsProvider::new);
 		pack.addProvider(DivorcestealEnPtProvider::new);
+		pack.addProvider(DivorcestealLolUsProvider::new);
 	}
 
 	public static class ModelProvider extends FabricModelProvider {
