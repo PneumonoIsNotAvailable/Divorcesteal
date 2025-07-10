@@ -1,5 +1,4 @@
 {
-  "arguments.divorcesteal.all_data": "All data",
   "arguments.divorcesteal.error.no_data": "No data exists for that player selection!",
   "arguments.divorcesteal.error.not_deathbanned": "Cannot revive a player that isn't deathbanned!",
   "commands.divorcesteal.add.multiple": "Gave %1$s hearts to %2$s players",
