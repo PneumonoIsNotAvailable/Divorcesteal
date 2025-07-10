@@ -44,6 +44,7 @@
   "divorcesteal.gui.revive_beacon.revive": "Revive",
   "divorcesteal.gui.revive_beacon.title": "Revive Beacon",
   "divorcesteal.gui.revive_beacon.wanted": "WANTED",
+  "divorcesteal.unknown": "???",
   "item.divorcesteal.heart": "Heart",
   "item.divorcesteal.heart.crafted": "Crafted",
   "item.divorcesteal.player_head.killer": "Killed by %s",

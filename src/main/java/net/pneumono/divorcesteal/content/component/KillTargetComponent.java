@@ -34,7 +34,7 @@ public record KillTargetComponent(ProfileComponent profile) implements TooltipAp
     public void appendTooltip(Item.TooltipContext context, Consumer<Text> textConsumer, TooltipType type, ComponentsAccess components) {
         textConsumer.accept(Text.translatable(
                 "item.divorcesteal.revive_beacon.target",
-                this.profile().name().orElse("???")
+                this.profile().name().map(Text::literal).orElseGet(() -> Text.translatable("divorcesteal.unknown"))
         ).formatted(Formatting.GRAY));
     }
 }

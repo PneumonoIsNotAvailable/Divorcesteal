@@ -43,6 +43,7 @@ public class DivorcestealLanguageProviders {
             builder.addSubtitle(DivorcestealRegistry.DEATHBAN_SOUND, "Deathban echoes");
             builder.addSubtitle(DivorcestealRegistry.REVIVE_SOUND, "Revival echoes");
 
+            builder.add("divorcesteal.unknown", "???");
             builder.add("divorcesteal.deathban", "You ran out of hearts!");
             builder.add("divorcesteal.deathban_global", "%s ran out of hearts!");
 

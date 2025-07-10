@@ -34,7 +34,7 @@ public record KilledByComponent(ProfileComponent profile) implements TooltipAppe
     public void appendTooltip(Item.TooltipContext context, Consumer<Text> textConsumer, TooltipType type, ComponentsAccess components) {
         textConsumer.accept(Text.translatable(
                 "item.divorcesteal.player_head.killer",
-                this.profile().name().orElse("???")
+                this.profile().name().map(Text::literal).orElseGet(() -> Text.translatable("divorcesteal.unknown"))
         ).formatted(Formatting.GRAY));
     }
 }

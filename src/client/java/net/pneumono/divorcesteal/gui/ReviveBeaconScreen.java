@@ -67,7 +67,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
             ItemStack targetHeadStack = new ItemStack(Items.PLAYER_HEAD);
             targetHeadStack.set(DataComponentTypes.PROFILE, target);
             context.drawItem(targetHeadStack, this.x + 35, this.y + 41);
-            Text targetTooltipText = Text.literal(target.name().orElse("???"));
+            Text targetTooltipText = target.name().map(Text::literal).orElseGet(() -> Text.translatable("divorcesteal.unknown"));
             if (this.isPointWithinBounds(35, 41, 16, 16, mouseX, mouseY)) {
                 context.drawOrderedTooltip(this.textRenderer, this.textRenderer.wrapLines(targetTooltipText, 115), mouseX, mouseY);
             }
