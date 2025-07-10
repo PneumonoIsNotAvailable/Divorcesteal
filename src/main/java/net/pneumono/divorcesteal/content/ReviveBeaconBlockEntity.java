@@ -74,7 +74,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
 
     public static List<ProfileComponent> getRevivablePlayers(ServerWorld world) {
         HeartDataState state = Hearts.getHeartDataState(world);
-        return state.getHeartDataList().stream().filter(data -> !data.isBanned()).map(data -> new ProfileComponent(data.gameProfile())).toList();
+        return state.getHeartDataList().stream().filter(PlayerHeartData::isBanned).map(data -> new ProfileComponent(data.gameProfile())).toList();
     }
 
     public static Optional<GameProfile> getRandomTarget(ServerWorld world) {
