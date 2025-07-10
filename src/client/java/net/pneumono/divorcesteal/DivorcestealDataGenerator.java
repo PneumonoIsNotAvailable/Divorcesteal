@@ -91,7 +91,7 @@ public class DivorcestealDataGenerator implements DataGeneratorEntrypoint {
 				@Override
 				public void generate() {
 					RegistryEntryLookup<Item> itemLookup = registries.getOrThrow(RegistryKeys.ITEM);
-					ItemStack outputStack = DivorcestealRegistry.HEART_ITEM.getDefaultStack();
+					ItemStack outputStack = new ItemStack(DivorcestealRegistry.HEART_ITEM);
 					outputStack.set(DivorcestealRegistry.CRAFTED_COMPONENT, CraftedComponent.INSTANCE);
 
 					ShapedStackRecipeJsonBuilder.create(itemLookup, RecipeCategory.COMBAT, outputStack)

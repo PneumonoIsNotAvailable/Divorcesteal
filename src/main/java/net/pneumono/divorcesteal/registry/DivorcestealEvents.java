@@ -42,7 +42,7 @@ public class DivorcestealEvents {
 
         if (player.getAttacker() instanceof ServerPlayerEntity attacker && !attacker.getUuid().equals(entity.getUuid())) {
 
-            ItemStack headStack = Items.PLAYER_HEAD.getDefaultStack().copy();
+            ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
             headStack.set(DataComponentTypes.PROFILE, new ProfileComponent(player.getGameProfile()));
             headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(attacker.getGameProfile()));
             player.dropItem(headStack, true, false);
@@ -55,7 +55,7 @@ public class DivorcestealEvents {
             attacker.incrementStat(DivorcestealRegistry.STEAL_LIFE_STAT);
             if (Hearts.addHeartsValidated(attacker, 1, false) == 0) {
 
-                ItemStack heartStack = DivorcestealRegistry.HEART_ITEM.getDefaultStack();
+                ItemStack heartStack = new ItemStack(DivorcestealRegistry.HEART_ITEM);
                 if (!attacker.getInventory().insertStack(heartStack)) {
                     ItemEntity itemEntity = attacker.dropItem(heartStack, false);
                     if (itemEntity != null) {

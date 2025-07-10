@@ -228,7 +228,7 @@ public class DivorcestealCommands {
             source.sendFeedback(() -> Text.translatable("commands.divorcesteal.withdraw.multiple", heartsWithdrawn), false);
         }
 
-        ItemStack stack = DivorcestealRegistry.HEART_ITEM.getDefaultStack().copyWithCount(heartsWithdrawn);
+        ItemStack stack = new ItemStack(DivorcestealRegistry.HEART_ITEM, heartsWithdrawn);
         if (!stack.isEmpty() && !player.getInventory().insertStack(stack)) {
             ItemEntity itemEntity = player.dropItem(stack, false);
             if (itemEntity != null) {
