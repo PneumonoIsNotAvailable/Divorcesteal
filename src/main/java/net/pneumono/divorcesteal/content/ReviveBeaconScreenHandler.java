@@ -30,7 +30,7 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
     private final Slot leftHeartSlot;
     private final Slot rightHeartSlot;
     private final Slot headSlot;
-    private final List<ProfileComponent> players;
+    public final List<ProfileComponent> revivablePlayers;
     private ProfileComponent target;
     private final Property selectedPlayer = Property.create();
 
@@ -40,33 +40,55 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
 
     public ReviveBeaconScreenHandler(
             int syncId, PlayerInventory playerInventory, ScreenHandlerContext context,
-            List<ProfileComponent> players, ProfileComponent target
+            List<ProfileComponent> revivablePlayers, ProfileComponent target
     ) {
         super(DivorcestealRegistry.REVIVE_BEACON_SCREEN_HANDLER, syncId);
         this.playerInventory = playerInventory;
         this.context = context;
-        this.players = players;
+        this.revivablePlayers = revivablePlayers;
         this.target = target;
         this.topHeartSlot = this.addSlot(new HeartSlot(input, 0, 111, 9));
         this.leftHeartSlot = this.addSlot(new HeartSlot(input, 1, 87, 49));
         this.rightHeartSlot = this.addSlot(new HeartSlot(input, 2, 135, 49));
         this.headSlot = this.addSlot(new HeadSlot(input, 3, 111, 35));
         this.addPlayerSlots(playerInventory, 39, 97);
+        this.addProperty(this.selectedPlayer);
+        this.selectedPlayer.set(-1);
     }
 
     private void reviveSelectedPlayer() {
         context.run((world, pos) -> {
             int selectedPlayer = getSelectedPlayer();
-            ProfileComponent revived = selectedPlayer == -1 ? null : this.players.get(selectedPlayer);
+            ProfileComponent revived = selectedPlayer == -1 ? null : this.revivablePlayers.get(selectedPlayer);
             if (revived != null && world instanceof ServerWorld serverWorld) {
                 ReviveBeaconBlock.revivePlayer(serverWorld, pos, revived.gameProfile(), playerInventory.player);
             }
         });
     }
 
+    public ProfileComponent getRevivablePlayer(int i) {
+        return i >= revivablePlayers.size() ? null : this.revivablePlayers.get(i);
+    }
+
+    @Override
+    public boolean onButtonClick(PlayerEntity player, int id) {
+        if (id >= 0 && id < this.revivablePlayers.size()) {
+            this.selectedPlayer.set(id);
+            // TODO: Update revive button
+            return true;
+        } else if (id == -2) {
+            // TODO: If has necessary stuff for revival, clear inventory, revive player
+            //  No need to close screen - should be handled client-side
+            //  I think that's scuffed but idc tbh
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public ItemStack quickMove(PlayerEntity player, int slot) {
-        // todo
+        // TODO
         return ItemStack.EMPTY;
     }
 
