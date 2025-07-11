@@ -18,6 +18,7 @@ public class DivorcestealEnUsProvider extends FabricLanguageProvider {
     @Override
     public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
         PneumonoCoreTranslationBuilder builder = new PneumonoCoreTranslationBuilder(translationBuilder);
+        String modId = Divorcesteal.MOD_ID;
 
         builder.add(DivorcestealRegistry.HEART_ITEM, "Heart");
         builder.add("item.divorcesteal.heart.crafted", "Crafted");
@@ -32,10 +33,10 @@ public class DivorcestealEnUsProvider extends FabricLanguageProvider {
         builder.add("divorcesteal.gui.revive_beacon.add_head", "Add Player Head");
         builder.add("divorcesteal.gui.revive_beacon.revive", "Revive");
 
-        builder.addSubtitle(DivorcestealRegistry.USE_HEART_SOUND, "Heart applies");
-        builder.addSubtitle(DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, "Revive Beacon activates");
-        builder.addSubtitle(DivorcestealRegistry.DEATHBAN_SOUND, "Deathban echoes");
-        builder.addSubtitle(DivorcestealRegistry.REVIVE_SOUND, "Revival echoes");
+        builder.add(DivorcestealRegistry.USE_HEART_SOUND, "Heart applies");
+        builder.add(DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, "Revive Beacon activates");
+        builder.add(DivorcestealRegistry.DEATHBAN_SOUND, "Deathban echoes");
+        builder.add(DivorcestealRegistry.REVIVE_SOUND, "Revival echoes");
 
         builder.add("divorcesteal.unknown", "???");
         builder.add("divorcesteal.deathban", "You ran out of hearts!");
@@ -65,7 +66,7 @@ public class DivorcestealEnUsProvider extends FabricLanguageProvider {
         builder.add("arguments.divorcesteal.error.no_data", "No data exists for that player selection!");
         builder.add("arguments.divorcesteal.error.not_deathbanned", "Cannot revive a player that isn't deathbanned!");
 
-        builder.addConfigScreenTitle(Divorcesteal.MOD_ID, "Divorcesteal Configs");
+        builder.addConfigScreenTitle(modId, "Divorcesteal Configs");
         builder.addConfig(DivorcestealConfig.MAX_HEARTS,
                 "Max Hearts",
                 "The maximum number of hearts a player can have"
@@ -97,11 +98,13 @@ public class DivorcestealEnUsProvider extends FabricLanguageProvider {
                 "MM/DD/YYYY",
                 "YYYY/MM/DD"
         );
-        builder.add("configs.category.divorcesteal.hearts", "Hearts");
-        builder.add("configs.category.divorcesteal.rebalances", "Rebalances");
+        builder.addConfigCategory(modId, "hearts", "Hearts");
+        builder.addConfigCategory(modId, "rebalances", "Rebalances");
 
-        builder.add("modmenu.nameTranslation.divorcesteal", "Divorcesteal");
-        builder.add("modmenu.summaryTranslation.divorcesteal", "The official mod for Divorcesteal");
-        builder.add("modmenu.descriptionTranslation.divorcesteal", "The official mod for Divorcesteal, not affiliated with the Lifesteal SMP");
+        builder.addModMenuTranslations(modId,
+                "Divorcesteal",
+                "The official mod for Divorcesteal",
+                "The official mod for Divorcesteal, not affiliated with the Lifesteal SMP"
+        );
     }
 }

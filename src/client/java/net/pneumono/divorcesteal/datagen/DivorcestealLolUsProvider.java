@@ -18,6 +18,7 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
     @Override
     public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
         PneumonoCoreTranslationBuilder builder = new PneumonoCoreTranslationBuilder(translationBuilder);
+        String modId = Divorcesteal.MOD_ID;
 
         builder.add(DivorcestealRegistry.HEART_ITEM, "Cat Hart");
         builder.add("item.divorcesteal.heart.crafted", "Craftd");
@@ -32,10 +33,10 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
         builder.add("divorcesteal.gui.revive_beacon.add_head", "Putt Kat Hed");
         builder.add("divorcesteal.gui.revive_beacon.revive", "Bring Bak");
 
-        builder.addSubtitle(DivorcestealRegistry.USE_HEART_SOUND, "Hart eated");
-        builder.addSubtitle(DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, "Com Back Shiny brings kat bak!");
-        builder.addSubtitle(DivorcestealRegistry.DEATHBAN_SOUND, "Dedban loud :(");
-        builder.addSubtitle(DivorcestealRegistry.REVIVE_SOUND, "Kat return loud :(");
+        builder.add(DivorcestealRegistry.USE_HEART_SOUND, "Hart eated");
+        builder.add(DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, "Com Back Shiny brings kat bak!");
+        builder.add(DivorcestealRegistry.DEATHBAN_SOUND, "Dedban loud :(");
+        builder.add(DivorcestealRegistry.REVIVE_SOUND, "Kat return loud :(");
 
         builder.add("divorcesteal.unknown", "???");
         builder.add("divorcesteal.deathban", "U haz no harts!!");
@@ -65,7 +66,7 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
         builder.add("arguments.divorcesteal.error.no_data", "Dont have stuff 4 those kittehs!");
         builder.add("arguments.divorcesteal.error.not_deathbanned", "Cant bring bak a cat if they not gon!");
 
-        builder.addConfigScreenTitle(Divorcesteal.MOD_ID, "Divorcesteal Changez");
+        builder.addConfigScreenTitle(modId, "Divorcesteal Changez");
         builder.addConfig(DivorcestealConfig.MAX_HEARTS,
                 "BIG Harts",
                 "Biggest hartz a cat can has!"
@@ -97,11 +98,13 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
                 "MM/DD/YYYY",
                 "YYYY/MM/DD"
         );
-        builder.add("configs.category.divorcesteal.hearts", "Harts");
-        builder.add("configs.category.divorcesteal.rebalances", "Changez");
+        builder.addConfigCategory(modId, "hearts", "Harts");
+        builder.addConfigCategory(modId, "rebalances", "Changez");
 
-        builder.add("modmenu.nameTranslation.divorcesteal", "Divorcesteal");
-        builder.add("modmenu.summaryTranslation.divorcesteal", "OFFICIAL codin thing for Divorcesteal");
-        builder.add("modmenu.descriptionTranslation.divorcesteal", "The ofishul coded thingy for Divorcesteal, NOT frens wit Lifesteal catz\n\nKan be playd if ur a cat!!");
+        builder.addModMenuTranslations(modId,
+                "Divorcesteal",
+                "OFFICIAL codin thing for Divorcesteal",
+                "The ofishul coded thingy for Divorcesteal, NOT frens wit Lifesteal catz\n\nKan be playd if ur a cat!!"
+        );
     }
 }

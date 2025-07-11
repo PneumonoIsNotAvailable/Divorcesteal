@@ -18,6 +18,7 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
     @Override
     public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
         PneumonoCoreTranslationBuilder builder = new PneumonoCoreTranslationBuilder(translationBuilder);
+        String modId = Divorcesteal.MOD_ID;
 
         builder.add(DivorcestealRegistry.HEART_ITEM, "Pirate's Heart");
         builder.add("item.divorcesteal.heart.crafted", "Craft'd");
@@ -32,10 +33,10 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         builder.add("divorcesteal.gui.revive_beacon.add_head", "Add yer Sailor Skull");
         builder.add("divorcesteal.gui.revive_beacon.revive", "Rescue");
 
-        builder.addSubtitle(DivorcestealRegistry.USE_HEART_SOUND, "Pirate's Heart applies");
-        builder.addSubtitle(DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, "Beacon o' Rescue triggers");
-        builder.addSubtitle(DivorcestealRegistry.DEATHBAN_SOUND, "Deathban echoes");
-        builder.addSubtitle(DivorcestealRegistry.REVIVE_SOUND, "Rescue echoes");
+        builder.add(DivorcestealRegistry.USE_HEART_SOUND, "Pirate's Heart applies");
+        builder.add(DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, "Beacon o' Rescue triggers");
+        builder.add(DivorcestealRegistry.DEATHBAN_SOUND, "Deathban echoes");
+        builder.add(DivorcestealRegistry.REVIVE_SOUND, "Rescue echoes");
 
         builder.add("divorcesteal.unknown", "???");
         builder.add("divorcesteal.deathban", "Ye be out of hearts!");
@@ -65,7 +66,7 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         builder.add("arguments.divorcesteal.error.no_data", "No logs exist fer that selection o' sailors!");
         builder.add("arguments.divorcesteal.error.not_deathbanned", "Ye can't rescue a sailor if they were never wi' Davy Jones in th' first place!");
 
-        builder.addConfigScreenTitle(Divorcesteal.MOD_ID, "Divorcesteal Ship Log");
+        builder.addConfigScreenTitle(modId, "Divorcesteal Ship Log");
         builder.addConfig(DivorcestealConfig.MAX_HEARTS,
                 "Greatest Hearts",
                 "Th' greatest share o' hearts a crew member can 'ave"
@@ -97,11 +98,13 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
                 "MM/DD/YYYY",
                 "YYYY/MM/DD"
         );
-        builder.add("configs.category.divorcesteal.hearts", "Hearts");
-        builder.add("configs.category.divorcesteal.rebalances", "Laws");
+        builder.addConfigCategory(modId, "hearts", "Hearts");
+        builder.addConfigCategory(modId, "rebalances", "Laws");
 
-        builder.add("modmenu.nameTranslation.divorcesteal", "Divorcesteal");
-        builder.add("modmenu.summaryTranslation.divorcesteal", "Th' official mod fer Divorcesteal");
-        builder.add("modmenu.descriptionTranslation.divorcesteal", "Th' official mod fer Divorcesteal, not affiliated wi' th' SMP o' Stealin' Lives\n\nNow wi' support fer yer Pirate Parlance!");
+        builder.addModMenuTranslations(modId,
+                "Divorcesteal",
+                "Th' official mod fer Divorcesteal",
+                "Th' official mod fer Divorcesteal, not affiliated wi' th' SMP o' Stealin' Lives\n\nNow wi' support fer yer Pirate Parlance!"
+        );
     }
 }
