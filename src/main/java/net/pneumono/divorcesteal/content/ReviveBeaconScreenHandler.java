@@ -47,10 +47,10 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
         this.context = context;
         this.revivablePlayers = revivablePlayers;
         this.target = target;
-        this.topHeartSlot = this.addSlot(new HeartSlot(input, 0, 111, 9));
-        this.leftHeartSlot = this.addSlot(new HeartSlot(input, 1, 87, 49));
-        this.rightHeartSlot = this.addSlot(new HeartSlot(input, 2, 135, 49));
-        this.headSlot = this.addSlot(new HeadSlot(input, 3, 111, 35));
+        this.topHeartSlot = this.addSlot(new HeartSlot(input, 0, 111, 8));
+        this.leftHeartSlot = this.addSlot(new HeartSlot(input, 1, 87, 48));
+        this.rightHeartSlot = this.addSlot(new HeartSlot(input, 2, 135, 48));
+        this.headSlot = this.addSlot(new HeadSlot(input, 3, 111, 34));
         this.addPlayerSlots(playerInventory, 39, 97);
         this.addProperty(this.selectedPlayer);
         this.selectedPlayer.set(-1);

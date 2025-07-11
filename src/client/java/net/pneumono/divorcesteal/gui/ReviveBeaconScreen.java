@@ -118,9 +118,9 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
         // Revive button
         if (this.handler.canRevive()) {
             int buttonX = this.x + 87;
-            int buttonY = this.y + 75;
+            int buttonY = this.y + 74;
 
-            boolean highlighted = isPointStrictlyWithinBounds(87, 75, 64, 11, mouseX, mouseY);
+            boolean highlighted = isPointStrictlyWithinBounds(87, 74, 64, 11, mouseX, mouseY);
             Identifier buttonTexture = highlighted ? REVIVE_BUTTON_HIGHLIGHTED_TEXTURE : REVIVE_BUTTON_TEXTURE;
 
             context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, buttonTexture, buttonX, buttonY, 64, 11);
@@ -235,7 +235,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
         if (!this.handler.canRevive()) return false;
 
         int finalX = this.x + 88;
-        int finalY = this.y + 76;
+        int finalY = this.y + 75;
         if (!(mouseX >= finalX && mouseX < finalX + 64 && mouseY >= finalY && mouseY < finalY + 11)) return false;
 
         if (this.handler.onButtonClick(this.client.player, -2)) {
