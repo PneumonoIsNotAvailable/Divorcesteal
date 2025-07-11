@@ -14,6 +14,7 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.pneumono.divorcesteal.Divorcesteal;
@@ -92,7 +93,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
             if (this.isPointWithinBounds(35, 41, 16, 16, mouseX, mouseY)) {
                 Text targetTooltipText = target.name().map(Text::literal).orElseGet(
                         () -> Text.translatable("divorcesteal.unknown")
-                );
+                ).formatted(Formatting.YELLOW);
                 context.drawOrderedTooltip(this.textRenderer, this.textRenderer.wrapLines(targetTooltipText, 115), mouseX, mouseY);
             }
         }
