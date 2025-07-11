@@ -2,7 +2,6 @@ package net.pneumono.divorcesteal.content;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BeamEmitter;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentsAccess;
@@ -25,19 +24,13 @@ import net.pneumono.divorcesteal.content.component.KillTargetComponent;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.UUID;
 
-public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenHandlerFactory, BeamEmitter {
+public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenHandlerFactory {
     private KillTargetComponent target;
 
     public ReviveBeaconBlockEntity(BlockPos pos, BlockState state) {
         super(DivorcestealRegistry.REVIVE_BEACON_ENTITY, pos, state);
-    }
-
-    @Override
-    public List<BeamSegment> getBeamSegments() {
-        return List.of();
     }
 
     public KillTargetComponent getOrCreateTarget(UUID except) {
