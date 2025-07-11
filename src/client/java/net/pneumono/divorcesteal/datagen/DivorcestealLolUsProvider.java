@@ -95,9 +95,9 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
         builder.addConfigCategory(modId, "rebalances", "Changez");
 
         builder.addModMenuTranslations(modId,
-                "Divorcesteal",
-                "OFFICIAL codin thing for Divorcesteal",
-                "The ofishul coded thingy for Divorcesteal, NOT frens wit Lifesteal catz\n\nKan be playd if ur a cat!!"
+                "evil surgery demons",
+                "OFFICIAL codin thing for divorse steel",
+                "The ofishul coded thingy for divorse steel, NOT frens wit Life stealin catz\n\nKan be playd if ur a cat!!"
         );
     }
 }
