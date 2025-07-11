@@ -101,8 +101,28 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
     }
 
     @Override
-    public ItemStack quickMove(PlayerEntity player, int slot) {
-        // TODO
+    public ItemStack quickMove(PlayerEntity player, int slotIndex) {
+        Slot slot = this.slots.get(slotIndex);
+        if (!slot.hasStack()) return ItemStack.EMPTY;
+
+        ItemStack stack = slot.getStack();
+        ItemStack returnStack = stack.copy();
+        if (slotIndex < 4) {
+            if (this.insertItem(stack, 4, 40, true)) {
+                return returnStack;
+            }
+        } else {
+            if (topHeartSlot.canInsert(stack)) {
+                if (this.insertItem(stack, 0, 3, false)) {
+                    return returnStack;
+                }
+            } else if (headSlot.canInsert(stack)) {
+                if (this.insertItem(stack, 3, 4, false)) {
+                    return returnStack;
+                }
+            }
+        }
+
         return ItemStack.EMPTY;
     }
 
