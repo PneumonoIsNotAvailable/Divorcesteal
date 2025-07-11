@@ -128,8 +128,7 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        // Scuffed as hell, but I genuinely have no idea why canUse won't work
-        return true;
+        return canUse(this.context, player, DivorcestealRegistry.REVIVE_BEACON_BLOCK);
     }
 
     @Override
