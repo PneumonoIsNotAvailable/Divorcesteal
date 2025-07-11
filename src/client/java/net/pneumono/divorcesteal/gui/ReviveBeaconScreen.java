@@ -12,13 +12,13 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Colors;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.content.ReviveBeaconScreenHandler;
+import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -211,7 +211,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
                             this.handler.onButtonClick(this.client.player, playerIndex)
             ) {
                 MinecraftClient.getInstance().getSoundManager().play(
-                        PositionedSoundInstance.master(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F)
+                        PositionedSoundInstance.master(DivorcestealRegistry.REVIVE_BEACON_SELECT_SOUND, 1.0F)
                 );
                 Objects.requireNonNull(this.client.interactionManager).clickButton(this.handler.syncId, playerIndex);
                 return true;
@@ -240,7 +240,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
 
         if (this.handler.onButtonClick(this.client.player, -2)) {
             MinecraftClient.getInstance().getSoundManager().play(
-                    PositionedSoundInstance.master(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F)
+                    PositionedSoundInstance.master(DivorcestealRegistry.REVIVE_BEACON_SELECT_SOUND, 1.0F)
             );
             Objects.requireNonNull(this.client.interactionManager).clickButton(this.handler.syncId, -2);
             this.client.setScreen(null);

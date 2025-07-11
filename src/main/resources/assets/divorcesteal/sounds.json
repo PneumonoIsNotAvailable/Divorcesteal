@@ -17,6 +17,11 @@
         ],
         "subtitle": "subtitles.divorcesteal.item.revive_beacon.use"
     },
+    "ui.revive_beacon.select": {
+        "sounds": [
+            "random/click"
+        ]
+    },
     "event.deathban": {
         "sounds": [
             {

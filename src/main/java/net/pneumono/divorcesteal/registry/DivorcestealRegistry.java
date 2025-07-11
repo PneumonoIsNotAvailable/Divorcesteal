@@ -70,6 +70,7 @@ public class DivorcestealRegistry {
 
     public static final SoundEvent USE_HEART_SOUND = registerSoundEvent("item.heart.use");
     public static final SoundEvent USE_REVIVE_BEACON_SOUND = registerSoundEvent("item.revive_beacon.use");
+    public static final SoundEvent REVIVE_BEACON_SELECT_SOUND = registerSoundEvent("ui.revive_beacon.select");
     public static final SoundEvent DEATHBAN_SOUND = registerSoundEvent("event.deathban");
     public static final SoundEvent REVIVE_SOUND = registerSoundEvent("event.revive");
 
