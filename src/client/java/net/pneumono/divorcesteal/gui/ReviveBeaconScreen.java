@@ -210,7 +210,6 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
                             mouseYOffset < 18.0 &&
                             this.handler.onButtonClick(this.client.player, playerIndex)
             ) {
-                // TODO: custom sound event
                 MinecraftClient.getInstance().getSoundManager().play(
                         PositionedSoundInstance.master(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F)
                 );
@@ -240,7 +239,6 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
         if (!(mouseX >= finalX && mouseX < finalX + 64 && mouseY >= finalY && mouseY < finalY + 11)) return false;
 
         if (this.handler.onButtonClick(this.client.player, -2)) {
-            // TODO: custom sound event
             MinecraftClient.getInstance().getSoundManager().play(
                     PositionedSoundInstance.master(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F)
             );
