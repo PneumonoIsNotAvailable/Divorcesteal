@@ -30,7 +30,7 @@ public class DivorcestealEnUsProvider extends FabricLanguageProvider {
         builder.add("divorcesteal.gui.revive_beacon.title", "Revive Beacon");
         builder.add("divorcesteal.gui.revive_beacon.wanted", "WANTED");
         builder.add("divorcesteal.gui.revive_beacon.add_heart", "Add Heart");
-        builder.add("divorcesteal.gui.revive_beacon.add_head", "Add Player Head");
+        builder.add("divorcesteal.gui.revive_beacon.add_head", "Add Target Head");
         builder.add("divorcesteal.gui.revive_beacon.revive", "Revive");
 
         builder.add(DivorcestealRegistry.USE_HEART_SOUND, "Heart applies");
