@@ -21,12 +21,12 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.pneumono.divorcesteal.content.component.KillTargetComponent;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenHandlerFactory, BeamEmitter {
     private KillTargetComponent target;
@@ -35,27 +35,16 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
         super(DivorcestealRegistry.REVIVE_BEACON_ENTITY, pos, state);
     }
 
-    public static void tick(World world, BlockPos pos, BlockState state, ReviveBeaconBlockEntity blockEntity) {
-        if (!world.isClient() && blockEntity.target == null) {
-            blockEntity.getOrCreateTarget();
-            world.updateListeners(pos, state, state, ReviveBeaconBlock.NOTIFY_ALL);
-        }
-    }
-
-    public boolean canOpen() {
-        return this.target != null;
-    }
-
     @Override
     public List<BeamSegment> getBeamSegments() {
         return List.of();
     }
 
-    public KillTargetComponent getOrCreateTarget() {
+    public KillTargetComponent getOrCreateTarget(UUID except) {
         if (this.target != null) return target;
 
         if (this.getWorld() instanceof ServerWorld serverWorld) {
-            GameProfile randomTarget = ReviveBeaconBlock.getRandomTarget(serverWorld).orElse(null);
+            GameProfile randomTarget = ReviveBeaconBlock.getRandomTarget(serverWorld, except).orElse(null);
             if (randomTarget != null) {
                 this.target = new KillTargetComponent(randomTarget);
                 markDirty();
@@ -71,7 +60,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
     public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
         if (!(getWorld() instanceof ServerWorld serverWorld)) return null;
 
-        KillTargetComponent target = getOrCreateTarget();
+        KillTargetComponent target = getOrCreateTarget(player.getUuid());
         if (target == null) return null;
 
         return new ReviveBeaconScreenHandler(syncId, playerInventory,
@@ -90,7 +79,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
     @Override
     protected void writeData(WriteView view) {
         super.writeData(view);
-        view.putNullable("target", KillTargetComponent.CODEC, this.getOrCreateTarget());
+        view.putNullable("target", KillTargetComponent.CODEC, this.target);
     }
 
     @Override
@@ -102,7 +91,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
     @Override
     protected void addComponents(ComponentMap.Builder builder) {
         super.addComponents(builder);
-        if (this.getOrCreateTarget() != null) {
+        if (this.target != null) {
             builder.add(DivorcestealRegistry.KILL_TARGET_COMPONENT, this.target);
         }
     }

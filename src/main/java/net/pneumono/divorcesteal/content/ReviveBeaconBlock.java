@@ -6,8 +6,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.NamedScreenHandlerFactory;
@@ -28,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.UUID;
 
 public class ReviveBeaconBlock extends BlockWithEntity {
     public static final MapCodec<ReviveBeaconBlock> CODEC = createCodec(ReviveBeaconBlock::new);
@@ -47,20 +46,16 @@ public class ReviveBeaconBlock extends BlockWithEntity {
         return new ReviveBeaconBlockEntity(pos, state);
     }
 
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return validateTicker(type, DivorcestealRegistry.REVIVE_BEACON_ENTITY, ReviveBeaconBlockEntity::tick);
-    }
-
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        if (world instanceof ServerWorld serverWorld && world.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity && blockEntity.canOpen()) {
+        if (world instanceof ServerWorld serverWorld && world.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity) {
+            if (blockEntity.getOrCreateTarget(player.getUuid()) == null) return ActionResult.FAIL;
+
             OptionalInt optionalInt = player.openHandledScreen(blockEntity);
             if (player instanceof ServerPlayerEntity serverPlayer && optionalInt.isPresent()) {
                 ServerPlayNetworking.send(serverPlayer, new ReviveBeaconInfoS2CPayload(
                         optionalInt.getAsInt(),
-                        blockEntity.getOrCreateTarget().profile(),
+                        blockEntity.getOrCreateTarget(player.getUuid()).profile(),
                         getRevivablePlayers(serverWorld)
                 ));
             }
@@ -74,9 +69,13 @@ public class ReviveBeaconBlock extends BlockWithEntity {
         return state.getHeartDataList().stream().filter(PlayerHeartData::isBanned).map(data -> new ProfileComponent(data.gameProfile())).toList();
     }
 
-    public static Optional<GameProfile> getRandomTarget(ServerWorld world) {
+    public static Optional<GameProfile> getRandomTarget(ServerWorld world, UUID except) {
         HeartDataState state = Hearts.getHeartDataState(world);
         List<PlayerHeartData> unbannedList = state.getHeartDataList().stream().filter(data -> !data.isBanned()).toList();
+        List<PlayerHeartData> filteredUnbannedList = unbannedList.stream().filter(data -> !data.uuid().equals(except)).toList();
+        if (!filteredUnbannedList.isEmpty()) {
+            unbannedList = filteredUnbannedList;
+        }
 
         if (unbannedList.isEmpty()) return Optional.empty();
 
