@@ -63,6 +63,7 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
             if (revived != null && world instanceof ServerWorld serverWorld) {
                 ReviveBeaconBlock.revivePlayer(serverWorld, pos, revived.gameProfile(), playerInventory.player);
             }
+            world.breakBlock(pos, false);
         });
     }
 
@@ -70,16 +71,29 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
         return i >= revivablePlayers.size() ? null : this.revivablePlayers.get(i);
     }
 
+    public boolean canRevive() {
+        return this.selectedPlayer.get() >= 0 &&
+                this.topHeartSlot.hasStack() &&
+                this.leftHeartSlot.hasStack() &&
+                this.rightHeartSlot.hasStack() &&
+                this.headSlot.hasStack();
+    }
+
     @Override
     public boolean onButtonClick(PlayerEntity player, int id) {
         if (id >= 0 && id < this.revivablePlayers.size()) {
             this.selectedPlayer.set(id);
-            // TODO: Update revive button
             return true;
         } else if (id == -2) {
-            // TODO: If has necessary stuff for revival, clear inventory, revive player
-            //  No need to close screen - should be handled client-side
-            //  I think that's scuffed but idc tbh
+            if (!canRevive()) return false;
+
+            this.topHeartSlot.setStack(ItemStack.EMPTY);
+            this.leftHeartSlot.setStack(ItemStack.EMPTY);
+            this.rightHeartSlot.setStack(ItemStack.EMPTY);
+            this.headSlot.setStack(ItemStack.EMPTY);
+            reviveSelectedPlayer();
+            this.selectedPlayer.set(-1);
+
             return true;
         } else {
             return false;

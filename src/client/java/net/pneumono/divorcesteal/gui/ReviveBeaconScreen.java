@@ -33,6 +33,8 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
     private static final Identifier PLAYER_SELECTED_TEXTURE = Divorcesteal.id("player_selected");
     private static final Identifier SCROLLER_TEXTURE = Divorcesteal.id("scroller");
     private static final Identifier SCROLLER_DISABLED_TEXTURE = Divorcesteal.id("scroller_disabled");
+    private static final Identifier REVIVE_BUTTON_TEXTURE = Divorcesteal.id("revive_button");
+    private static final Identifier REVIVE_BUTTON_HIGHLIGHTED_TEXTURE = Divorcesteal.id("revive_button_highlighted");
     private static final Identifier TEXTURE = Divorcesteal.id("textures/gui/revive_beacon.png");
 
     private float scrollPosition = 0.0F;
@@ -114,7 +116,22 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
         }}
 
         // Revive button
+        if (this.handler.canRevive()) {
+            int buttonX = this.x + 87;
+            int buttonY = this.y + 75;
 
+            boolean highlighted = isPointStrictlyWithinBounds(87, 75, 64, 11, mouseX, mouseY);
+            Identifier buttonTexture = highlighted ? REVIVE_BUTTON_HIGHLIGHTED_TEXTURE : REVIVE_BUTTON_TEXTURE;
+
+            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, buttonTexture, buttonX, buttonY, 64, 11);
+
+            Text reviveText = Text.translatable("divorcesteal.gui.revive_beacon.revive");
+            context.drawText(this.textRenderer,
+                    reviveText,
+                    buttonX + 32 - (textRenderer.getWidth(reviveText) / 2), buttonY + 2,
+                    highlighted ? -128 : -9937334, false
+            );
+        }
     }
 
     private void drawEmptySlot(DrawContext context, int mouseX, int mouseY, Slot slot, Identifier texture, Text text) {
@@ -141,7 +158,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
         int finalX = this.x + 161 + (menuX * 18);
         int finalY = this.y + 22 + (menuY * 18);
 
-        boolean highlighted = this.isPointWithinBounds(finalX - this.x + 1, finalY - this.y + 1, 16, 16, mouseX, mouseY);
+        boolean highlighted = this.isPointStrictlyWithinBounds(finalX - this.x, finalY - this.y, 18, 18, mouseX, mouseY);
 
         Identifier texture;
         if (selected) {
@@ -168,12 +185,18 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        this.scrollbarClicked = false;
+        if (handlePlayerSelectMouseClick(mouseX, mouseY)) return true;
+        if (handleReviveButtonMouseClick(mouseX, mouseY)) return true;
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private boolean handlePlayerSelectMouseClick(double mouseX, double mouseY) {
         Objects.requireNonNull(this.client);
+        this.scrollbarClicked = false;
 
         int finalX = this.x + 161;
         int finalY = this.y + 22;
-
         for (int menuY = 0; menuY < 3; menuY++) { for (int menuX = 0; menuX < 3; menuX++) {
 
             double mouseXOffset = mouseX - (finalX + menuX * 18);
@@ -182,10 +205,10 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
 
             if (
                     mouseXOffset > 0.0 &&
-                    mouseYOffset > 0.0 &&
-                    mouseXOffset < 18.0 &&
-                    mouseYOffset < 18.0 &&
-                    this.handler.onButtonClick(this.client.player, playerIndex)
+                            mouseYOffset > 0.0 &&
+                            mouseXOffset < 18.0 &&
+                            mouseYOffset < 18.0 &&
+                            this.handler.onButtonClick(this.client.player, playerIndex)
             ) {
                 // TODO: custom sound event
                 MinecraftClient.getInstance().getSoundManager().play(
@@ -201,10 +224,32 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
             finalY = this.y + 22;
             if (mouseX >= finalX && mouseX < finalX + 12 && mouseY >= finalY && mouseY < finalY + 54) {
                 this.scrollbarClicked = true;
+                return true;
             }
         }
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return false;
+    }
+
+    private boolean handleReviveButtonMouseClick(double mouseX, double mouseY) {
+        Objects.requireNonNull(this.client);
+        if (!this.handler.canRevive()) return false;
+
+        int finalX = this.x + 88;
+        int finalY = this.y + 76;
+        if (!(mouseX >= finalX && mouseX < finalX + 64 && mouseY >= finalY && mouseY < finalY + 11)) return false;
+
+        if (this.handler.onButtonClick(this.client.player, -2)) {
+            // TODO: custom sound event
+            MinecraftClient.getInstance().getSoundManager().play(
+                    PositionedSoundInstance.master(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F)
+            );
+            Objects.requireNonNull(this.client.interactionManager).clickButton(this.handler.syncId, -2);
+            this.client.setScreen(null);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -232,6 +277,10 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
         }
 
         return true;
+    }
+
+    private boolean isPointStrictlyWithinBounds(int x, int y, int width, int height, double pointX, double pointY) {
+        return this.isPointWithinBounds(x + 1, y + 1, width - 2, height - 2, pointX, pointY);
     }
 
     private boolean canScroll() {
