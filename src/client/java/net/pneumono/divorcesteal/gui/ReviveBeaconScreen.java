@@ -1,5 +1,6 @@
 package net.pneumono.divorcesteal.gui;
 
+import com.mojang.authlib.properties.PropertyMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
@@ -20,6 +21,7 @@ import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.content.ReviveBeaconScreenHandler;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler> {
     private static final Identifier HEART_SLOT_TEXTURE = Divorcesteal.id("heart");
@@ -33,8 +35,6 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
     private static final Identifier SCROLLER_DISABLED_TEXTURE = Divorcesteal.id("scroller_disabled");
     private static final Identifier TEXTURE = Divorcesteal.id("textures/gui/revive_beacon.png");
 
-    private final boolean canScroll;
-
     private float scrollPosition = 0.0F;
     private int visibleTopRow = 0;
     private boolean scrollbarClicked = false;
@@ -45,8 +45,6 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
         this.backgroundHeight = 179;
         this.playerInventoryTitleX = 39;
         this.playerInventoryTitleY = this.backgroundHeight - 93;
-
-        this.canScroll = getRows() > 3;
     }
 
     @Override
@@ -84,7 +82,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
                 Colors.DARK_GRAY, false
         );
 
-        ProfileComponent target = this.handler.getTarget();
+        ProfileComponent target = resolved(this.handler.getTarget());
         if (target != null) {
             ItemStack targetHeadStack = new ItemStack(Items.PLAYER_HEAD);
             targetHeadStack.set(DataComponentTypes.PROFILE, target);
@@ -98,13 +96,13 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
         }
 
         // Player select
-        Identifier scrollTexture = this.canScroll ? SCROLLER_TEXTURE : SCROLLER_DISABLED_TEXTURE;
+        Identifier scrollTexture = canScroll() ? SCROLLER_TEXTURE : SCROLLER_DISABLED_TEXTURE;
         int scrollOffset = (int)(39.0F * this.scrollPosition);
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, scrollTexture, this.x + 119, this.y + 13 + scrollOffset, 12, 15);
+        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, scrollTexture, this.x + 218, this.y + 22 + scrollOffset, 12, 15);
 
         for (int menuY = 0; menuY < 3; ++menuY) { for (int menuX = 0; menuX < 3; ++menuX) {
             int playerIndex = (menuY + this.visibleTopRow) * 3 + menuX;
-            ProfileComponent profile = this.handler.getRevivablePlayer(playerIndex);
+            ProfileComponent profile = resolved(this.handler.getRevivablePlayer(playerIndex));
             if (profile == null) break;
 
             drawPlayerSelect(
@@ -140,10 +138,10 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
             ProfileComponent profile,
             boolean selected
     ) {
-        int finalX = this.x + 162 + (menuX * 18);
-        int finalY = this.y + 23 + (menuY * 18);
+        int finalX = this.x + 161 + (menuX * 18);
+        int finalY = this.y + 22 + (menuY * 18);
 
-        boolean highlighted = this.isPointWithinBounds(finalX, finalY, 18, 18, mouseX, mouseY);
+        boolean highlighted = this.isPointWithinBounds(finalX - this.x + 1, finalY - this.y + 1, 16, 16, mouseX, mouseY);
 
         Identifier texture;
         if (selected) {
@@ -158,7 +156,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
 
         ItemStack targetHeadStack = new ItemStack(Items.PLAYER_HEAD);
         targetHeadStack.set(DataComponentTypes.PROFILE, profile);
-        context.drawItem(targetHeadStack, finalX, finalY);
+        context.drawItem(targetHeadStack, finalX + 1, finalY + 1);
 
         if (highlighted) {
             Text text = profile.name().map(Text::literal).orElseGet(
@@ -183,11 +181,11 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
             int playerIndex = (menuY + this.visibleTopRow) * 3 + menuX;
 
             if (
-                    this.handler.onButtonClick(this.client.player, playerIndex) &&
-                    mouseXOffset >= 0.0 &&
-                    mouseYOffset >= 0.0 &&
-                    mouseXOffset < 14.0 &&
-                    mouseYOffset < 14.0
+                    mouseXOffset > 0.0 &&
+                    mouseYOffset > 0.0 &&
+                    mouseXOffset < 18.0 &&
+                    mouseYOffset < 18.0 &&
+                    this.handler.onButtonClick(this.client.player, playerIndex)
             ) {
                 // TODO: custom sound event
                 MinecraftClient.getInstance().getSoundManager().play(
@@ -198,10 +196,10 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
             }
         }}
 
-        if (this.canScroll) {
-            finalX = this.x + 119;
-            finalY = this.y + 9;
-            if (mouseX >= finalX && mouseX < finalX + 12 && mouseY >= finalY && mouseY < finalY + 56) {
+        if (canScroll()) {
+            finalX = this.x + 218;
+            finalY = this.y + 22;
+            if (mouseX >= finalX && mouseX < finalX + 12 && mouseY >= finalY && mouseY < finalY + 54) {
                 this.scrollbarClicked = true;
             }
         }
@@ -211,7 +209,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (!this.canScroll || !this.scrollbarClicked) return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        if (!canScroll() || !this.scrollbarClicked) return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
 
         int rows = this.getRows() - 3;
         int topY = this.y + 22;
@@ -226,7 +224,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
         if (super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) return true;
 
-        if (this.canScroll) {
+        if (canScroll()) {
             int rows = this.getRows() - 3;
             float f = (float)verticalAmount / rows;
             this.scrollPosition = MathHelper.clamp(this.scrollPosition - f, 0.0F, 1.0F);
@@ -236,7 +234,17 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
         return true;
     }
 
+    private boolean canScroll() {
+        return getRows() > 3;
+    }
+
     private int getRows() {
         return MathHelper.ceilDiv(this.handler.revivablePlayers.size(), 3);
+    }
+
+    // Scuffed as hell
+    private ProfileComponent resolved(ProfileComponent component) {
+        if (component == null) return null;
+        return new ProfileComponent(component.name(), Optional.empty(), new PropertyMap()).resolve();
     }
 }
