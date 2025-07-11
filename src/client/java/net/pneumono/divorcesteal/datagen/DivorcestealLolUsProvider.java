@@ -91,13 +91,6 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
                 "No mor totum :(",
                 "If totum not alowed"
         );
-        builder.addEnumConfig(DivorcestealConfig.DATE_FORMAT,
-                "Date Frmat",
-                "The way ur tiem numbrz get orderd",
-                "DD/MM/YYYY",
-                "MM/DD/YYYY",
-                "YYYY/MM/DD"
-        );
         builder.addConfigCategory(modId, "hearts", "Harts");
         builder.addConfigCategory(modId, "rebalances", "Changez");
 

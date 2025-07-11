@@ -91,13 +91,6 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
                 "Prohibit Jewels o' Life",
                 "If yer Jewels o' Life be unable to save ye"
         );
-        builder.addEnumConfig(DivorcestealConfig.DATE_FORMAT,
-                "Date Format",
-                "Th' format o' dates in yer parchment",
-                "DD/MM/YYYY",
-                "MM/DD/YYYY",
-                "YYYY/MM/DD"
-        );
         builder.addConfigCategory(modId, "hearts", "Hearts");
         builder.addConfigCategory(modId, "rebalances", "Laws");
 

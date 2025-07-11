@@ -9,7 +9,6 @@ public class DivorcestealConfig {
     public static final IntegerConfiguration REVIVE_DAYS = new IntegerConfiguration(id(), "revive_days", ConfigEnv.SERVER, -1, 100, 30);
     public static final BooleanConfiguration DISABLE_ELYTRA = new BooleanConfiguration(id(), "disable_elytra", ConfigEnv.SERVER, false);
     public static final BooleanConfiguration DISABLE_TOTEMS = new BooleanConfiguration(id(), "disable_totems", ConfigEnv.SERVER, false);
-    public static final EnumConfiguration<DateFormat> DATE_FORMAT = new EnumConfiguration<>(id(), "date_format", ConfigEnv.CLIENT, DateFormat.MMDDYYYY);
 
     protected static void registerDivorcestealConfigs() {
         Configs.register(id(),
@@ -18,8 +17,7 @@ public class DivorcestealConfig {
                 REVIVE_HEARTS,
                 REVIVE_DAYS,
                 DISABLE_ELYTRA,
-                DISABLE_TOTEMS,
-                DATE_FORMAT
+                DISABLE_TOTEMS
         );
         Configs.registerCategories(id(),
                 new ConfigCategory(id(), "hearts",
@@ -37,28 +35,5 @@ public class DivorcestealConfig {
 
     private static String id() {
         return Divorcesteal.MOD_ID;
-    }
-
-    @SuppressWarnings("unused")
-    public enum DateFormat {
-        DDMMYYYY("dd/MM/yyyy", "HH:mm:ss"),
-        MMDDYYYY("MM/dd/yyyy", "HH:mm:ss"),
-        YYYYMMDD("yyyy/MM/dd", "HH:mm:ss");
-
-        private final String dateFormat;
-        private final String timeFormat;
-
-        DateFormat(String dateFormat, String timeFormat) {
-            this.dateFormat = dateFormat;
-            this.timeFormat = timeFormat;
-        }
-
-        public String getDateFormat() {
-            return dateFormat;
-        }
-
-        public String getTimeFormat() {
-            return timeFormat;
-        }
     }
 }
