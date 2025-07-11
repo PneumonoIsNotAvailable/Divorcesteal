@@ -8,6 +8,7 @@ import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -16,11 +17,16 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
+import net.pneumono.divorcesteal.hearts.PlayerHeartData;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.OptionalInt;
 
 public class ReviveBeaconBlock extends BlockWithEntity {
@@ -55,12 +61,27 @@ public class ReviveBeaconBlock extends BlockWithEntity {
                 ServerPlayNetworking.send(serverPlayer, new ReviveBeaconInfoS2CPayload(
                         optionalInt.getAsInt(),
                         blockEntity.getOrCreateTarget().profile(),
-                        ReviveBeaconBlockEntity.getRevivablePlayers(serverWorld)
+                        getRevivablePlayers(serverWorld)
                 ));
             }
         }
 
         return ActionResult.SUCCESS;
+    }
+
+    public static List<ProfileComponent> getRevivablePlayers(ServerWorld world) {
+        HeartDataState state = Hearts.getHeartDataState(world);
+        return state.getHeartDataList().stream().filter(PlayerHeartData::isBanned).map(data -> new ProfileComponent(data.gameProfile())).toList();
+    }
+
+    public static Optional<GameProfile> getRandomTarget(ServerWorld world) {
+        HeartDataState state = Hearts.getHeartDataState(world);
+        List<PlayerHeartData> unbannedList = state.getHeartDataList().stream().filter(data -> !data.isBanned()).toList();
+
+        if (unbannedList.isEmpty()) return Optional.empty();
+
+        Random random = world.getRandom();
+        return Optional.of(unbannedList.get(random.nextBetween(0, unbannedList.size() - 1)).gameProfile());
     }
 
     public static void revivePlayer(ServerWorld world, BlockPos pos, GameProfile revived, PlayerEntity reviver) {
@@ -74,31 +95,4 @@ public class ReviveBeaconBlock extends BlockWithEntity {
     protected NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
         return super.createScreenHandlerFactory(state, world, pos);
     }
-
-    /*
-    private static void test() {
-        if (world instanceof ServerWorld serverWorld) {
-            HeartDataState state = Hearts.getHeartDataState(serverWorld);
-            List<PlayerHeartData> bannedList = state.getHeartDataList().stream().filter(PlayerHeartData::isBanned).toList();
-            List<PlayerHeartData> unbannedList = state.getHeartDataList().stream().filter(data -> !data.isBanned()).toList();
-
-            if (bannedList.isEmpty() || unbannedList.isEmpty()) return ActionResult.FAIL;
-
-            ItemStack stack = user.getStackInHand(hand);
-            Random random = user.getRandom();
-            ProfileComponent profile = stack.getOrDefault(DivorcestealRegistry.KILL_TARGET,
-                    new ProfileComponent(unbannedList.get(random.nextBetween(0, unbannedList.size() - 1)).gameProfile())
-            );
-            stack.set(DivorcestealRegistry.KILL_TARGET, profile);
-
-            user.openHandledScreen(new SimpleNamedScreenHandlerFactory((syncId, playerInventory, player) -> new ReviveBeaconScreenHandler(
-                    syncId, playerInventory,
-                    ScreenHandlerContext.create(world, user.getBlockPos()),
-                    bannedList, profile
-            ), Text.translatable("divorcesteal.gui.revive.title")));
-        }
-        user.incrementStat(Stats.USED.getOrCreateStat(this));
-        return ActionResult.SUCCESS;
-    }
-     */
 }

@@ -6,7 +6,6 @@ import net.minecraft.block.entity.BeamEmitter;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentsAccess;
-import net.minecraft.component.type.ProfileComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.NbtCompound;
@@ -22,17 +21,12 @@ import net.minecraft.storage.ReadView;
 import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.pneumono.divorcesteal.content.component.KillTargetComponent;
-import net.pneumono.divorcesteal.hearts.HeartDataState;
-import net.pneumono.divorcesteal.hearts.Hearts;
-import net.pneumono.divorcesteal.hearts.PlayerHeartData;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenHandlerFactory, BeamEmitter {
     private KillTargetComponent target;
@@ -61,7 +55,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
         if (this.target != null) return target;
 
         if (this.getWorld() instanceof ServerWorld serverWorld) {
-            GameProfile randomTarget = getRandomTarget(serverWorld).orElse(null);
+            GameProfile randomTarget = ReviveBeaconBlock.getRandomTarget(serverWorld).orElse(null);
             if (randomTarget != null) {
                 this.target = new KillTargetComponent(randomTarget);
                 markDirty();
@@ -70,21 +64,6 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
         }
 
         return this.target;
-    }
-
-    public static List<ProfileComponent> getRevivablePlayers(ServerWorld world) {
-        HeartDataState state = Hearts.getHeartDataState(world);
-        return state.getHeartDataList().stream().filter(PlayerHeartData::isBanned).map(data -> new ProfileComponent(data.gameProfile())).toList();
-    }
-
-    public static Optional<GameProfile> getRandomTarget(ServerWorld world) {
-        HeartDataState state = Hearts.getHeartDataState(world);
-        List<PlayerHeartData> unbannedList = state.getHeartDataList().stream().filter(data -> !data.isBanned()).toList();
-
-        if (unbannedList.isEmpty()) return Optional.empty();
-
-        Random random = world.getRandom();
-        return Optional.of(unbannedList.get(random.nextBetween(0, unbannedList.size() - 1)).gameProfile());
     }
 
     @Nullable
@@ -97,7 +76,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
 
         return new ReviveBeaconScreenHandler(syncId, playerInventory,
                 ScreenHandlerContext.create(serverWorld, this.getPos()),
-                getRevivablePlayers(serverWorld),
+                ReviveBeaconBlock.getRevivablePlayers(serverWorld),
                 target.profile()
         );
     }

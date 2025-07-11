@@ -56,17 +56,6 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
         this.selectedPlayer.set(-1);
     }
 
-    private void reviveSelectedPlayer() {
-        context.run((world, pos) -> {
-            int selectedPlayer = getSelectedPlayer();
-            ProfileComponent revived = selectedPlayer == -1 ? null : this.revivablePlayers.get(selectedPlayer);
-            if (revived != null && world instanceof ServerWorld serverWorld) {
-                ReviveBeaconBlock.revivePlayer(serverWorld, pos, revived.gameProfile(), playerInventory.player);
-            }
-            world.breakBlock(pos, false);
-        });
-    }
-
     public ProfileComponent getRevivablePlayer(int i) {
         return i >= revivablePlayers.size() ? null : this.revivablePlayers.get(i);
     }
@@ -98,6 +87,17 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
         } else {
             return false;
         }
+    }
+
+    private void reviveSelectedPlayer() {
+        context.run((world, pos) -> {
+            int selectedPlayer = getSelectedPlayer();
+            ProfileComponent revived = selectedPlayer == -1 ? null : this.revivablePlayers.get(selectedPlayer);
+            if (revived != null && world instanceof ServerWorld serverWorld) {
+                ReviveBeaconBlock.revivePlayer(serverWorld, pos, revived.gameProfile(), playerInventory.player);
+            }
+            world.breakBlock(pos, false);
+        });
     }
 
     @Override
@@ -138,16 +138,16 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
         this.context.run((world, pos) -> this.dropInventory(player, this.input));
     }
 
-    public int getSelectedPlayer() {
-        return this.selectedPlayer.get();
-    }
-
     public void setRevivablePlayers(List<ProfileComponent> revivablePlayers) {
         this.revivablePlayers = revivablePlayers;
     }
 
     public void setTarget(ProfileComponent target) {
         this.target = target;
+    }
+
+    public int getSelectedPlayer() {
+        return this.selectedPlayer.get();
     }
 
     public ProfileComponent getTarget() {
