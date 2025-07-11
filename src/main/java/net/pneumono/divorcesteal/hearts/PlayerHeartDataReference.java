@@ -3,6 +3,7 @@ package net.pneumono.divorcesteal.hearts;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.pneumono.divorcesteal.DivorcestealConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
@@ -35,11 +36,16 @@ public class PlayerHeartDataReference {
         this.banDate = data.banDate();
     }
 
-
     public static PlayerHeartDataReference create(PlayerEntity player) {
         if (!(player.getWorld() instanceof ServerWorld serverWorld)) throw new IllegalStateException("Cannot set player hearts on the logical client!");
 
         return new PlayerHeartDataReference(Hearts.getHeartDataState(serverWorld), player.getGameProfile());
+    }
+
+    public void delete() {
+        this.hearts = DivorcestealConfig.DEFAULT_HEARTS.getValue();
+        this.banDate = null;
+        this.state.deleteHeartData(this.uuid);
     }
 
     public boolean isBanned() {

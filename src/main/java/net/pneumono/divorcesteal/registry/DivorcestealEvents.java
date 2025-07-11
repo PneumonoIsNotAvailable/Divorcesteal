@@ -83,7 +83,7 @@ public class DivorcestealEvents {
                     reference.getBanDate().get(), DivorcestealConfig.REVIVE_DAYS.getValue()
             ).before(new Date())) {
 
-                Hearts.unban(world.getServer(), reference);
+                Hearts.unban(world.getServer(), reference, true);
                 Hearts.updateData(null, world.getServer(), reference);
             }
         }

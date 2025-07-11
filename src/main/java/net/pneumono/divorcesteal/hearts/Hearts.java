@@ -47,7 +47,7 @@ public class Hearts {
         PlayerHeartDataReference reference = new PlayerHeartDataReference(state, profile);
         if (!reference.isBanned()) return false;
 
-        unban(world.getServer(), reference);
+        unban(world.getServer(), reference, true);
         return true;
     }
 
@@ -59,7 +59,7 @@ public class Hearts {
         reference.setHearts(reference.getHearts());
         reference.setName(reference.getName());
         if (player != null) updateHearts(player, reference.getHearts());
-        if (server != null) updateBan(server, reference);
+        if (server != null) updateBan(server, reference, true);
     }
 
     public static void updateHearts(PlayerEntity player, int hearts) {
@@ -70,43 +70,49 @@ public class Hearts {
         }
     }
 
-    public static void updateBan(MinecraftServer server, PlayerHeartDataReference reference) {
+    public static void updateBan(MinecraftServer server, PlayerHeartDataReference reference, boolean effects) {
         if (reference.isBanned()) {
-            deathban(server, reference);
+            deathban(server, reference, effects);
         } else {
-            unban(server, reference);
+            unban(server, reference, effects);
         }
     }
 
-    public static void deathban(MinecraftServer server, PlayerHeartDataReference reference) {
+    public static void deathban(MinecraftServer server, PlayerHeartDataReference reference, boolean effects) {
         GameProfile profile = reference.getGameProfile();
         BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
 
         if (!bannedPlayerList.contains(profile)) {
-            for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
-                globalPlayer.playSoundToPlayer(DivorcestealRegistry.DEATHBAN_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                Text banAnnouncement = Text.translatable("divorcesteal.deathban_global", profile.getName());
-                globalPlayer.sendMessageToClient(banAnnouncement, false);
+            if (effects) {
+                reference.setHearts(0);
+
+                for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
+                    globalPlayer.playSoundToPlayer(DivorcestealRegistry.DEATHBAN_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    Text banAnnouncement = Text.translatable("divorcesteal.deathban_global", profile.getName());
+                    globalPlayer.sendMessageToClient(banAnnouncement, false);
+                }
             }
 
             Date date = new Date();
             BannedPlayerEntry bannedPlayerEntry = new BannedPlayerEntry(profile, date, ZERO_HEART_BAN_ID, null, "Zero-Heart Deathban (can be revoked at any time via Revive Beacons)");
             bannedPlayerList.add(bannedPlayerEntry);
-            reference.setHearts(0);
         }
     }
 
-    public static void unban(MinecraftServer server, PlayerHeartDataReference reference) {
+    public static void unban(MinecraftServer server, PlayerHeartDataReference reference, boolean effects) {
         GameProfile profile = reference.getGameProfile();
         BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
 
         BannedPlayerEntry entry = bannedPlayerList.get(profile);
         if (entry != null && entry.getSource().equals(Hearts.ZERO_HEART_BAN_ID)) {
             bannedPlayerList.remove(profile);
-            reference.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());
 
-            for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
-                globalPlayer.playSoundToPlayer(DivorcestealRegistry.REVIVE_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            if (effects) {
+                reference.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());
+
+                for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
+                    globalPlayer.playSoundToPlayer(DivorcestealRegistry.REVIVE_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                }
             }
         }
     }

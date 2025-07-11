@@ -201,11 +201,13 @@ public class DivorcestealCommands {
 
         HeartDataState state = getHeartDataState(source);
         for (PlayerHeartDataReference reference : references) {
-            state.deleteHeartData(reference.getUUID());
+            reference.delete();
             PlayerEntity player = playerFromReference(source, reference);
             if (player != null) {
                 state.getOrCreateHeartData(player.getGameProfile().getId(), player.getGameProfile().getName());
                 Hearts.updateData(player);
+            } else {
+                Hearts.updateBan(source.getServer(), reference, false);
             }
         }
 
