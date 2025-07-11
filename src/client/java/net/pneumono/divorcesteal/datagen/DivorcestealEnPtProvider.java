@@ -26,7 +26,7 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         builder.add("item.divorcesteal.revive_beacon.target", "Yer Target: %s");
         builder.add("item.divorcesteal.player_head.killer", "Plunder'd %s");
 
-        builder.add("divorcesteal.gui.deathban.title", "Ye be out of hearts!");
+        builder.add("divorcesteal.gui.deathban.title", "Ye have not a heart more!");
         builder.add("divorcesteal.gui.revive_beacon.title", "Beacon o' Rescue");
         builder.add("divorcesteal.gui.revive_beacon.wanted", "WANTED");
         builder.add("divorcesteal.gui.revive_beacon.add_heart", "Add yer Pirate's Heart");
@@ -39,8 +39,8 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         builder.add(DivorcestealRegistry.REVIVE_SOUND, "Rescue echoes");
 
         builder.add("divorcesteal.unknown", "???");
-        builder.add("divorcesteal.deathban", "Ye be out of hearts!");
-        builder.add("divorcesteal.deathban_global", "%s be out of hearts!");
+        builder.add("divorcesteal.deathban", "Ye have not a heart more!");
+        builder.add("divorcesteal.deathban_global", "%s has not a heart more!");
 
         builder.add(DivorcestealRegistry.STEAL_LIFE_STAT, "Hearts Plundered", "stat");
         builder.add(DivorcestealRegistry.WITHDRAW_HEART_STAT, "Hearts Withdrawn", "stat");
@@ -66,7 +66,7 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         builder.add("arguments.divorcesteal.error.no_data", "No logs exist fer that selection o' sailors!");
         builder.add("arguments.divorcesteal.error.not_deathbanned", "Ye can't rescue a sailor if they were never wi' Davy Jones in th' first place!");
 
-        builder.addConfigScreenTitle(modId, "Divorcesteal Ship Log");
+        builder.addConfigScreenTitle(modId, "Divorceplunder Ship Log");
         builder.addConfig(DivorcestealConfig.MAX_HEARTS,
                 "Greatest Hearts",
                 "Th' greatest share o' hearts a crew member can 'ave"
@@ -102,9 +102,9 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         builder.addConfigCategory(modId, "rebalances", "Laws");
 
         builder.addModMenuTranslations(modId,
-                "Divorcesteal",
-                "Th' official mod fer Divorcesteal",
-                "Th' official mod fer Divorcesteal, not affiliated wi' th' SMP o' Stealin' Lives\n\nNow wi' support fer yer Pirate Parlance!"
+                "Divorceplunder",
+                "Th' official mod fer Divorceplunder",
+                "Th' official mod fer Divorceplunder, not affiliated wi' th' SMP o' Stealin' Lives\n\nNow wi' support fer yer Pirate Parlance!"
         );
     }
 }
