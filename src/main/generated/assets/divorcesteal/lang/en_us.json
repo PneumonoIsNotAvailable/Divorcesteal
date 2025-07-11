@@ -17,6 +17,8 @@
   "commands.divorcesteal.withdraw.single": "Withdrew 1 heart",
   "configs.category.divorcesteal.hearts": "Hearts",
   "configs.category.divorcesteal.rebalances": "Rebalances",
+  "configs.divorcesteal.crafted_heart_limit": "Crafted Heart Limit",
+  "configs.divorcesteal.crafted_heart_limit.tooltip": "The number of hearts at which crafted hearts can no longer be used",
   "configs.divorcesteal.default_hearts": "Default Hearts",
   "configs.divorcesteal.default_hearts.tooltip": "The number of hearts players start with when they first join",
   "configs.divorcesteal.disable_elytra": "Disable Elytra",

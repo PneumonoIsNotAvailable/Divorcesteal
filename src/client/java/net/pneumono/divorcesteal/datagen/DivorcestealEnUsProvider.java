@@ -83,6 +83,10 @@ public class DivorcestealEnUsProvider extends FabricLanguageProvider {
                 "Days to Revive",
                 "How many real-life days it takes to be automatically revived. -1 represents auto-revival being disabled"
         );
+        builder.addConfig(DivorcestealConfig.CRAFTED_HEART_LIMIT,
+                "Crafted Heart Limit",
+                "The number of hearts at which crafted hearts can no longer be used"
+        );
         builder.addConfig(DivorcestealConfig.DISABLE_ELYTRA,
                 "Disable Elytra",
                 "Whether Elytra are disabled"

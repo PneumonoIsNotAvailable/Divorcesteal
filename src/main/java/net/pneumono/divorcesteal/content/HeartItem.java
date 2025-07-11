@@ -10,6 +10,7 @@ import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 
@@ -23,7 +24,7 @@ public class HeartItem extends Item {
         ItemStack stack = user.getStackInHand(hand);
         if (!(world instanceof ServerWorld serverWorld)) return ActionResult.CONSUME;
 
-        if (stack.contains(DivorcestealRegistry.CRAFTED_COMPONENT) && getHearts(serverWorld, user) >= 7) return ActionResult.FAIL;
+        if (stack.contains(DivorcestealRegistry.CRAFTED_COMPONENT) && getHearts(serverWorld, user) >= DivorcestealConfig.CRAFTED_HEART_LIMIT.getValue()) return ActionResult.FAIL;
 
         int addedHearts = Hearts.addHeartsValidated(user, 1, false);
 

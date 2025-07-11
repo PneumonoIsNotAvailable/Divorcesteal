@@ -83,6 +83,10 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
                 "Moons to Return",
                 "How many real-life days it takes fer Davy Jones to set ye free. -1 means ye be lost forever!"
         );
+        builder.addConfig(DivorcestealConfig.CRAFTED_HEART_LIMIT,
+                "Limit o' Craft'd Hearts",
+                "Th' amount o' hearts at which ye can use craft'd hearts no longer"
+        );
         builder.addConfig(DivorcestealConfig.DISABLE_ELYTRA,
                 "Prohibit Icarus' Wings",
                 "If yer Icarus' Wings be unable to take flight"

@@ -77,11 +77,15 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
         );
         builder.addConfig(DivorcestealConfig.REVIVE_HEARTS,
                 "Bringbak Harts",
-                "Hartz can has wen they get bringed bak"
+                "Hartz cat has wen they get bringed bak"
         );
         builder.addConfig(DivorcestealConfig.REVIVE_DAYS,
                 "Sleeps 2 bringbak",
                 "How many timez u need 2 sleep irl 2 bring bak cats. -1 means no bringing bak!!"
+        );
+        builder.addConfig(DivorcestealConfig.CRAFTED_HEART_LIMIT,
+                "Limitz 4 Craftd Harts",
+                "Hartz wher u cant use craftd heartz anymor"
         );
         builder.addConfig(DivorcestealConfig.DISABLE_ELYTRA,
                 "No mor fly :(",
