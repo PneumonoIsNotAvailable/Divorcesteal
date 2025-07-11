@@ -47,11 +47,11 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         builder.add(DivorcestealRegistry.DEATHBAN_PLAYER_STAT, "Sailors sent t' Davy Jones", "stat");
         builder.add(DivorcestealRegistry.DEATHBAN_SELF_STAT, "Times sent t' Davy Jones", "stat");
 
-        builder.add("commands.divorcesteal.get", "%1$s 'as %2$s hearts");
-        builder.add("commands.divorcesteal.set.single", "Forced %1$s to %2$s hearts");
-        builder.add("commands.divorcesteal.set.multiple", "Forced %1$s sailors to %2$s hearts");
-        builder.add("commands.divorcesteal.add.single", "Gifted %1$s hearts to %2$s");
-        builder.add("commands.divorcesteal.add.multiple", "Gifted %1$s hearts to %2$s sailors");
+        builder.add("commands.divorcesteal.get", "%1$s be hoardin' %2$s hearts");
+        builder.add("commands.divorcesteal.set.single", "%1$s be forced to %2$s hearts");
+        builder.add("commands.divorcesteal.set.multiple", "%1$s sailors be forced to %2$s hearts");
+        builder.add("commands.divorcesteal.add.single", "%2$s be gifted %1$s hearts");
+        builder.add("commands.divorcesteal.add.multiple", "%2$s sailors be gifted %1$s hearts");
         builder.add("commands.divorcesteal.remove.single", "Plundered %1$s hearts from %2$s");
         builder.add("commands.divorcesteal.remove.multiple", "Plundered %1$s hearts from %2$s players");
         builder.add("commands.divorcesteal.revive.single", "Rescued %s from Davy Jones' Locker");
@@ -68,15 +68,15 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         builder.addConfigScreenTitle(Divorcesteal.MOD_ID, "Divorcesteal Ship Log");
         builder.addConfig(DivorcestealConfig.MAX_HEARTS,
                 "Greatest Hearts",
-                "The greatest share o' hearts a crew member can 'ave"
+                "Th' greatest share o' hearts a crew member can 'ave"
         );
         builder.addConfig(DivorcestealConfig.DEFAULT_HEARTS,
                 "Startin' Hearts",
-                "The share o' hearts sailors start with when they first join th' crew"
+                "Th' share o' hearts sailors start with when they first join th' crew"
         );
         builder.addConfig(DivorcestealConfig.REVIVE_HEARTS,
                 "Returnin' Hearts",
-                "The share o' hearts sailors keep when returnin' from Davy Jones"
+                "Th' share o' hearts sailors keep when returnin' from Davy Jones"
         );
         builder.addConfig(DivorcestealConfig.REVIVE_DAYS,
                 "Moons to Return",
@@ -92,7 +92,7 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         );
         builder.addEnumConfig(DivorcestealConfig.DATE_FORMAT,
                 "Date Format",
-                "The format o' dates in yer parchment",
+                "Th' format o' dates in yer parchment",
                 "DD/MM/YYYY",
                 "MM/DD/YYYY",
                 "YYYY/MM/DD"
@@ -102,6 +102,6 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
 
         builder.add("modmenu.nameTranslation.divorcesteal", "Divorcesteal");
         builder.add("modmenu.summaryTranslation.divorcesteal", "Th' official mod fer Divorcesteal");
-        builder.add("modmenu.descriptionTranslation.divorcesteal", "Th' official mod fer Divorcesteal, not affiliated wi' the SMP o' Stealin' Lives\n\nNow wi' support fer Pirate Parlance!");
+        builder.add("modmenu.descriptionTranslation.divorcesteal", "Th' official mod fer Divorcesteal, not affiliated wi' th' SMP o' Stealin' Lives\n\nNow wi' support fer yer Pirate Parlance!");
     }
 }
