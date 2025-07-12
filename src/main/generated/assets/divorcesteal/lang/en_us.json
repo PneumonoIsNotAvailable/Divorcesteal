@@ -40,6 +40,8 @@
   "divorcesteal.gui.revive_beacon.revive": "Revive",
   "divorcesteal.gui.revive_beacon.title": "Revive Beacon",
   "divorcesteal.gui.revive_beacon.wanted": "WANTED",
+  "divorcesteal.resource_pack.retextured_hearts": "Retextured Hearts",
+  "divorcesteal.resource_pack.retextured_hearts.description": "Gives Hearts a custom texture",
   "divorcesteal.unknown": "???",
   "item.divorcesteal.heart": "Heart",
   "item.divorcesteal.heart.crafted": "Crafted",

@@ -66,6 +66,9 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
         builder.add("arguments.divorcesteal.error.no_data", "Dont have stuff 4 those kittehs!");
         builder.add("arguments.divorcesteal.error.not_deathbanned", "Cant bring bak a cat if they not gon!");
 
+        builder.add("divorcesteal.resource_pack.retextured_hearts", "Hart Lookz diffren!");
+        builder.add("divorcesteal.resource_pack.retextured_hearts.description", "Makez it pwetty!");
+
         builder.addConfigScreenTitle(modId, "Divorcesteal Changez");
         builder.addConfig(DivorcestealConfig.MAX_HEARTS,
                 "BIG Harts",

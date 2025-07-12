@@ -59,7 +59,7 @@ public class DivorcestealDataGenerator implements DataGeneratorEntrypoint {
 
 		@Override
 		public void generateItemModels(ItemModelGenerator generator) {
-			generator.register(DivorcestealRegistry.HEART_ITEM, Models.GENERATED);
+			generator.registerWithTextureSource(DivorcestealRegistry.HEART_ITEM, Items.NETHER_STAR, Models.GENERATED);
 		}
 	}
 

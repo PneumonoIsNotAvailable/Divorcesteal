@@ -66,6 +66,9 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         builder.add("arguments.divorcesteal.error.no_data", "No logs exist fer that selection o' sailors!");
         builder.add("arguments.divorcesteal.error.not_deathbanned", "Ye can't rescue a sailor if they were never wi' Davy Jones in th' first place!");
 
+        builder.add("divorcesteal.resource_pack.retextured_hearts", "Retextured 'earts");
+        builder.add("divorcesteal.resource_pack.retextured_hearts.description", "Retextures yer hearts!");
+
         builder.addConfigScreenTitle(modId, "Divorceplunder Ship Log");
         builder.addConfig(DivorcestealConfig.MAX_HEARTS,
                 "Greatest Hearts",

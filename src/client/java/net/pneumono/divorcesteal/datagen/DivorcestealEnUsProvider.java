@@ -66,6 +66,9 @@ public class DivorcestealEnUsProvider extends FabricLanguageProvider {
         builder.add("arguments.divorcesteal.error.no_data", "No data exists for that player selection!");
         builder.add("arguments.divorcesteal.error.not_deathbanned", "Cannot revive a player that isn't deathbanned!");
 
+        builder.add("divorcesteal.resource_pack.retextured_hearts", "Retextured Hearts");
+        builder.add("divorcesteal.resource_pack.retextured_hearts.description", "Gives Hearts a custom texture");
+
         builder.addConfigScreenTitle(modId, "Divorcesteal Configs");
         builder.addConfig(DivorcestealConfig.MAX_HEARTS,
                 "Max Hearts",
