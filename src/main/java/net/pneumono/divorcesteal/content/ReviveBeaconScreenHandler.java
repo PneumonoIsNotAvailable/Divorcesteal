@@ -13,6 +13,8 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 
 import java.util.List;
@@ -80,7 +82,7 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
             this.leftHeartSlot.setStack(ItemStack.EMPTY);
             this.rightHeartSlot.setStack(ItemStack.EMPTY);
             this.headSlot.setStack(ItemStack.EMPTY);
-            reviveSelectedPlayer();
+            context.run(this::reviveSelectedPlayer);
             this.selectedPlayer.set(-1);
 
             return true;
@@ -89,15 +91,15 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
         }
     }
 
-    private void reviveSelectedPlayer() {
-        context.run((world, pos) -> {
-            int selectedPlayer = getSelectedPlayer();
-            ProfileComponent revived = selectedPlayer == -1 ? null : this.revivablePlayers.get(selectedPlayer);
-            if (revived != null && world instanceof ServerWorld serverWorld) {
-                ReviveBeaconBlock.revivePlayer(serverWorld, pos, revived.gameProfile(), playerInventory.player);
-            }
-            world.breakBlock(pos, false);
-        });
+    private void reviveSelectedPlayer(World world, BlockPos pos) {
+        if (!world.getBlockState(pos).isOf(DivorcestealRegistry.REVIVE_BEACON_BLOCK)) return;
+
+        int selectedPlayer = getSelectedPlayer();
+        ProfileComponent revived = selectedPlayer == -1 ? null : this.revivablePlayers.get(selectedPlayer);
+        if (revived != null && world instanceof ServerWorld serverWorld) {
+            ReviveBeaconBlock.revivePlayer(serverWorld, pos, revived.gameProfile(), playerInventory.player);
+        }
+        world.breakBlock(pos, false);
     }
 
     @Override
