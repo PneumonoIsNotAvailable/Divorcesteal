@@ -1,5 +1,6 @@
 package net.pneumono.divorcesteal.registry;
 
+import com.mojang.authlib.properties.PropertyMap;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -20,6 +21,7 @@ import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.util.Date;
+import java.util.Optional;
 
 public class DivorcestealEvents {
     public static void registerDivorcestealEvents() {
@@ -43,8 +45,16 @@ public class DivorcestealEvents {
         if (player.getAttacker() instanceof ServerPlayerEntity attacker && !attacker.getUuid().equals(entity.getUuid())) {
 
             ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
-            headStack.set(DataComponentTypes.PROFILE, new ProfileComponent(player.getGameProfile()));
-            headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(attacker.getGameProfile()));
+            headStack.set(DataComponentTypes.PROFILE, new ProfileComponent(
+                    Optional.of(player.getGameProfile().getName()),
+                    Optional.of(player.getGameProfile().getId()),
+                    new PropertyMap())
+            );
+            headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(new ProfileComponent(
+                    Optional.of(attacker.getGameProfile().getName()),
+                    Optional.of(attacker.getGameProfile().getId()),
+                    new PropertyMap()))
+            );
             player.dropItem(headStack, true, false);
 
             if (PlayerHeartDataReference.create(player).isBanned()) {
