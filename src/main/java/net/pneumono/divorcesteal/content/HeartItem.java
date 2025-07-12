@@ -31,7 +31,7 @@ public class HeartItem extends Item {
         if (addedHearts > 0) {
             world.playSound(null, user.getBlockPos(), DivorcestealRegistry.USE_HEART_SOUND, SoundCategory.PLAYERS);
             user.incrementStat(Stats.USED.getOrCreateStat(this));
-            user.getItemCooldownManager().set(stack, 10);
+            user.getItemCooldownManager().set(stack, 1);
             stack.decrement(1);
             return ActionResult.SUCCESS_SERVER;
 
