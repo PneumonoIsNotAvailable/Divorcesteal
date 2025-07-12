@@ -1,6 +1,7 @@
 package net.pneumono.divorcesteal.registry;
 
-import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -21,7 +22,6 @@ import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.util.Date;
-import java.util.Optional;
 
 public class DivorcestealEvents {
     public static void registerDivorcestealEvents() {
@@ -45,17 +45,14 @@ public class DivorcestealEvents {
         if (player.getAttacker() instanceof ServerPlayerEntity attacker && !attacker.getUuid().equals(entity.getUuid())) {
 
             ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
-            headStack.set(DataComponentTypes.PROFILE, new ProfileComponent(
-                    Optional.of(player.getGameProfile().getName()),
-                    Optional.of(player.getGameProfile().getId()),
-                    new PropertyMap())
-            );
-            headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(new ProfileComponent(
-                    Optional.of(attacker.getGameProfile().getName()),
-                    Optional.of(attacker.getGameProfile().getId()),
-                    new PropertyMap()))
-            );
-            player.dropItem(headStack, true, false);
+
+            headStack.set(DataComponentTypes.PROFILE, createProfileComponent(player));
+            headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(createProfileComponent(attacker)));
+            ItemEntity headItemEntity = player.dropItem(headStack, true, false);
+            if (headItemEntity != null) {
+                headItemEntity.resetPickupDelay();
+                headItemEntity.setOwner(attacker.getUuid());
+            }
 
             if (PlayerHeartDataReference.create(player).isBanned()) {
                 player.incrementStat(DivorcestealRegistry.DEATHBAN_SELF_STAT);
@@ -67,14 +64,36 @@ public class DivorcestealEvents {
 
                 ItemStack heartStack = new ItemStack(DivorcestealRegistry.HEART_ITEM);
                 if (!attacker.getInventory().insertStack(heartStack)) {
-                    ItemEntity itemEntity = attacker.dropItem(heartStack, false);
-                    if (itemEntity != null) {
-                        itemEntity.resetPickupDelay();
-                        itemEntity.setOwner(attacker.getUuid());
+                    ItemEntity heartItemEntity = attacker.dropItem(heartStack, false);
+                    if (heartItemEntity != null) {
+                        heartItemEntity.resetPickupDelay();
+                        heartItemEntity.setOwner(attacker.getUuid());
                     }
                 }
             }
         }
+    }
+
+    // Copied from elsewhere idfk what this is
+    private static ProfileComponent createProfileComponent(ServerPlayerEntity player) {
+        String texturePropertyValue = "";
+        for (Property textureProperty : player.getGameProfile().getProperties().get("textures")) {
+            if (textureProperty.name().equals("textures")) {
+                texturePropertyValue = textureProperty.value();
+                break;
+            }
+        }
+
+        if (!texturePropertyValue.contains("cHJvZmlsZUlk")) {
+            return null;
+        }
+
+        String textures = "ewogICJ0aW1lc3RhbXAiIDogMCwKICAicHJvZmlsZUlk" + texturePropertyValue.split("cHJvZmlsZUlk")[1];
+
+        GameProfile newProfile = new GameProfile(player.getGameProfile().getId(), player.getGameProfile().getName());
+        newProfile.getProperties().put("textures", new Property("textures", textures));
+
+        return new ProfileComponent(newProfile);
     }
 
     private static void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
