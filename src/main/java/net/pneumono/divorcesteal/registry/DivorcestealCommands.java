@@ -143,6 +143,12 @@ public class DivorcestealCommands {
         for (PlayerHeartDataReference reference : references) {
             reference.setHearts(finalAmount);
             updateData(source, reference);
+            if (finalAmount == 0) {
+                ServerPlayerEntity bannedPlayer = playerFromReference(source, reference);
+                if (bannedPlayer != null) {
+                    bannedPlayer.networkHandler.disconnect(Text.translatable("divorcesteal.deathban"));
+                }
+            }
         }
 
         if (references.size() == 1) {
@@ -164,6 +170,12 @@ public class DivorcestealCommands {
             }
             reference.setHearts(finalAmount);
             updateData(source, reference);
+            if (finalAmount == 0) {
+                ServerPlayerEntity bannedPlayer = playerFromReference(source, reference);
+                if (bannedPlayer != null) {
+                    bannedPlayer.networkHandler.disconnect(Text.translatable("divorcesteal.deathban"));
+                }
+            }
         }
 
         String translation = "commands.divorcesteal." + (add ? "add" : "remove") + ".";
