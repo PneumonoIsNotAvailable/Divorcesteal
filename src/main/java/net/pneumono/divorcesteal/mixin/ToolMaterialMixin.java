@@ -14,5 +14,5 @@ public abstract class ToolMaterialMixin {
     @Mutable
     @Final
     @Shadow
-    public static ToolMaterial NETHERITE = new ToolMaterial(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 1561, 8.0F, 3.0F, 10, ItemTags.NETHERITE_TOOL_MATERIALS);
+    public static ToolMaterial NETHERITE = new ToolMaterial(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 2031, 9.0F, 3.0F, 15, ItemTags.NETHERITE_TOOL_MATERIALS);
 }
