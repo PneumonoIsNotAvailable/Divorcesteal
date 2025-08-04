@@ -17,8 +17,7 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
 
     @Override
     public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
-        PneumonoCoreTranslationBuilder builder = new PneumonoCoreTranslationBuilder(translationBuilder);
-        String modId = Divorcesteal.MOD_ID;
+        PneumonoCoreTranslationBuilder builder = new PneumonoCoreTranslationBuilder(translationBuilder, Divorcesteal.MOD_ID);
 
         builder.add(DivorcestealRegistry.HEART_ITEM, "Cat Hart");
         builder.add("item.divorcesteal.heart.crafted", "Craftd");
@@ -69,7 +68,7 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
         builder.add("divorcesteal.resource_pack.retextured_hearts", "Hart Lookz diffren!");
         builder.add("divorcesteal.resource_pack.retextured_hearts.description", "Makez it pwetty!");
 
-        builder.addConfigScreenTitle(modId, "Divorcesteal Changez");
+        builder.addConfigScreenTitle("Divorcesteal Changez");
         builder.addConfig(DivorcestealConfig.MAX_HEARTS,
                 "BIG Harts",
                 "Biggest hartz a cat can has!"
@@ -98,10 +97,10 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
                 "No mor totum :(",
                 "If totum not alowed"
         );
-        builder.addConfigCategory(modId, "hearts", "Harts");
-        builder.addConfigCategory(modId, "rebalances", "Changez");
+        builder.addConfigCategory("hearts", "Harts");
+        builder.addConfigCategory("rebalances", "Changez");
 
-        builder.addModMenuTranslations(modId,
+        builder.addModMenuTexts(
                 "evil surgery demons",
                 "OFFICIAL codin thing for divorse steel",
                 "The ofishul coded thingy for divorse steel, NOT frens wit Life stealin catz\n\nKan be playd if ur a cat!!"

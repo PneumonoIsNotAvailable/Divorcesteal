@@ -17,8 +17,7 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
 
     @Override
     public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
-        PneumonoCoreTranslationBuilder builder = new PneumonoCoreTranslationBuilder(translationBuilder);
-        String modId = Divorcesteal.MOD_ID;
+        PneumonoCoreTranslationBuilder builder = new PneumonoCoreTranslationBuilder(translationBuilder, Divorcesteal.MOD_ID);
 
         builder.add(DivorcestealRegistry.HEART_ITEM, "Pirate's Heart");
         builder.add("item.divorcesteal.heart.crafted", "Craft'd");
@@ -69,7 +68,7 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         builder.add("divorcesteal.resource_pack.retextured_hearts", "Retextured 'earts");
         builder.add("divorcesteal.resource_pack.retextured_hearts.description", "Retextures yer hearts!");
 
-        builder.addConfigScreenTitle(modId, "Divorceplunder Ship Log");
+        builder.addConfigScreenTitle("Divorceplunder Ship Log");
         builder.addConfig(DivorcestealConfig.MAX_HEARTS,
                 "Greatest Hearts",
                 "Th' greatest share o' hearts a crew member can 'ave"
@@ -98,10 +97,10 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
                 "Prohibit Jewels o' Life",
                 "If yer Jewels o' Life be unable to save ye"
         );
-        builder.addConfigCategory(modId, "hearts", "Hearts");
-        builder.addConfigCategory(modId, "rebalances", "Laws");
+        builder.addConfigCategory("hearts", "Hearts");
+        builder.addConfigCategory("rebalances", "Laws");
 
-        builder.addModMenuTranslations(modId,
+        builder.addModMenuTexts(
                 "Divorceplunder",
                 "Th' official mod fer Divorceplunder",
                 "Th' official mod fer Divorceplunder, not affiliated wi' th' SMP o' Stealin' Lives\n\nNow wi' support fer yer Pirate Parlance!"

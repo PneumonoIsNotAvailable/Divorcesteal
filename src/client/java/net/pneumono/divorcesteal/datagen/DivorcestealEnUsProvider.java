@@ -17,8 +17,7 @@ public class DivorcestealEnUsProvider extends FabricLanguageProvider {
 
     @Override
     public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
-        PneumonoCoreTranslationBuilder builder = new PneumonoCoreTranslationBuilder(translationBuilder);
-        String modId = Divorcesteal.MOD_ID;
+        PneumonoCoreTranslationBuilder builder = new PneumonoCoreTranslationBuilder(translationBuilder, Divorcesteal.MOD_ID);
 
         builder.add(DivorcestealRegistry.HEART_ITEM, "Heart");
         builder.add("item.divorcesteal.heart.crafted", "Crafted");
@@ -69,7 +68,7 @@ public class DivorcestealEnUsProvider extends FabricLanguageProvider {
         builder.add("divorcesteal.resource_pack.retextured_hearts", "Retextured Hearts");
         builder.add("divorcesteal.resource_pack.retextured_hearts.description", "Gives Hearts a custom texture");
 
-        builder.addConfigScreenTitle(modId, "Divorcesteal Configs");
+        builder.addConfigScreenTitle("Divorcesteal Configs");
         builder.addConfig(DivorcestealConfig.MAX_HEARTS,
                 "Max Hearts",
                 "The maximum number of hearts a player can have"
@@ -98,10 +97,10 @@ public class DivorcestealEnUsProvider extends FabricLanguageProvider {
                 "Disable Totems",
                 "Whether Totems of Undying are disabled"
         );
-        builder.addConfigCategory(modId, "hearts", "Hearts");
-        builder.addConfigCategory(modId, "rebalances", "Rebalances");
+        builder.addConfigCategory("hearts", "Hearts");
+        builder.addConfigCategory("rebalances", "Rebalances");
 
-        builder.addModMenuTranslations(modId,
+        builder.addModMenuTexts(
                 "Divorcesteal",
                 "The official mod for Divorcesteal",
                 "The official mod for Divorcesteal, not affiliated with the Lifesteal SMP"
