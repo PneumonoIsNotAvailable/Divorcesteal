@@ -20,7 +20,7 @@ public class HeartDataState {
         this(new ArrayList<>());
     }
 
-    private HeartDataState(List<PlayerHeartData> dataList) {
+    public HeartDataState(List<PlayerHeartData> dataList) {
         this.dataMap = new HashMap<>();
         for (PlayerHeartData data : dataList) {
             this.dataMap.put(data.uuid(), new SimpleHeartData(data));
