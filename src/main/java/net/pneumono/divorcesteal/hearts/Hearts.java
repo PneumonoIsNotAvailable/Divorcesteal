@@ -27,7 +27,7 @@ public class Hearts {
     public static final String ZERO_HEART_BAN_ID = "zero_heart_ban";
 
     public static HeartDataState getHeartDataState(ServerWorld world) {
-        return HeartDataState.create(world);
+        return HeartDataState.create(world.getServer());
     }
 
     /**

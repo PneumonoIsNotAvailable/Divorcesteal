@@ -1,31 +1,24 @@
 package net.pneumono.divorcesteal.hearts;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.PersistentState;
-import net.minecraft.world.PersistentStateType;
-import net.pneumono.divorcesteal.Divorcesteal;
+import net.minecraft.server.MinecraftServer;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class HeartDataState extends PersistentState {
+public class HeartDataState {
     public static final Codec<HeartDataState> CODEC = PlayerHeartData.CODEC.listOf().xmap(
             HeartDataState::new,
             HeartDataState::getHeartDataList
     );
 
-    private static final PersistentStateType<HeartDataState> STATE_TYPE = new PersistentStateType<>(
-            Divorcesteal.MOD_ID + "_hearts",
-            context -> new HeartDataState(
-                    context.getWorldOrThrow().getPlayers().stream().map(player -> new PlayerHeartData(player, DivorcestealConfig.DEFAULT_HEARTS.getValue())).toList()
-            ),
-            context -> CODEC,
-            null
-    );
-
     private final Map<UUID, SimpleHeartData> dataMap;
+    private MinecraftServer server;
+
+    protected HeartDataState() {
+        this(new ArrayList<>());
+    }
 
     private HeartDataState(List<PlayerHeartData> dataList) {
         this.dataMap = new HashMap<>();
@@ -34,8 +27,12 @@ public class HeartDataState extends PersistentState {
         }
     }
 
-    public static HeartDataState create(ServerWorld world) {
-        return world.getPersistentStateManager().getOrCreate(STATE_TYPE);
+    protected void setServer(MinecraftServer server) {
+        this.server = server;
+    }
+
+    public static HeartDataState create(MinecraftServer server) {
+        return DataSaving.getState(server);
     }
 
     public List<PlayerHeartData> getHeartDataList() {
@@ -65,12 +62,16 @@ public class HeartDataState extends PersistentState {
 
     public void setHeartData(UUID uuid, String name, int hearts, @Nullable Date banDate) {
         dataMap.put(uuid, new SimpleHeartData(name, hearts, banDate));
-        markDirty();
+        markDirty(this.server);
     }
 
     public void deleteHeartData(UUID uuid) {
         dataMap.remove(uuid);
-        markDirty();
+        markDirty(this.server);
+    }
+
+    public void markDirty(MinecraftServer server) {
+        DataSaving.save(server);
     }
 
     private record SimpleHeartData(String name, int hearts, @Nullable Date banDate) {
