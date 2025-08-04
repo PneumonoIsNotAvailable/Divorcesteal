@@ -1,42 +1,37 @@
 package net.pneumono.divorcesteal;
 
-import net.pneumono.pneumonocore.config.*;
+import net.pneumono.pneumonocore.config_api.ConfigApi;
+import net.pneumono.pneumonocore.config_api.configurations.*;
+import net.pneumono.pneumonocore.config_api.enums.LoadType;
 
 public class DivorcestealConfig {
-    public static final IntegerConfiguration MAX_HEARTS = new IntegerConfiguration(id(), "max_hearts", ConfigEnv.SERVER, 1, 100, 20);
-    public static final IntegerConfiguration DEFAULT_HEARTS = new IntegerConfiguration(id(), "default_hearts", ConfigEnv.SERVER, 1, 100, 10);
-    public static final IntegerConfiguration REVIVE_HEARTS = new IntegerConfiguration(id(), "revive_hearts", ConfigEnv.SERVER, 1, 100, 3);
-    public static final IntegerConfiguration REVIVE_DAYS = new IntegerConfiguration(id(), "revive_days", ConfigEnv.SERVER, -1, 100, 30);
-    public static final IntegerConfiguration CRAFTED_HEART_LIMIT = new IntegerConfiguration(id(), "crafted_heart_limit", ConfigEnv.SERVER, 1, 100, 7);
-    public static final BooleanConfiguration DISABLE_ELYTRA = new BooleanConfiguration(id(), "disable_elytra", ConfigEnv.SERVER, false);
-    public static final BooleanConfiguration DISABLE_TOTEMS = new BooleanConfiguration(id(), "disable_totems", ConfigEnv.SERVER, false);
+    public static final BoundedIntegerConfiguration MAX_HEARTS = register("max_hearts", new BoundedIntegerConfiguration(
+            1, 100, 20, new ConfigSettings().category("hearts").loadType(LoadType.INSTANT)
+    ));
+    public static final BoundedIntegerConfiguration DEFAULT_HEARTS = register("default_hearts", new BoundedIntegerConfiguration(
+            1, 100, 10, new ConfigSettings().category("hearts").loadType(LoadType.INSTANT)
+    ));
+    public static final BoundedIntegerConfiguration REVIVE_HEARTS = register("revive_hearts", new BoundedIntegerConfiguration(
+            1, 100, 3, new ConfigSettings().category("hearts").loadType(LoadType.INSTANT)
+    ));
+    public static final BoundedIntegerConfiguration REVIVE_DAYS = register("revive_days", new BoundedIntegerConfiguration(
+            -1, 100, 30, new ConfigSettings().category("hearts").loadType(LoadType.INSTANT)
+    ));
+    public static final BoundedIntegerConfiguration CRAFTED_HEART_LIMIT = register("crafted_heart_limit", new BoundedIntegerConfiguration(
+            1, 100, 7, new ConfigSettings().category("hearts").loadType(LoadType.INSTANT)
+    ));
+    public static final BooleanConfiguration DISABLE_ELYTRA = register("disable_elytra", new BooleanConfiguration(
+            false, new ConfigSettings().category("rebalances").loadType(LoadType.INSTANT)
+    ));
+    public static final BooleanConfiguration DISABLE_TOTEMS = register("disable_totems", new BooleanConfiguration(
+            false, new ConfigSettings().category("rebalances").loadType(LoadType.INSTANT)
+    ));
 
-    protected static void registerDivorcestealConfigs() {
-        Configs.register(id(),
-                MAX_HEARTS,
-                DEFAULT_HEARTS,
-                REVIVE_HEARTS,
-                REVIVE_DAYS,
-                CRAFTED_HEART_LIMIT,
-                DISABLE_ELYTRA,
-                DISABLE_TOTEMS
-        );
-        Configs.registerCategories(id(),
-                new ConfigCategory(id(), "hearts",
-                        MAX_HEARTS,
-                        DEFAULT_HEARTS,
-                        REVIVE_HEARTS,
-                        REVIVE_DAYS,
-                        CRAFTED_HEART_LIMIT
-                ),
-                new ConfigCategory(id(), "rebalances",
-                        DISABLE_ELYTRA,
-                        DISABLE_TOTEMS
-                )
-        );
+    public static <T extends AbstractConfiguration<?>> T register(String name, T config) {
+        return ConfigApi.register(Divorcesteal.id(name), config);
     }
 
-    private static String id() {
-        return Divorcesteal.MOD_ID;
+    protected static void registerDivorcestealConfigs() {
+        ConfigApi.finishRegistry(Divorcesteal.MOD_ID);
     }
 }
