@@ -42,9 +42,10 @@ public class DataSaving {
             Divorcesteal.LOGGER.error("Failed to read Hearts data", e);
         }
 
-        DataResult<Pair<HeartDataState, NbtElement>> result = HeartDataState.CODEC.decode(NbtOps.INSTANCE, compound);
+        NbtElement element = compound.get("values");
+
+        DataResult<Pair<HeartDataState, NbtElement>> result = HeartDataState.CODEC.decode(NbtOps.INSTANCE, element);
         if (result.isSuccess()) {
-            Divorcesteal.LOGGER.error("Did not failed to deserialize Hearts data");
             return result.getOrThrow().getFirst();
         } else {
             Divorcesteal.LOGGER.error("Failed to deserialize Hearts data");
@@ -56,6 +57,7 @@ public class DataSaving {
         SAVING_FUTURE = SAVING_FUTURE.thenCompose((object) -> CompletableFuture.runAsync(() -> write(server)));
     }
 
+    @SuppressWarnings("LoggingSimilarMessage")
     private static void write(MinecraftServer server) {
         Path path = new File(
                 server.getSavePath(WorldSavePath.ROOT).toString()
@@ -70,11 +72,11 @@ public class DataSaving {
             element = new NbtCompound();
         }
 
-        NbtCompound nbt = new NbtCompound();
-        nbt.put("values", element);
+        NbtCompound compound = new NbtCompound();
+        compound.put("values", element);
 
         try {
-            NbtIo.writeCompressed(nbt, path);
+            NbtIo.writeCompressed(compound, path);
         } catch (IOException e) {
             Divorcesteal.LOGGER.error("Failed to write Hearts data", e);
         }
