@@ -90,6 +90,11 @@ public class DataSaving {
         Path rootPath = server.getSavePath(WorldSavePath.ROOT);
 
         Path source = rootPath.resolve("hearts.dat");
+
+        if (!source.toFile().exists()) {
+            return;
+        }
+
         Path backups = rootPath.resolve("hearts_backups");
         backups.toFile().mkdirs();
 
@@ -104,6 +109,7 @@ public class DataSaving {
 
         try {
             Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+            Divorcesteal.LOGGER.info("Successfully backed up Hearts data to {}", destination);
         } catch (IOException e) {
             Divorcesteal.LOGGER.error("Failed to backup Hearts data", e);
         }
