@@ -86,6 +86,7 @@ public class DataSaving {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void makeBackup(MinecraftServer server) {
         Path rootPath = server.getSavePath(WorldSavePath.ROOT);
 
