@@ -32,6 +32,7 @@ public class DivorcestealEvents {
         ServerLivingEntityEvents.AFTER_DEATH.register(DivorcestealEvents::afterDeath);
         ServerPlayerEvents.AFTER_RESPAWN.register(DivorcestealEvents::afterRespawn);
         ServerTickEvents.START_WORLD_TICK.register(DivorcestealEvents::startWorldTick);
+        ServerLifecycleEvents.SERVER_STARTING.register(DivorcestealEvents::serverStarting);
         ServerLifecycleEvents.SERVER_STOPPING.register(DivorcestealEvents::serverStopping);
     }
 
@@ -120,6 +121,10 @@ public class DivorcestealEvents {
                 Hearts.updateData(null, world.getServer(), reference);
             }
         }
+    }
+
+    private static void serverStarting(MinecraftServer server) {
+        DataSaving.makeBackup(server);
     }
 
     private static void serverStopping(MinecraftServer server) {

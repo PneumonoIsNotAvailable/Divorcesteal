@@ -7,12 +7,16 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.WorldSavePath;
 import net.pneumono.divorcesteal.Divorcesteal;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 public class DataSaving {
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss");
     private static HeartDataState STATE = null;
     private static CompletableFuture<?> SAVING_FUTURE = CompletableFuture.completedFuture(null);
 
@@ -28,10 +32,12 @@ public class DataSaving {
         STATE = null;
     }
 
+    private static Path getHeartsPath(MinecraftServer server) {
+        return server.getSavePath(WorldSavePath.ROOT).resolve("hearts.dat");
+    }
+
     private static HeartDataState read(MinecraftServer server) {
-        Path path = new File(
-                server.getSavePath(WorldSavePath.ROOT).toString()
-        ).toPath().resolve("hearts.dat");
+        Path path = getHeartsPath(server);
 
         if (!path.toFile().exists()) return new HeartDataState();
 
@@ -59,9 +65,7 @@ public class DataSaving {
 
     @SuppressWarnings("LoggingSimilarMessage")
     private static void write(MinecraftServer server) {
-        Path path = new File(
-                server.getSavePath(WorldSavePath.ROOT).toString()
-        ).toPath().resolve("hearts.dat");
+        Path path = getHeartsPath(server);
 
         DataResult<NbtElement> result = HeartDataState.CODEC.encodeStart(NbtOps.INSTANCE, STATE);
         NbtElement element;
@@ -79,6 +83,29 @@ public class DataSaving {
             NbtIo.writeCompressed(compound, path);
         } catch (IOException e) {
             Divorcesteal.LOGGER.error("Failed to write Hearts data", e);
+        }
+    }
+
+    public static void makeBackup(MinecraftServer server) {
+        Path rootPath = server.getSavePath(WorldSavePath.ROOT);
+
+        Path source = rootPath.resolve("hearts.dat");
+        Path backups = rootPath.resolve("hearts_backups");
+        backups.toFile().mkdirs();
+
+        Date date = new Date();
+        Path destination = backups.resolve(DATE_FORMAT.format(date) + ".dat");
+        int count = 1;
+        while (destination.toFile().exists()) {
+            count++;
+            destination = backups.resolve(DATE_FORMAT.format(date) + "_" + count + ".dat");
+        }
+
+
+        try {
+            Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            Divorcesteal.LOGGER.error("Failed to backup Hearts data", e);
         }
     }
 }
