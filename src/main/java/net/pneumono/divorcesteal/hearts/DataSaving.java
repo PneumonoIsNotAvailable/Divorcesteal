@@ -24,6 +24,10 @@ public class DataSaving {
         return STATE;
     }
 
+    public static void clearState() {
+        STATE = null;
+    }
+
     private static HeartDataState read(MinecraftServer server) {
         Path path = new File(
                 server.getSavePath(WorldSavePath.ROOT).toString()
@@ -40,6 +44,7 @@ public class DataSaving {
 
         DataResult<Pair<HeartDataState, NbtElement>> result = HeartDataState.CODEC.decode(NbtOps.INSTANCE, compound);
         if (result.isSuccess()) {
+            Divorcesteal.LOGGER.error("Did not failed to deserialize Hearts data");
             return result.getOrThrow().getFirst();
         } else {
             Divorcesteal.LOGGER.error("Failed to deserialize Hearts data");
