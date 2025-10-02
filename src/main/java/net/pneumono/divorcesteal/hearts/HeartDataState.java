@@ -22,7 +22,7 @@ public class HeartDataState {
     public HeartDataState(List<PlayerHeartData> dataList) {
         this.dataMap = new HashMap<>();
         for (PlayerHeartData data : dataList) {
-            this.dataMap.put(data.uuid(), data);
+            this.dataMap.put(data.getUuid(), data);
         }
     }
 
@@ -36,11 +36,6 @@ public class HeartDataState {
 
     public @Nullable PlayerHeartData getHeartData(UUID uuid) {
         return dataMap.get(uuid);
-    }
-
-    public @Nullable PlayerHeartDataReference getHeartDataReference(UUID uuid) {
-        PlayerHeartData data = getHeartData(uuid);
-        return data == null ? null : new PlayerHeartDataReference(this, data);
     }
 
     public void addPlayer(GameProfile profile) {

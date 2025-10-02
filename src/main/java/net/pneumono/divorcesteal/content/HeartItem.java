@@ -41,6 +41,6 @@ public class HeartItem extends Item {
 
     private static int getHearts(PlayerEntity user) {
         PlayerHeartData data = Hearts.getHeartDataState().getHeartData(user.getGameProfile().getId());
-        return data == null ? -1 : data.hearts();
+        return data == null ? -1 : data.getHearts();
     }
 }

@@ -13,9 +13,9 @@ import java.util.UUID;
 
 public class PlayerHeartData {
     public static final Codec<PlayerHeartData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Uuids.INT_STREAM_CODEC.fieldOf("uuid").forGetter(PlayerHeartData::uuid),
-            Codecs.PLAYER_NAME.fieldOf("name").forGetter(PlayerHeartData::name),
-            Codec.INT.fieldOf("hearts").forGetter(PlayerHeartData::hearts),
+            Uuids.INT_STREAM_CODEC.fieldOf("uuid").forGetter(PlayerHeartData::getUuid),
+            Codecs.PLAYER_NAME.fieldOf("name").forGetter(PlayerHeartData::getName),
+            Codec.INT.fieldOf("hearts").forGetter(PlayerHeartData::getHearts),
             Codec.LONG.optionalFieldOf("banDate").forGetter(data -> data.banDate == null ? Optional.empty() : Optional.of(data.banDate.getTime()))
     ).apply(builder, PlayerHeartData::deserialize));
 
@@ -36,19 +36,19 @@ public class PlayerHeartData {
         this.banDate = banDate;
     }
 
-    public UUID uuid() {
+    public UUID getUuid() {
         return uuid;
     }
 
-    public String name() {
+    public String getName() {
         return name;
     }
 
-    public int hearts() {
+    public int getHearts() {
         return hearts;
     }
 
-    public @Nullable Date banDate() {
+    public @Nullable Date getBanDate() {
         return banDate;
     }
 
@@ -69,7 +69,7 @@ public class PlayerHeartData {
         return this.hearts == 0;
     }
 
-    public GameProfile gameProfile() {
+    public GameProfile getGameProfile() {
         return new GameProfile(this.uuid, this.name);
     }
 }

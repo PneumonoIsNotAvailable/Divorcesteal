@@ -66,13 +66,13 @@ public class ReviveBeaconBlock extends BlockWithEntity {
 
     public static List<ProfileComponent> getRevivablePlayers() {
         HeartDataState state = Hearts.getHeartDataState();
-        return state.getHeartDataList().stream().filter(PlayerHeartData::isBanned).map(data -> new ProfileComponent(data.gameProfile())).toList();
+        return state.getHeartDataList().stream().filter(PlayerHeartData::isBanned).map(data -> new ProfileComponent(data.getGameProfile())).toList();
     }
 
     public static Optional<GameProfile> getRandomTarget(ServerWorld world, UUID except) {
         HeartDataState state = Hearts.getHeartDataState();
         List<PlayerHeartData> unbannedList = state.getHeartDataList().stream().filter(data -> !data.isBanned()).toList();
-        List<PlayerHeartData> filteredUnbannedList = unbannedList.stream().filter(data -> !data.uuid().equals(except)).toList();
+        List<PlayerHeartData> filteredUnbannedList = unbannedList.stream().filter(data -> !data.getUuid().equals(except)).toList();
         if (!filteredUnbannedList.isEmpty()) {
             unbannedList = filteredUnbannedList;
         }
@@ -80,7 +80,7 @@ public class ReviveBeaconBlock extends BlockWithEntity {
         if (unbannedList.isEmpty()) return Optional.empty();
 
         Random random = world.getRandom();
-        return Optional.of(unbannedList.get(random.nextBetween(0, unbannedList.size() - 1)).gameProfile());
+        return Optional.of(unbannedList.get(random.nextBetween(0, unbannedList.size() - 1)).getGameProfile());
     }
 
     public static void revivePlayer(ServerWorld world, BlockPos pos, GameProfile revived, PlayerEntity reviver) {

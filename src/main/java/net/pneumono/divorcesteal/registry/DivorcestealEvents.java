@@ -18,10 +18,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.content.component.KilledByComponent;
-import net.pneumono.divorcesteal.hearts.DataSaving;
-import net.pneumono.divorcesteal.hearts.HeartDataState;
-import net.pneumono.divorcesteal.hearts.Hearts;
-import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
+import net.pneumono.divorcesteal.hearts.*;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.util.*;
@@ -37,9 +34,9 @@ public class DivorcestealEvents {
     }
 
     private static void join(ServerPlayerEntity player) {
-        PlayerHeartDataReference reference = Hearts.getHeartDataReference(player);
-        if (reference != null) {
-            reference.setName(player.getGameProfile().getName());
+        PlayerHeartData data = Hearts.getPlayerHeartData(player);
+        if (data != null) {
+            data.setName(player.getGameProfile().getName());
             Hearts.updateData(player);
         }
     }
@@ -61,8 +58,8 @@ public class DivorcestealEvents {
                 headItemEntity.setOwner(attacker.getUuid());
             }
 
-            PlayerHeartDataReference reference = Hearts.getHeartDataReference(player);
-            if (reference != null && reference.isBanned()) {
+            PlayerHeartData data = Hearts.getPlayerHeartData(player);
+            if (data != null && data.isBanned()) {
                 player.incrementStat(DivorcestealRegistry.DEATHBAN_SELF_STAT);
                 attacker.incrementStat(DivorcestealRegistry.DEATHBAN_PLAYER_STAT);
             }
@@ -114,14 +111,14 @@ public class DivorcestealEvents {
         if (DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
 
         HeartDataState state = Hearts.getHeartDataState();
-        for (PlayerHeartDataReference reference : state.getHeartDataList().stream().map(data -> new PlayerHeartDataReference(state, data)).toList()) {
+        for (PlayerHeartData data : state.getHeartDataList().stream().toList()) {
 
-            if (reference.getBanDate().isPresent() && DateUtils.addDays(
-                    reference.getBanDate().get(), DivorcestealConfig.REVIVE_DAYS.getValue()
+            if (data.getBanDate() != null && DateUtils.addDays(
+                    data.getBanDate(), DivorcestealConfig.REVIVE_DAYS.getValue()
             ).before(new Date())) {
 
-                Hearts.unban(world.getServer(), reference, true);
-                Hearts.updateData(null, world.getServer(), reference);
+                Hearts.unban(world.getServer(), data, true);
+                Hearts.updateData(null, world.getServer(), data);
             }
         }
     }

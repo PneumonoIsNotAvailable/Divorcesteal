@@ -18,7 +18,6 @@ import net.minecraft.text.Text;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.PlayerHeartData;
-import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -68,12 +67,12 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
         return new HeartDataArgumentType(false, Filter.UNBANNED_ONLY);
     }
 
-    public static PlayerHeartDataReference getPlayer(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
-        return context.getArgument(name, HeartDataArgument.class).getReference(context.getSource());
+    public static PlayerHeartData getPlayer(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
+        return context.getArgument(name, HeartDataArgument.class).getData(context.getSource());
     }
 
-    public static List<PlayerHeartDataReference> getPlayers(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
-        return context.getArgument(name, HeartDataArgument.class).getReferences(context.getSource());
+    public static List<PlayerHeartData> getPlayers(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
+        return context.getArgument(name, HeartDataArgument.class).getDataList(context.getSource());
     }
 
     @Override
@@ -85,7 +84,7 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
         if (!this.singleTarget && string.equals("*")) {
             return source -> {
                 HeartDataState state = Hearts.getHeartDataState();
-                return state.getHeartDataList().stream().filter(this.filter::test).map(data -> new PlayerHeartDataReference(state, data)).toList();
+                return state.getHeartDataList().stream().filter(this.filter::test).toList();
             };
         } else if (string.length() > 16) {
             throw NO_PLAYER_EXCEPTION.create();
@@ -96,7 +95,7 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
             PlayerHeartData data = state.getHeartData(profile.getId());
 
             if (data != null && this.filter.test(data)) {
-                return List.of(new PlayerHeartDataReference(state, data));
+                return List.of(data);
             } else {
                 throw NO_DATA_EXCEPTION.create();
             }
@@ -118,7 +117,7 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
         strings.addAll(state.getHeartDataList()
                 .stream()
                 .filter(this.filter::test)
-                .map(PlayerHeartData::name)
+                .map(PlayerHeartData::getName)
                 .toList()
         );
 
@@ -134,10 +133,10 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
     }
 
     public interface HeartDataArgument {
-        List<PlayerHeartDataReference> getReferences(ServerCommandSource source) throws CommandSyntaxException;
+        List<PlayerHeartData> getDataList(ServerCommandSource source) throws CommandSyntaxException;
 
-        default PlayerHeartDataReference getReference(ServerCommandSource source) throws CommandSyntaxException {
-            return getReferences(source).getFirst();
+        default PlayerHeartData getData(ServerCommandSource source) throws CommandSyntaxException {
+            return getDataList(source).getFirst();
         }
     }
 
