@@ -13,7 +13,7 @@ public class HeartDataState {
             HeartDataState::getHeartDataList
     );
 
-    private final Map<UUID, SimpleHeartData> dataMap;
+    private final Map<UUID, PlayerHeartData> dataMap;
     private MinecraftServer server;
 
     protected HeartDataState() {
@@ -23,7 +23,7 @@ public class HeartDataState {
     public HeartDataState(List<PlayerHeartData> dataList) {
         this.dataMap = new HashMap<>();
         for (PlayerHeartData data : dataList) {
-            this.dataMap.put(data.uuid(), new SimpleHeartData(data));
+            this.dataMap.put(data.uuid(), data);
         }
     }
 
@@ -36,7 +36,7 @@ public class HeartDataState {
     }
 
     public List<PlayerHeartData> getHeartDataList() {
-        return this.dataMap.entrySet().stream().map(entry -> entry.getValue().toPlayerHeartData(entry.getKey())).toList();
+        return this.dataMap.values().stream().toList();
     }
 
     public PlayerHeartData getOrCreateHeartData(UUID uuid, String name) {
@@ -45,9 +45,9 @@ public class HeartDataState {
         } else {
             if (name == null) throw new IllegalArgumentException("Cannot create heart data without a name!");
 
-            SimpleHeartData simpleData = new SimpleHeartData(name, DivorcestealConfig.DEFAULT_HEARTS.getValue(), null);
-            dataMap.put(uuid, simpleData);
-            return simpleData.toPlayerHeartData(uuid);
+            PlayerHeartData data = new PlayerHeartData(uuid, name, DivorcestealConfig.DEFAULT_HEARTS.getValue(), null);
+            dataMap.put(uuid, data);
+            return data;
         }
     }
 
@@ -55,13 +55,13 @@ public class HeartDataState {
      * Throws an {@link IllegalStateException} if no heart data exists for the UUID.
      */
     public PlayerHeartData getHeartData(UUID uuid) {
-        SimpleHeartData simpleData = dataMap.get(uuid);
-        if (simpleData == null) throw new IllegalStateException("No heart data exists for UUID: " + uuid);
-        return simpleData.toPlayerHeartData(uuid);
+        PlayerHeartData data = dataMap.get(uuid);
+        if (data == null) throw new IllegalStateException("No heart data exists for UUID: " + uuid);
+        return data;
     }
 
     public void setHeartData(UUID uuid, String name, int hearts, @Nullable Date banDate) {
-        dataMap.put(uuid, new SimpleHeartData(name, hearts, banDate));
+        dataMap.put(uuid, new PlayerHeartData(uuid, name, hearts, banDate));
         markDirty(this.server);
     }
 
@@ -72,21 +72,5 @@ public class HeartDataState {
 
     public void markDirty(MinecraftServer server) {
         DataSaving.save(server);
-    }
-
-    private record SimpleHeartData(String name, int hearts, @Nullable Date banDate) {
-        public SimpleHeartData(String name, int hearts, @Nullable Date banDate) {
-            this.name = name;
-            this.hearts = Math.max(hearts, 0);
-            this.banDate = banDate;
-        }
-
-        public SimpleHeartData(PlayerHeartData data) {
-            this(data.name(), data.hearts(), data.banDate());
-        }
-
-        public PlayerHeartData toPlayerHeartData(UUID uuid) {
-            return new PlayerHeartData(uuid, this.name, this.hearts, this.banDate);
-        }
     }
 }
