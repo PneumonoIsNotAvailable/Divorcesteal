@@ -110,7 +110,7 @@ public class DivorcestealEvents {
 
         if (DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
 
-        HeartDataState state = Hearts.getHeartDataState(world);
+        HeartDataState state = Hearts.getHeartDataState();
         for (PlayerHeartDataReference reference : state.getHeartDataList().stream().map(data -> new PlayerHeartDataReference(state, data)).toList()) {
 
             if (reference.getBanDate().isPresent() && DateUtils.addDays(

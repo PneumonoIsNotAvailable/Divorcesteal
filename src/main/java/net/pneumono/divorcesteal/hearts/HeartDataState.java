@@ -1,7 +1,6 @@
 package net.pneumono.divorcesteal.hearts;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.server.MinecraftServer;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 
 import java.util.*;
@@ -13,7 +12,6 @@ public class HeartDataState {
     );
 
     private final Map<UUID, PlayerHeartData> dataMap;
-    private MinecraftServer server;
 
     protected HeartDataState() {
         this(new ArrayList<>());
@@ -26,12 +24,8 @@ public class HeartDataState {
         }
     }
 
-    protected void setServer(MinecraftServer server) {
-        this.server = server;
-    }
-
-    public static HeartDataState create(MinecraftServer server) {
-        return DataSaving.getState(server);
+    public static HeartDataState get() {
+        return DataSaving.getState();
     }
 
     public List<PlayerHeartData> getHeartDataList() {
@@ -65,6 +59,6 @@ public class HeartDataState {
     }
 
     public void markDirty() {
-        DataSaving.save(this.server);
+        DataSaving.save();
     }
 }

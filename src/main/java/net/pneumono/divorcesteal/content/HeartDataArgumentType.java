@@ -19,7 +19,6 @@ import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.PlayerHeartData;
 import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
-import net.pneumono.divorcesteal.registry.DivorcestealCommands;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -85,14 +84,14 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
 
         if (!this.singleTarget && string.equals("*")) {
             return source -> {
-                HeartDataState state = DivorcestealCommands.getHeartDataState(source);
+                HeartDataState state = Hearts.getHeartDataState();
                 return state.getHeartDataList().stream().filter(this.filter::test).map(data -> new PlayerHeartDataReference(state, data)).toList();
             };
         } else if (string.length() > 16) {
             throw NO_PLAYER_EXCEPTION.create();
         }
         return source -> {
-            HeartDataState state = DivorcestealCommands.getHeartDataState(source);
+            HeartDataState state = Hearts.getHeartDataState();
             GameProfile profile = Objects.requireNonNull(source.getServer().getUserCache()).findByName(string).orElseThrow(NO_PLAYER_EXCEPTION::create);
             PlayerHeartData data = state.getOrCreateHeartData(profile.getId(), profile.getName());
 
@@ -111,9 +110,9 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         if (!(context.getSource() instanceof CommandSource source)) return Suggestions.empty();
-        if (!(context.getSource() instanceof ServerCommandSource serverSource)) return source.getCompletions(context);
+        if (!(context.getSource() instanceof ServerCommandSource)) return source.getCompletions(context);
 
-        HeartDataState state = Hearts.getHeartDataState(serverSource.getWorld());
+        HeartDataState state = Hearts.getHeartDataState();
         List<String> strings = new ArrayList<>();
         if (!singleTarget) strings.add("*");
         strings.addAll(state.getHeartDataList()

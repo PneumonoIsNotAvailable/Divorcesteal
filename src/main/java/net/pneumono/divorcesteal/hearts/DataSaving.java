@@ -18,37 +18,35 @@ import java.util.concurrent.CompletableFuture;
 public class DataSaving {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss");
     private static volatile HeartDataState STATE = null;
+    private static Path ROOT_PATH = null;
 
-    public static HeartDataState getState(MinecraftServer server) {
+    public static HeartDataState getState() {
         while (STATE == null) {
             Thread.onSpinWait();
         }
-        STATE.setServer(server);
         return STATE;
     }
 
     public static void backupAndLoadHeartDataState(MinecraftServer server) {
-        if (STATE == null) {
-            CompletableFuture.runAsync(() -> {
-                makeBackup(server);
+        ROOT_PATH = server.getSavePath(WorldSavePath.ROOT);
 
-                HeartDataState state = read(server);
-                state.setServer(server);
-                STATE = state;
-            });
-        }
+        CompletableFuture.runAsync(() -> {
+            makeBackup();
+
+            STATE = read();
+        });
     }
 
     public static void clearState() {
         STATE = null;
     }
 
-    private static Path getHeartsPath(MinecraftServer server) {
-        return server.getSavePath(WorldSavePath.ROOT).resolve("hearts.dat");
+    private static Path getHeartsPath() {
+        return ROOT_PATH.resolve("hearts.dat");
     }
 
-    private static HeartDataState read(MinecraftServer server) {
-        Path path = getHeartsPath(server);
+    private static HeartDataState read() {
+        Path path = getHeartsPath();
 
         if (!path.toFile().exists()) return new HeartDataState();
 
@@ -70,13 +68,13 @@ public class DataSaving {
         }
     }
 
-    public static void save(MinecraftServer server) {
-        CompletableFuture.runAsync(() -> write(server));
+    public static void save() {
+        CompletableFuture.runAsync(DataSaving::write);
     }
 
     @SuppressWarnings("LoggingSimilarMessage")
-    private static void write(MinecraftServer server) {
-        Path path = getHeartsPath(server);
+    private static void write() {
+        Path path = getHeartsPath();
 
         DataResult<NbtElement> result = HeartDataState.CODEC.encodeStart(NbtOps.INSTANCE, STATE);
         NbtElement element;
@@ -98,16 +96,14 @@ public class DataSaving {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void makeBackup(MinecraftServer server) {
-        Path rootPath = server.getSavePath(WorldSavePath.ROOT);
-
-        Path source = rootPath.resolve("hearts.dat");
+    public static void makeBackup() {
+        Path source = getHeartsPath();
 
         if (!source.toFile().exists()) {
             return;
         }
 
-        Path backups = rootPath.resolve("hearts_backups");
+        Path backups = ROOT_PATH.resolve("hearts_backups");
         backups.toFile().mkdirs();
 
         Date date = new Date();

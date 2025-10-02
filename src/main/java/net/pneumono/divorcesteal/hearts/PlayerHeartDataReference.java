@@ -2,7 +2,6 @@ package net.pneumono.divorcesteal.hearts;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 
 import java.util.Date;
@@ -24,9 +23,9 @@ public class PlayerHeartDataReference {
     }
 
     public static PlayerHeartDataReference create(PlayerEntity player) {
-        if (!(player.getWorld() instanceof ServerWorld serverWorld)) throw new IllegalStateException("Cannot set player hearts on the logical client!");
+        if (player.getWorld().isClient()) throw new IllegalStateException("Cannot set player hearts on the logical client!");
 
-        return new PlayerHeartDataReference(Hearts.getHeartDataState(serverWorld), player.getGameProfile());
+        return new PlayerHeartDataReference(Hearts.getHeartDataState(), player.getGameProfile());
     }
 
     public void delete() {

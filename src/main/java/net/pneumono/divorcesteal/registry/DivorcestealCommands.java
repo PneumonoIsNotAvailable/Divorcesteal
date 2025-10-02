@@ -211,7 +211,7 @@ public class DivorcestealCommands {
     private static int executeDelete(ServerCommandSource source, List<PlayerHeartDataReference> references) throws CommandSyntaxException {
         if (references.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
-        HeartDataState state = getHeartDataState(source);
+        HeartDataState state = Hearts.getHeartDataState();
         for (PlayerHeartDataReference reference : references) {
             reference.delete();
             PlayerEntity player = playerFromReference(source, reference);
@@ -254,10 +254,6 @@ public class DivorcestealCommands {
         player.increaseStat(DivorcestealRegistry.WITHDRAW_HEART_STAT, heartsWithdrawn);
 
         return heartsWithdrawn;
-    }
-
-    public static HeartDataState getHeartDataState(ServerCommandSource source) {
-        return Hearts.getHeartDataState(source.getWorld());
     }
 
     private static void updateData(ServerCommandSource source, PlayerHeartDataReference reference) {

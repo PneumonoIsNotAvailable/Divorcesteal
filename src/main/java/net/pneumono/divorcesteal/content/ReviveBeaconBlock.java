@@ -48,7 +48,7 @@ public class ReviveBeaconBlock extends BlockWithEntity {
 
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        if (world instanceof ServerWorld serverWorld && world.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity) {
+        if (!world.isClient() && world.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity) {
             if (blockEntity.getOrCreateTarget(player.getUuid()) == null) return ActionResult.FAIL;
 
             OptionalInt optionalInt = player.openHandledScreen(blockEntity);
@@ -56,7 +56,7 @@ public class ReviveBeaconBlock extends BlockWithEntity {
                 ServerPlayNetworking.send(serverPlayer, new ReviveBeaconInfoS2CPayload(
                         optionalInt.getAsInt(),
                         blockEntity.getOrCreateTarget(player.getUuid()).profile(),
-                        getRevivablePlayers(serverWorld)
+                        getRevivablePlayers()
                 ));
             }
         }
@@ -64,13 +64,13 @@ public class ReviveBeaconBlock extends BlockWithEntity {
         return ActionResult.SUCCESS;
     }
 
-    public static List<ProfileComponent> getRevivablePlayers(ServerWorld world) {
-        HeartDataState state = Hearts.getHeartDataState(world);
+    public static List<ProfileComponent> getRevivablePlayers() {
+        HeartDataState state = Hearts.getHeartDataState();
         return state.getHeartDataList().stream().filter(PlayerHeartData::isBanned).map(data -> new ProfileComponent(data.gameProfile())).toList();
     }
 
     public static Optional<GameProfile> getRandomTarget(ServerWorld world, UUID except) {
-        HeartDataState state = Hearts.getHeartDataState(world);
+        HeartDataState state = Hearts.getHeartDataState();
         List<PlayerHeartData> unbannedList = state.getHeartDataList().stream().filter(data -> !data.isBanned()).toList();
         List<PlayerHeartData> filteredUnbannedList = unbannedList.stream().filter(data -> !data.uuid().equals(except)).toList();
         if (!filteredUnbannedList.isEmpty()) {
