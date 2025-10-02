@@ -1,6 +1,5 @@
 package net.pneumono.divorcesteal.content;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,6 +10,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.hearts.Hearts;
+import net.pneumono.divorcesteal.hearts.PlayerHeartData;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 
 public class HeartItem extends Item {
@@ -40,7 +40,7 @@ public class HeartItem extends Item {
     }
 
     private static int getHearts(PlayerEntity user) {
-        GameProfile profile = user.getGameProfile();
-        return Hearts.getHeartDataState().getOrCreateHeartData(profile.getId(), profile.getName()).hearts();
+        PlayerHeartData data = Hearts.getHeartDataState().getHeartData(user.getGameProfile().getId());
+        return data == null ? -1 : data.hearts();
     }
 }

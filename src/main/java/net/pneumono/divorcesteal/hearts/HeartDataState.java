@@ -1,7 +1,9 @@
 package net.pneumono.divorcesteal.hearts;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import net.pneumono.divorcesteal.DivorcestealConfig;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -32,28 +34,21 @@ public class HeartDataState {
         return this.dataMap.values().stream().toList();
     }
 
-    public PlayerHeartData getOrCreateHeartData(UUID uuid, String name) {
-        if (dataMap.containsKey(uuid)) {
-            return getHeartData(uuid);
-        } else {
-            if (name == null) throw new IllegalArgumentException("Cannot create heart data without a name!");
-
-            PlayerHeartData data = new PlayerHeartData(uuid, name, DivorcestealConfig.DEFAULT_HEARTS.getValue(), null);
-            dataMap.put(uuid, data);
-            return data;
-        }
+    public @Nullable PlayerHeartData getHeartData(UUID uuid) {
+        return dataMap.get(uuid);
     }
 
-    /**
-     * Throws an {@link IllegalStateException} if no heart data exists for the UUID.
-     */
-    public PlayerHeartData getHeartData(UUID uuid) {
-        PlayerHeartData data = dataMap.get(uuid);
-        if (data == null) throw new IllegalStateException("No heart data exists for UUID: " + uuid);
-        return data;
+    public @Nullable PlayerHeartDataReference getHeartDataReference(UUID uuid) {
+        PlayerHeartData data = getHeartData(uuid);
+        return data == null ? null : new PlayerHeartDataReference(this, data);
     }
 
-    public void deleteHeartData(UUID uuid) {
+    public void addPlayer(GameProfile profile) {
+        dataMap.put(profile.getId(), new PlayerHeartData(profile.getId(), profile.getName(), DivorcestealConfig.DEFAULT_HEARTS.getValue(), null));
+        markDirty();
+    }
+
+    public void removePlayer(UUID uuid) {
         dataMap.remove(uuid);
         markDirty();
     }

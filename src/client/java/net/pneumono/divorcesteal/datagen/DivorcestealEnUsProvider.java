@@ -47,6 +47,10 @@ public class DivorcestealEnUsProvider extends FabricLanguageProvider {
         builder.add(DivorcestealRegistry.DEATHBAN_PLAYER_STAT, "Players Deathbanned", "stat");
         builder.add(DivorcestealRegistry.DEATHBAN_SELF_STAT, "Times Deathbanned", "stat");
 
+        builder.add("commands.divorcesteal.addplayer.single", "Added %s to Player List");
+        builder.add("commands.divorcesteal.addplayer.multiple", "Added %s players to Player List");
+        builder.add("commands.divorcesteal.removeplayer.single", "Removed %s from Player List");
+        builder.add("commands.divorcesteal.removeplayer.multiple", "Removed %s players from Player List");
         builder.add("commands.divorcesteal.get", "%1$s has %2$s hearts");
         builder.add("commands.divorcesteal.set.single", "Set %1$s to %2$s hearts");
         builder.add("commands.divorcesteal.set.multiple", "Set %1$s players to %2$s hearts");

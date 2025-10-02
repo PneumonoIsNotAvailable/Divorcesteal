@@ -47,6 +47,10 @@ public class DivorcestealEnUdProvider extends FabricLanguageProvider {
         builder.add(DivorcestealRegistry.DEATHBAN_PLAYER_STAT, "pǝuuɐqɥʇɐǝᗡ sɹǝʎɐꞁԀ", "stat");
         builder.add(DivorcestealRegistry.DEATHBAN_SELF_STAT, "pǝuuɐqɥʇɐǝᗡ sǝɯᴉ⟘", "stat");
 
+        builder.add("commands.divorcesteal.addplayer.single", "ʇsᴉꞀ ɹǝʎɐꞁԀ oʇ %s pǝppⱯ");
+        builder.add("commands.divorcesteal.addplayer.multiple", "ʇsᴉꞀ ɹǝʎɐꞁԀ oʇ sɹǝʎɐꞁd %s pǝppⱯ");
+        builder.add("commands.divorcesteal.removeplayer.single", "ʇsᴉꞀ ɹǝʎɐꞁԀ ɯoɹɟ %s pǝʌoɯǝᴚ");
+        builder.add("commands.divorcesteal.removeplayer.multiple", "ʇsᴉꞀ ɹǝʎɐꞁԀ ɯoɹɟ sɹǝʎɐꞁd %s pǝʌoɯǝᴚ");
         builder.add("commands.divorcesteal.get", "sʇɹɐǝɥ %2$s sɐɥ %1$s");
         builder.add("commands.divorcesteal.set.single", "sʇɹɐǝɥ %2$s oʇ %1$s ʇǝS");
         builder.add("commands.divorcesteal.set.multiple", "sʇɹɐǝɥ %2$s oʇ sɹǝʎɐꞁd %1$s ʇǝS");

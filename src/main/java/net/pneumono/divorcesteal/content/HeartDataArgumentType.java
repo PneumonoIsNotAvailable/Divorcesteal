@@ -93,9 +93,9 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
         return source -> {
             HeartDataState state = Hearts.getHeartDataState();
             GameProfile profile = Objects.requireNonNull(source.getServer().getUserCache()).findByName(string).orElseThrow(NO_PLAYER_EXCEPTION::create);
-            PlayerHeartData data = state.getOrCreateHeartData(profile.getId(), profile.getName());
+            PlayerHeartData data = state.getHeartData(profile.getId());
 
-            if (this.filter.test(data)) {
+            if (data != null && this.filter.test(data)) {
                 return List.of(new PlayerHeartDataReference(state, data));
             } else {
                 throw NO_DATA_EXCEPTION.create();

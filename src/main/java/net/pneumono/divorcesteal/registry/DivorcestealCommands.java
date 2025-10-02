@@ -1,5 +1,6 @@
 package net.pneumono.divorcesteal.registry;
 
+import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -7,7 +8,6 @@ import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -20,7 +20,9 @@ import net.pneumono.divorcesteal.content.HeartDataArgumentType;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.PlayerHeartDataReference;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 
 import static net.minecraft.server.command.CommandManager.argument;
@@ -33,8 +35,22 @@ public class DivorcestealCommands {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> {
             dispatcher.register(literal("divorcesteal")
                     .requires(source -> source.hasPermissionLevel(3))
+                    .then(literal("addplayer")
+                            .then(argument("targets", EntityArgumentType.players())
+                                    .executes(context -> executeAddPlayers(context.getSource(),
+                                            EntityArgumentType.getPlayers(context, "targets")
+                                    ))
+                            )
+                    )
+                    .then(literal("removeplayer")
+                            .then(argument("targets", HeartDataArgumentType.players())
+                                    .executes(context -> executeRemovePlayers(context.getSource(),
+                                            HeartDataArgumentType.getPlayers(context, "targets")
+                                    ))
+                            )
+                    )
                     .then(literal("get")
-                            .executes(context -> executeGet(context.getSource(), PlayerHeartDataReference.create(context.getSource().getPlayerOrThrow())))
+                            .executes(context -> executeGet(context.getSource(), Hearts.getHeartDataReference(context.getSource().getPlayerOrThrow())))
                             .then(argument("target", HeartDataArgumentType.player())
                                     .executes(context -> executeGet(context.getSource(),
                                             HeartDataArgumentType.getPlayer(context, "target")
@@ -110,13 +126,6 @@ public class DivorcestealCommands {
                                     ))
                             )
                     )
-                    .then(literal("delete")
-                            .then(argument("targets", HeartDataArgumentType.players())
-                                    .executes(context -> executeDelete(context.getSource(),
-                                            HeartDataArgumentType.getPlayers(context, "targets")
-                                    ))
-                            )
-                    )
             );
             dispatcher.register(literal("withdraw")
                     .executes(context -> executeWithdraw(context.getSource(), context.getSource().getPlayerOrThrow(), 1))
@@ -128,6 +137,51 @@ public class DivorcestealCommands {
                     )
             );
         });
+    }
+
+    private static int executeAddPlayers(ServerCommandSource source, Collection<ServerPlayerEntity> targets) throws CommandSyntaxException {
+        if (targets.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
+
+        List<ServerPlayerEntity> players = targets.stream().toList();
+
+        HeartDataState state = Hearts.getHeartDataState();
+
+        int successes = 0;
+        for (ServerPlayerEntity player : players) {
+            GameProfile profile = player.getGameProfile();
+            if (state.getHeartData(profile.getId()) == null) {
+                state.addPlayer(player.getGameProfile());
+                successes++;
+            }
+        }
+
+        if (successes == 1) {
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.addplayer.single", players.getFirst().getGameProfile().getName()), true);
+        } else {
+            int finalSuccesses = successes;
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.addplayer.multiple", finalSuccesses), true);
+        }
+
+        return successes;
+    }
+
+    private static int executeRemovePlayers(ServerCommandSource source, List<PlayerHeartDataReference> references) throws CommandSyntaxException {
+        if (references.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
+
+        HeartDataState state = Hearts.getHeartDataState();
+
+        for (PlayerHeartDataReference reference : references) {
+            reference.delete();
+            state.removePlayer(reference.getUUID());
+        }
+
+        if (references.size() == 1) {
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.removeplayer.single", references.getFirst().getName()), true);
+        } else {
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.removeplayer.multiple", references.size()), true);
+        }
+
+        return references.size();
     }
 
     private static int executeGet(ServerCommandSource source, PlayerHeartDataReference reference) {
@@ -208,30 +262,6 @@ public class DivorcestealCommands {
         return references.size();
     }
 
-    private static int executeDelete(ServerCommandSource source, List<PlayerHeartDataReference> references) throws CommandSyntaxException {
-        if (references.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
-
-        HeartDataState state = Hearts.getHeartDataState();
-        for (PlayerHeartDataReference reference : references) {
-            reference.delete();
-            PlayerEntity player = playerFromReference(source, reference);
-            if (player != null) {
-                state.getOrCreateHeartData(player.getGameProfile().getId(), player.getGameProfile().getName());
-                Hearts.updateData(player);
-            } else {
-                Hearts.updateBan(source.getServer(), reference, false);
-            }
-        }
-
-        if (references.size() == 1) {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.delete.single", references.getFirst().getName()), true);
-        } else {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.delete.multiple", references.size()), true);
-        }
-
-        return references.size();
-    }
-
     private static int executeWithdraw(ServerCommandSource source, ServerPlayerEntity player, int amount) {
         int heartsWithdrawn = -Hearts.addHeartsValidated(player, -amount, false);
         if (heartsWithdrawn == 0) {
@@ -260,8 +290,8 @@ public class DivorcestealCommands {
         Hearts.updateData(playerFromReference(source, reference), source.getServer(), reference);
     }
 
-    private static PlayerHeartDataReference referenceFromSource(ServerCommandSource source) throws CommandSyntaxException {
-        return PlayerHeartDataReference.create(source.getPlayerOrThrow());
+    private static @Nullable PlayerHeartDataReference referenceFromSource(ServerCommandSource source) throws CommandSyntaxException {
+        return Hearts.getHeartDataReference(source.getPlayerOrThrow());
     }
 
     private static ServerPlayerEntity playerFromReference(ServerCommandSource source, PlayerHeartDataReference reference) {

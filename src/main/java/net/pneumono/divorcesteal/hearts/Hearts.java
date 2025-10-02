@@ -30,11 +30,17 @@ public class Hearts {
         return HeartDataState.get();
     }
 
+    public static @Nullable PlayerHeartDataReference getHeartDataReference(PlayerEntity player) {
+        return getHeartDataState().getHeartDataReference(player.getGameProfile().getId());
+    }
+
     /**
      * @return Number of hearts added (may not be equal to {@code hearts} due to validation)
      */
     public static int addHeartsValidated(PlayerEntity player, int hearts, boolean allowDeathban) {
-        PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
+        PlayerHeartDataReference reference = getHeartDataReference(player);
+        if (reference == null) return 0;
+
         int currentHearts = reference.getHearts();
         int finalHearts = MathHelper.clamp(currentHearts + hearts, allowDeathban ? 0 : 1, Math.max(DivorcestealConfig.MAX_HEARTS.getValue(), currentHearts));
         reference.setHearts(finalHearts);
@@ -44,15 +50,18 @@ public class Hearts {
 
     public static boolean revive(ServerWorld world, GameProfile profile) {
         HeartDataState state = getHeartDataState();
-        PlayerHeartDataReference reference = new PlayerHeartDataReference(state, profile);
-        if (!reference.isBanned()) return false;
+        PlayerHeartDataReference reference = state.getHeartDataReference(profile.getId());
+        if (reference == null || !reference.isBanned()) return false;
 
         unban(world.getServer(), reference, true);
         return true;
     }
 
     public static void updateData(PlayerEntity player) {
-        updateData(player, player.getServer(), PlayerHeartDataReference.create(player));
+        PlayerHeartDataReference reference = getHeartDataReference(player);
+        if (reference != null) {
+            updateData(player, player.getServer(), reference);
+        }
     }
 
     public static void updateData(@Nullable PlayerEntity player, @Nullable MinecraftServer server, PlayerHeartDataReference reference) {

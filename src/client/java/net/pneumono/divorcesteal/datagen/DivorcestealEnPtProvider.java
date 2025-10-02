@@ -47,6 +47,10 @@ public class DivorcestealEnPtProvider extends FabricLanguageProvider {
         builder.add(DivorcestealRegistry.DEATHBAN_PLAYER_STAT, "Sailors sent t' Davy Jones", "stat");
         builder.add(DivorcestealRegistry.DEATHBAN_SELF_STAT, "Times sent t' Davy Jones", "stat");
 
+        builder.add("commands.divorcesteal.addplayer.single", "%s be part o' th' crew");
+        builder.add("commands.divorcesteal.addplayer.multiple", "%s sailors be part o' th' crew");
+        builder.add("commands.divorcesteal.removeplayer.single", "%s be returnin' t' land");
+        builder.add("commands.divorcesteal.removeplayer.multiple", "%s sailors be returnin' t' land");
         builder.add("commands.divorcesteal.get", "%1$s be hoardin' %2$s hearts");
         builder.add("commands.divorcesteal.set.single", "%1$s be forced to %2$s hearts");
         builder.add("commands.divorcesteal.set.multiple", "%1$s sailors be forced to %2$s hearts");

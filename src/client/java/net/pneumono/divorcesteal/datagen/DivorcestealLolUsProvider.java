@@ -47,6 +47,10 @@ public class DivorcestealLolUsProvider extends FabricLanguageProvider {
         builder.add(DivorcestealRegistry.DEATHBAN_PLAYER_STAT, "Kittiez dedband", "stat");
         builder.add(DivorcestealRegistry.DEATHBAN_SELF_STAT, "Times u got Dedband", "stat");
 
+        builder.add("commands.divorcesteal.addplayer.single", "addid %s to kitteh list");
+        builder.add("commands.divorcesteal.addplayer.multiple", "addid %s cats to kitteh list");
+        builder.add("commands.divorcesteal.removeplayer.single", "removd %s frm kitteh list");
+        builder.add("commands.divorcesteal.removeplayer.multiple", "removd %s cats frm kitteh list");
         builder.add("commands.divorcesteal.get", "%1$s haz %2$s hartz!");
         builder.add("commands.divorcesteal.set.single", "Kat %1$s haz %2$s harts now");
         builder.add("commands.divorcesteal.set.multiple", "%1$s katz hav %2$s harts now");

@@ -37,9 +37,11 @@ public class DivorcestealEvents {
     }
 
     private static void join(ServerPlayerEntity player) {
-        PlayerHeartDataReference reference = PlayerHeartDataReference.create(player);
-        reference.setName(player.getGameProfile().getName());
-        Hearts.updateData(player);
+        PlayerHeartDataReference reference = Hearts.getHeartDataReference(player);
+        if (reference != null) {
+            reference.setName(player.getGameProfile().getName());
+            Hearts.updateData(player);
+        }
     }
 
     private static void afterDeath(Entity entity, DamageSource damageSource) {
@@ -59,7 +61,8 @@ public class DivorcestealEvents {
                 headItemEntity.setOwner(attacker.getUuid());
             }
 
-            if (PlayerHeartDataReference.create(player).isBanned()) {
+            PlayerHeartDataReference reference = Hearts.getHeartDataReference(player);
+            if (reference != null && reference.isBanned()) {
                 player.incrementStat(DivorcestealRegistry.DEATHBAN_SELF_STAT);
                 attacker.incrementStat(DivorcestealRegistry.DEATHBAN_PLAYER_STAT);
             }
