@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.pneumono.divorcesteal.DivorcestealConfig;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 import java.util.Optional;
@@ -12,28 +11,16 @@ import java.util.UUID;
 
 public class PlayerHeartDataReference {
     private final HeartDataState state;
-    private final UUID uuid;
-    private String name;
-    private int hearts;
-    @Nullable
-    private Date banDate;
+    private final PlayerHeartData data;
 
     public PlayerHeartDataReference(HeartDataState state, PlayerHeartData data) {
         this.state = state;
-        this.uuid = data.uuid();
-        this.name = data.name();
-        this.hearts = data.hearts();
-        this.banDate = data.banDate();
+        this.data = data;
     }
 
     public PlayerHeartDataReference(HeartDataState state, GameProfile profile) {
         this.state = state;
-        this.uuid = profile.getId();
-
-        PlayerHeartData data = state.getOrCreateHeartData(uuid, profile.getName());
-        this.name = data.name();
-        this.hearts = data.hearts();
-        this.banDate = data.banDate();
+        this.data = state.getOrCreateHeartData(profile.getId(), profile.getName());
     }
 
     public static PlayerHeartDataReference create(PlayerEntity player) {
@@ -43,53 +30,41 @@ public class PlayerHeartDataReference {
     }
 
     public void delete() {
-        this.hearts = DivorcestealConfig.DEFAULT_HEARTS.getValue();
-        this.banDate = null;
-        this.state.deleteHeartData(this.uuid);
+        this.data.setHearts(DivorcestealConfig.DEFAULT_HEARTS.getValue());
+        this.state.deleteHeartData(this.data.uuid());
     }
 
     public boolean isBanned() {
-        return this.hearts == 0 || this.banDate != null;
+        return this.data.isBanned();
     }
 
     public GameProfile getGameProfile() {
-        return new GameProfile(this.uuid, this.name);
+        return this.data.gameProfile();
     }
 
     public UUID getUUID() {
-        return this.uuid;
+        return this.data.uuid();
     }
 
     public String getName() {
-        return this.name;
+        return this.data.name();
     }
 
     public int getHearts() {
-        return this.hearts;
+        return this.data.hearts();
     }
 
     public Optional<Date> getBanDate() {
-        return Optional.ofNullable(banDate);
+        return Optional.ofNullable(this.data.banDate());
     }
 
     public void setName(String name) {
-        this.name = name;
-        updateHeartData();
+        this.data.setName(name);
+        this.state.markDirty();
     }
 
     public void setHearts(int hearts) {
-        this.hearts = hearts;
-        if (hearts > 0) setBanDate(null);
-        if (hearts == 0 && this.banDate == null) setBanDate(new Date());
-        updateHeartData();
-    }
-
-    public void setBanDate(@Nullable Date banDate) {
-        this.banDate = banDate;
-        updateHeartData();
-    }
-
-    private void updateHeartData() {
-        this.state.setHeartData(this.uuid, this.name, this.hearts, this.banDate);
+        this.data.setHearts(hearts);
+        this.state.markDirty();
     }
 }

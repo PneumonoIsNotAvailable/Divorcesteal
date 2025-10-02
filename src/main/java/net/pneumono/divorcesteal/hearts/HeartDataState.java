@@ -3,7 +3,6 @@ package net.pneumono.divorcesteal.hearts;
 import com.mojang.serialization.Codec;
 import net.minecraft.server.MinecraftServer;
 import net.pneumono.divorcesteal.DivorcestealConfig;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -60,17 +59,12 @@ public class HeartDataState {
         return data;
     }
 
-    public void setHeartData(UUID uuid, String name, int hearts, @Nullable Date banDate) {
-        dataMap.put(uuid, new PlayerHeartData(uuid, name, hearts, banDate));
-        markDirty(this.server);
-    }
-
     public void deleteHeartData(UUID uuid) {
         dataMap.remove(uuid);
-        markDirty(this.server);
+        markDirty();
     }
 
-    public void markDirty(MinecraftServer server) {
-        DataSaving.save(server);
+    public void markDirty() {
+        DataSaving.save(this.server);
     }
 }
