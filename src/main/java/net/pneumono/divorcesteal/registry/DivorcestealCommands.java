@@ -294,7 +294,7 @@ public class DivorcestealCommands {
         return Hearts.getHeartDataReference(source.getPlayerOrThrow());
     }
 
-    private static ServerPlayerEntity playerFromReference(ServerCommandSource source, PlayerHeartDataReference reference) {
-        return (ServerPlayerEntity) source.getWorld().getPlayerByUuid(reference.getUUID());
+    private static @Nullable ServerPlayerEntity playerFromReference(ServerCommandSource source, PlayerHeartDataReference reference) {
+        return reference == null ? null : (ServerPlayerEntity) source.getWorld().getPlayerByUuid(reference.getUUID());
     }
 }
