@@ -124,7 +124,7 @@ public class DivorcestealEvents {
     }
 
     private static void serverStarting(MinecraftServer server) {
-        DataSaving.makeBackup(server);
+        DataSaving.backupAndLoadHeartDataState(server);
     }
 
     private static void serverStopping(MinecraftServer server) {

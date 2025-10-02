@@ -17,15 +17,26 @@ import java.util.concurrent.CompletableFuture;
 
 public class DataSaving {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss");
-    private static HeartDataState STATE = null;
-    private static CompletableFuture<?> SAVING_FUTURE = CompletableFuture.completedFuture(null);
+    private static volatile HeartDataState STATE = null;
 
     public static HeartDataState getState(MinecraftServer server) {
-        if (STATE == null) {
-            STATE = read(server);
-            STATE.setServer(server);
+        while (STATE == null) {
+            Thread.onSpinWait();
         }
+        STATE.setServer(server);
         return STATE;
+    }
+
+    public static void backupAndLoadHeartDataState(MinecraftServer server) {
+        if (STATE == null) {
+            CompletableFuture.runAsync(() -> {
+                makeBackup(server);
+
+                HeartDataState state = read(server);
+                state.setServer(server);
+                STATE = state;
+            });
+        }
     }
 
     public static void clearState() {
@@ -60,7 +71,7 @@ public class DataSaving {
     }
 
     public static void save(MinecraftServer server) {
-        SAVING_FUTURE = SAVING_FUTURE.thenCompose((object) -> CompletableFuture.runAsync(() -> write(server)));
+        CompletableFuture.runAsync(() -> write(server));
     }
 
     @SuppressWarnings("LoggingSimilarMessage")
