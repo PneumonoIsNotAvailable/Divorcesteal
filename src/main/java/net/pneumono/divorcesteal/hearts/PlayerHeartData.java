@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.dynamic.Codecs;
+import net.pneumono.divorcesteal.Divorcesteal;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
@@ -21,7 +22,13 @@ public class PlayerHeartData {
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private static PlayerHeartData deserialize(UUID uuid, String name, int hearts, Optional<Long> banDate) {
-        return new PlayerHeartData(uuid, name, hearts, banDate.map(Date::new).orElse(null));
+        if (hearts < 0) {
+            Divorcesteal.LOGGER.info("Player {} has {} hearts, setting to 0...", name, hearts);
+            hearts = 0;
+        }
+        PlayerHeartData data = new PlayerHeartData(uuid, name, hearts, banDate.map(Date::new).orElse(null));
+        data.updateBannedState();
+        return data;
     }
 
     private final UUID uuid;
@@ -58,11 +65,7 @@ public class PlayerHeartData {
 
     public void setHearts(int hearts) {
         this.hearts = hearts;
-        if (hearts > 0) {
-            this.banDate = null;
-        } else if (this.banDate == null) {
-            this.banDate = new Date();
-        }
+        updateBannedState();
     }
 
     public boolean isBanned() {
@@ -71,5 +74,13 @@ public class PlayerHeartData {
 
     public GameProfile getGameProfile() {
         return new GameProfile(this.uuid, this.name);
+    }
+
+    private void updateBannedState() {
+        if (hearts > 0) {
+            this.banDate = null;
+        } else if (this.banDate == null) {
+            this.banDate = new Date();
+        }
     }
 }
