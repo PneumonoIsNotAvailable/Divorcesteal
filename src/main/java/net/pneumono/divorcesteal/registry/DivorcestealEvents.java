@@ -48,7 +48,7 @@ public class DivorcestealEvents {
 
         if (
                 player.getAttacker() instanceof ServerPlayerEntity attacker &&
-                Hearts.getParticipantHeartData(attacker) != null &&
+                Hearts.isParticipant(attacker) &&
                 !attacker.getUuid().equals(entity.getUuid())
         ) {
 

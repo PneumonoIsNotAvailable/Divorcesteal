@@ -217,7 +217,8 @@ public class DivorcestealCommands {
         return names.size();
     }
 
-    private static int executeGet(ServerCommandSource source, ParticipantHeartData data) {
+    private static int executeGet(ServerCommandSource source, ParticipantHeartData data) throws CommandSyntaxException {
+        if (data == null) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
         source.sendFeedback(() -> Text.translatable("commands.divorcesteal.get", data.getName(), data.getHearts()), true);
         return data.getHearts();
     }
@@ -227,7 +228,9 @@ public class DivorcestealCommands {
 
         int finalAmount = bypassMax ? amount : MathHelper.clamp(amount, 0, DivorcestealConfig.MAX_HEARTS.getValue());
 
+        int successes = 0;
         for (ParticipantHeartData data : dataList) {
+            if (data == null) continue;
             data.setHearts(finalAmount);
             updateData(source, data);
             if (finalAmount == 0) {
@@ -236,20 +239,24 @@ public class DivorcestealCommands {
                     bannedPlayer.networkHandler.disconnect(Text.translatable("divorcesteal.deathban"));
                 }
             }
+            successes++;
         }
 
         if (dataList.size() == 1) {
             source.sendFeedback(() -> Text.translatable("commands.divorcesteal.set.single", dataList.getFirst().getName(), finalAmount), true);
         } else {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.set.multiple", dataList.size(), finalAmount), true);
+            int finalSuccesses = successes;
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.set.multiple", finalSuccesses, finalAmount), true);
         }
-        return dataList.size();
+        return successes;
     }
 
     private static int executeAdd(ServerCommandSource source, boolean add, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
         if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
+        int successes = 0;
         for (ParticipantHeartData data : dataList) {
+            if (data == null) continue;
             int hearts = data.getHearts();
             int finalAmount = Math.max(hearts + (add ? amount : -amount), 0);
             if (!bypassMax) {
@@ -263,36 +270,43 @@ public class DivorcestealCommands {
                     bannedPlayer.networkHandler.disconnect(Text.translatable("divorcesteal.deathban"));
                 }
             }
+            successes++;
         }
 
         String translation = "commands.divorcesteal." + (add ? "add" : "remove") + ".";
         if (dataList.size() == 1) {
             source.sendFeedback(() -> Text.translatable(translation + "single", amount, dataList.getFirst().getName()), true);
         } else {
-            source.sendFeedback(() -> Text.translatable(translation + "multiple", amount, dataList.size()), true);
+            int finalSuccesses = successes;
+            source.sendFeedback(() -> Text.translatable(translation + "multiple", amount, finalSuccesses), true);
         }
-        return dataList.size();
+        return successes;
     }
 
     private static int executeRevive(ServerCommandSource source, List<ParticipantHeartData> dataList) throws CommandSyntaxException {
         if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
+        int successes = 0;
         boolean single = dataList.size() == 1;
         if (single) {
             if (!Hearts.revive(source.getWorld(), dataList.getFirst().getGameProfile())) throw DivorcestealExceptions.NOT_DEATHBANNED_EXCEPTION.create();
+            successes = 1;
 
         } else {
             for (ParticipantHeartData data : dataList) {
+                if (data == null) continue;
                 Hearts.revive(source.getWorld(), data.getGameProfile());
+                successes++;
             }
         }
 
         if (dataList.size() == 1) {
             source.sendFeedback(() -> Text.translatable("commands.divorcesteal.revive.single", dataList.getFirst().getName()), true);
         } else {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.revive.multiple", dataList.size()), true);
+            int finalSuccesses = successes;
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.revive.multiple", finalSuccesses), true);
         }
-        return dataList.size();
+        return successes;
     }
 
     private static int executeWithdraw(ServerCommandSource source, ServerPlayerEntity player, int amount) {
@@ -327,7 +341,7 @@ public class DivorcestealCommands {
         return Hearts.getParticipantHeartData(source.getPlayerOrThrow());
     }
 
-    private static @Nullable ServerPlayerEntity playerFromData(ServerCommandSource source, ParticipantHeartData data) {
+    private static @Nullable ServerPlayerEntity playerFromData(ServerCommandSource source, @Nullable ParticipantHeartData data) {
         return data == null ? null : (ServerPlayerEntity) source.getWorld().getPlayerByUuid(data.getUuid());
     }
 }

@@ -30,7 +30,11 @@ public class Hearts {
         return HeartDataState.get();
     }
 
-    public static @Nullable ParticipantHeartData getParticipantHeartData(PlayerEntity player) {
+    public static boolean isParticipant(@Nullable PlayerEntity player) {
+        return player != null && getHeartDataState().getHeartData(player.getGameProfile().getId()) != null;
+    }
+
+    public static @Nullable ParticipantHeartData getParticipantHeartData(@Nullable PlayerEntity player) {
         if (player == null) return null;
         return getHeartDataState().getHeartData(player.getGameProfile().getId());
     }
