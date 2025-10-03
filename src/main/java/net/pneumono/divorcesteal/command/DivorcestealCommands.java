@@ -334,7 +334,7 @@ public class DivorcestealCommands {
     }
 
     private static void updateData(ServerCommandSource source, ParticipantHeartData data) {
-        Hearts.updateData(playerFromData(source, data));
+        Hearts.updateData(playerFromData(source, data), source.getServer(), data);
     }
 
     private static @Nullable ParticipantHeartData dataFromSource(ServerCommandSource source) throws CommandSyntaxException {
