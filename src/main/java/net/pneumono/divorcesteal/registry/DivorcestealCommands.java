@@ -35,18 +35,20 @@ public class DivorcestealCommands {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> {
             dispatcher.register(literal("divorcesteal")
                     .requires(source -> source.hasPermissionLevel(3))
-                    .then(literal("addplayer")
-                            .then(argument("targets", EntityArgumentType.players())
-                                    .executes(context -> executeAddPlayers(context.getSource(),
-                                            EntityArgumentType.getPlayers(context, "targets")
-                                    ))
+                    .then(literal("players")
+                            .then(literal("add")
+                                    .then(argument("targets", EntityArgumentType.players())
+                                            .executes(context -> executePlayerAdd(context.getSource(),
+                                                    EntityArgumentType.getPlayers(context, "targets")
+                                            ))
+                                    )
                             )
-                    )
-                    .then(literal("removeplayer")
-                            .then(argument("targets", HeartDataArgumentType.players())
-                                    .executes(context -> executeRemovePlayers(context.getSource(),
-                                            HeartDataArgumentType.getPlayers(context, "targets")
-                                    ))
+                            .then(literal("remove")
+                                    .then(argument("targets", HeartDataArgumentType.players())
+                                            .executes(context -> executePlayerRemove(context.getSource(),
+                                                    HeartDataArgumentType.getPlayers(context, "targets")
+                                            ))
+                                    )
                             )
                     )
                     .then(literal("get")
@@ -141,7 +143,7 @@ public class DivorcestealCommands {
         });
     }
 
-    private static int executeAddPlayers(ServerCommandSource source, Collection<ServerPlayerEntity> targets) throws CommandSyntaxException {
+    private static int executePlayerAdd(ServerCommandSource source, Collection<ServerPlayerEntity> targets) throws CommandSyntaxException {
         if (targets.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
         List<ServerPlayerEntity> players = targets.stream().toList();
@@ -167,7 +169,7 @@ public class DivorcestealCommands {
         return successes;
     }
 
-    private static int executeRemovePlayers(ServerCommandSource source, List<PlayerHeartData> dataList) throws CommandSyntaxException {
+    private static int executePlayerRemove(ServerCommandSource source, List<PlayerHeartData> dataList) throws CommandSyntaxException {
         if (dataList.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
 
         HeartDataState state = Hearts.getHeartDataState();
