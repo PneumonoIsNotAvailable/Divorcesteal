@@ -160,7 +160,7 @@ public class DivorcestealCommands {
         if (state.getHeartData(profile.getId()) == null) {
             state.addParticipant(profile);
 
-            updateData(source, state.getHeartData(profile.getId()));
+            updateData(source, state.getHeartData(profile.getId()), false);
 
             source.sendFeedback(() -> Text.translatable("commands.divorcesteal.participant.add", profile.getName()), true);
         } else {
@@ -185,7 +185,7 @@ public class DivorcestealCommands {
 
     private static int executeParticipantRemove(ServerCommandSource source, ParticipantHeartData data) {
         data.setHearts(10);
-        updateData(source, data);
+        updateData(source, data, false);
         Hearts.getHeartDataState().removeParticipant(data.getUuid());
 
         source.sendFeedback(() -> Text.translatable("commands.divorcesteal.participant.remove", data.getName()), true);
@@ -334,7 +334,11 @@ public class DivorcestealCommands {
     }
 
     private static void updateData(ServerCommandSource source, ParticipantHeartData data) {
-        Hearts.updateData(playerFromData(source, data), source.getServer(), data);
+        updateData(source, data, true);
+    }
+
+    private static void updateData(ServerCommandSource source, ParticipantHeartData data, boolean effects) {
+        Hearts.updateData(playerFromData(source, data), source.getServer(), data, effects);
     }
 
     private static @Nullable ParticipantHeartData dataFromSource(ServerCommandSource source) throws CommandSyntaxException {

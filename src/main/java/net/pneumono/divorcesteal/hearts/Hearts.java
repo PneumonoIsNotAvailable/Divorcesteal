@@ -70,8 +70,12 @@ public class Hearts {
     }
 
     public static void updateData(@Nullable PlayerEntity player, @Nullable MinecraftServer server, ParticipantHeartData data) {
+        updateData(player, server, data, true);
+    }
+
+    public static void updateData(@Nullable PlayerEntity player, @Nullable MinecraftServer server, ParticipantHeartData data, boolean effects) {
         if (player != null) updateHearts(player, data.getHearts());
-        if (server != null) updateBan(server, data, true);
+        if (server != null) updateBan(server, data, effects);
     }
 
     public static void updateHearts(PlayerEntity player, int hearts) {
