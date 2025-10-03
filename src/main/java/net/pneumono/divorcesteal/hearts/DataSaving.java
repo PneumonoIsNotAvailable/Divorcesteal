@@ -47,7 +47,10 @@ public class DataSaving {
 
         Path path = getHeartsPath();
 
-        if (!path.toFile().exists()) return new HeartDataState();
+        if (!path.toFile().exists()) {
+            Divorcesteal.LOGGER.info("No hearts data exists, creating empty data");
+            return new HeartDataState();
+        }
 
         NbtCompound compound;
         try {
@@ -113,6 +116,7 @@ public class DataSaving {
         Path source = getHeartsPath();
 
         if (!source.toFile().exists()) {
+            Divorcesteal.LOGGER.info("No hearts data exists to back up");
             return;
         }
 
