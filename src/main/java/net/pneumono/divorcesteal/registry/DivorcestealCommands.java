@@ -4,9 +4,13 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
@@ -25,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -42,6 +47,7 @@ public class DivorcestealCommands {
                                             .executes(context -> executeParticipantAdd(context.getSource(),
                                                     StringArgumentType.getString(context, "target")
                                             ))
+                                            .suggests(DivorcestealCommands::suggestParticipantAdd)
                                     )
                             )
                             .then(literal("remove")
@@ -163,6 +169,19 @@ public class DivorcestealCommands {
         }
 
         return 1;
+    }
+
+    private static CompletableFuture<Suggestions> suggestParticipantAdd(CommandContext<?> context, SuggestionsBuilder builder) {
+        if (!(context.getSource() instanceof CommandSource source)) return Suggestions.empty();
+
+        List<String> invalidNames = Hearts.getHeartDataState().getHeartDataList().stream().map(ParticipantHeartData::getName).toList();
+
+        return CommandSource.suggestMatching(
+                source.getPlayerNames().stream()
+                        .filter(string -> !invalidNames.contains(string))
+                        .toList(),
+                builder
+        );
     }
 
     private static int executeParticipantRemove(ServerCommandSource source, ParticipantHeartData data) {
