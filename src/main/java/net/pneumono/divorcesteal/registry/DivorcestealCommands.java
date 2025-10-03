@@ -50,6 +50,9 @@ public class DivorcestealCommands {
                                             ))
                                     )
                             )
+                            .then(literal("list")
+                                    .executes(context -> executePlayerList(context.getSource()))
+                            )
                     )
                     .then(literal("get")
                             .executes(context -> executeGet(context.getSource(),
@@ -155,15 +158,16 @@ public class DivorcestealCommands {
             GameProfile profile = player.getGameProfile();
             if (state.getHeartData(profile.getId()) == null) {
                 state.addPlayer(player.getGameProfile());
+                Hearts.updateData(player);
                 successes++;
             }
         }
 
         if (successes == 1) {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.addplayer.single", players.getFirst().getGameProfile().getName()), true);
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.player.add.single", players.getFirst().getGameProfile().getName()), true);
         } else {
             int finalSuccesses = successes;
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.addplayer.multiple", finalSuccesses), true);
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.player.add.multiple", finalSuccesses), true);
         }
 
         return successes;
@@ -181,12 +185,31 @@ public class DivorcestealCommands {
         }
 
         if (dataList.size() == 1) {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.removeplayer.single", dataList.getFirst().getName()), true);
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.player.remove.single", dataList.getFirst().getName()), true);
         } else {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.removeplayer.multiple", dataList.size()), true);
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.player.remove.multiple", dataList.size()), true);
         }
 
         return dataList.size();
+    }
+
+    private static int executePlayerList(ServerCommandSource source) {
+        List<String> names = Hearts.getHeartDataState().getHeartDataList().stream().map(PlayerHeartData::getName).toList();
+
+        StringBuilder builder = new StringBuilder();
+
+        boolean first = true;
+        for (String name : names) {
+            if (!first) {
+                builder.append(", ");
+            }
+            builder.append(name);
+            first = false;
+        }
+
+        source.sendFeedback(() -> Text.translatable("commands.divorcesteal.player.list", builder.toString()), true);
+
+        return names.size();
     }
 
     private static int executeGet(ServerCommandSource source, PlayerHeartData data) {
