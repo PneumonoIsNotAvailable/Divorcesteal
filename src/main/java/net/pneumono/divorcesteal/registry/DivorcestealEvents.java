@@ -59,7 +59,6 @@ public class DivorcestealEvents {
             ItemEntity headItemEntity = player.dropItem(headStack, true, false);
             if (headItemEntity != null) {
                 headItemEntity.resetPickupDelay();
-                headItemEntity.setOwner(attacker.getUuid());
             }
 
             ParticipantHeartData data = Hearts.getParticipantHeartData(player);
@@ -76,7 +75,6 @@ public class DivorcestealEvents {
                     ItemEntity heartItemEntity = attacker.dropItem(heartStack, false);
                     if (heartItemEntity != null) {
                         heartItemEntity.resetPickupDelay();
-                        heartItemEntity.setOwner(attacker.getUuid());
                     }
                 }
             }
