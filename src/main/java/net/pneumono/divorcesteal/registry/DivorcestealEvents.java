@@ -30,7 +30,7 @@ public class DivorcestealEvents {
         ServerPlayerEvents.AFTER_RESPAWN.register(DivorcestealEvents::afterRespawn);
         ServerTickEvents.START_WORLD_TICK.register(DivorcestealEvents::startWorldTick);
         ServerLifecycleEvents.SERVER_STARTING.register(DivorcestealEvents::serverStarting);
-        ServerLifecycleEvents.SERVER_STOPPING.register(DivorcestealEvents::serverStopping);
+        ServerLifecycleEvents.AFTER_SAVE.register(DivorcestealEvents::afterSave);
     }
 
     private static void join(ServerPlayerEntity player) {
@@ -127,7 +127,7 @@ public class DivorcestealEvents {
         DataSaving.backupAndLoadHeartDataState(server);
     }
 
-    private static void serverStopping(MinecraftServer server) {
-        DataSaving.clearState();
+    private static void afterSave(MinecraftServer server, boolean flush, boolean force) {
+        DataSaving.save();
     }
 }

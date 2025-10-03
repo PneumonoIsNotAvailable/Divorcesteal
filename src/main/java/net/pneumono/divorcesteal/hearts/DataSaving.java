@@ -29,16 +29,13 @@ public class DataSaving {
 
     public static void backupAndLoadHeartDataState(MinecraftServer server) {
         ROOT_PATH = server.getSavePath(WorldSavePath.ROOT);
+        STATE = null;
 
         CompletableFuture.runAsync(() -> {
             makeBackup();
 
             STATE = read();
         });
-    }
-
-    public static void clearState() {
-        STATE = null;
     }
 
     private static Path getHeartsPath() {
@@ -68,12 +65,9 @@ public class DataSaving {
         }
     }
 
-    public static void save() {
-        CompletableFuture.runAsync(DataSaving::write);
-    }
-
+    // Saving is NOT done asynchronously, or else the server closes before it can finish saving heart data
     @SuppressWarnings("LoggingSimilarMessage")
-    private static void write() {
+    public static void save() {
         Path path = getHeartsPath();
 
         DataResult<NbtElement> result = HeartDataState.CODEC.encodeStart(NbtOps.INSTANCE, STATE);

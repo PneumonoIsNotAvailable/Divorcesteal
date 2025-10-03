@@ -40,15 +40,9 @@ public class HeartDataState {
 
     public void addPlayer(GameProfile profile) {
         dataMap.put(profile.getId(), new PlayerHeartData(profile.getId(), profile.getName(), DivorcestealConfig.DEFAULT_HEARTS.getValue(), null));
-        markDirty();
     }
 
     public void removePlayer(UUID uuid) {
         dataMap.remove(uuid);
-        markDirty();
-    }
-
-    public void markDirty() {
-        DataSaving.save();
     }
 }
