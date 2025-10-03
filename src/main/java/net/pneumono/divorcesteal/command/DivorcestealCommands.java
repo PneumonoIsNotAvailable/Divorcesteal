@@ -1,4 +1,4 @@
-package net.pneumono.divorcesteal.registry;
+package net.pneumono.divorcesteal.command;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.BoolArgumentType;
@@ -11,7 +11,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
@@ -21,10 +20,10 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.DivorcestealConfig;
-import net.pneumono.divorcesteal.content.ParticipantArgumentType;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.ParticipantHeartData;
+import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -155,7 +154,7 @@ public class DivorcestealCommands {
 
     private static int executeParticipantAdd(ServerCommandSource source, String target) throws CommandSyntaxException {
         GameProfile profile = Objects.requireNonNull(source.getServer().getUserCache()).findByName(target)
-                .orElseThrow(ParticipantArgumentType.NO_PARTICIPANT_EXCEPTION::create);
+                .orElseThrow(DivorcestealExceptions.NO_PLAYER_EXCEPTION::create);
 
         HeartDataState state = Hearts.getHeartDataState();
         if (state.getHeartData(profile.getId()) == null) {
@@ -165,7 +164,7 @@ public class DivorcestealCommands {
 
             source.sendFeedback(() -> Text.translatable("commands.divorcesteal.participant.add", profile.getName()), true);
         } else {
-            throw ParticipantArgumentType.PARTICIPANT_LISTED_EXCEPTION.create();
+            throw DivorcestealExceptions.PARTICIPANT_LISTED_EXCEPTION.create();
         }
 
         return 1;
@@ -197,6 +196,11 @@ public class DivorcestealCommands {
     private static int executeParticipantList(ServerCommandSource source) {
         List<String> names = Hearts.getHeartDataState().getHeartDataList().stream().map(ParticipantHeartData::getName).toList();
 
+        if (names.isEmpty()) {
+            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.participant.list.empty"), true);
+            return 0;
+        }
+
         StringBuilder builder = new StringBuilder();
 
         boolean first = true;
@@ -219,7 +223,7 @@ public class DivorcestealCommands {
     }
 
     private static int executeSet(ServerCommandSource source, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
-        if (dataList.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
+        if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
         int finalAmount = bypassMax ? amount : MathHelper.clamp(amount, 0, DivorcestealConfig.MAX_HEARTS.getValue());
 
@@ -243,7 +247,7 @@ public class DivorcestealCommands {
     }
 
     private static int executeAdd(ServerCommandSource source, boolean add, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
-        if (dataList.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
+        if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
         for (ParticipantHeartData data : dataList) {
             int hearts = data.getHearts();
@@ -271,11 +275,11 @@ public class DivorcestealCommands {
     }
 
     private static int executeRevive(ServerCommandSource source, List<ParticipantHeartData> dataList) throws CommandSyntaxException {
-        if (dataList.isEmpty()) throw EntityArgumentType.PLAYER_NOT_FOUND_EXCEPTION.create();
+        if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
         boolean single = dataList.size() == 1;
         if (single) {
-            if (!Hearts.revive(source.getWorld(), dataList.getFirst().getGameProfile())) throw ParticipantArgumentType.NOT_DEATHBANNED_EXCEPTION.create();
+            if (!Hearts.revive(source.getWorld(), dataList.getFirst().getGameProfile())) throw DivorcestealExceptions.NOT_DEATHBANNED_EXCEPTION.create();
 
         } else {
             for (ParticipantHeartData data : dataList) {

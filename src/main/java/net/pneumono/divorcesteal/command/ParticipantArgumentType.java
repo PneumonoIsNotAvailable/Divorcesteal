@@ -1,4 +1,4 @@
-package net.pneumono.divorcesteal.content;
+package net.pneumono.divorcesteal.command;
 
 import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
@@ -6,7 +6,6 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandRegistryAccess;
@@ -14,7 +13,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.ParticipantHeartData;
@@ -25,18 +23,6 @@ import java.util.function.Predicate;
 
 public class ParticipantArgumentType implements ArgumentType<ParticipantArgumentType.ParticipantArgument> {
     private static final Collection<String> EXAMPLES = Arrays.asList("Player", "0123", "dd12be42-52a9-4a91-a8a1-11c01849e498", "*");
-    public static final SimpleCommandExceptionType NO_DATA_EXCEPTION = new SimpleCommandExceptionType(
-            Text.translatable("arguments.divorcesteal.error.no_data")
-    );
-    public static final SimpleCommandExceptionType NOT_DEATHBANNED_EXCEPTION = new SimpleCommandExceptionType(
-            Text.translatable("arguments.divorcesteal.error.not_deathbanned")
-    );
-    public static final SimpleCommandExceptionType PARTICIPANT_LISTED_EXCEPTION = new SimpleCommandExceptionType(
-            Text.translatable("arguments.divorcesteal.error.participant_listed")
-    );
-    public static final SimpleCommandExceptionType NO_PARTICIPANT_EXCEPTION = new SimpleCommandExceptionType(
-            Text.translatable("arguments.divorcesteal.error.participant_unlisted")
-    );
 
     private final boolean singleTarget;
     private final Filter filter;
@@ -90,17 +76,19 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
                 return state.getHeartDataList().stream().filter(this.filter::test).toList();
             };
         } else if (string.length() > 16) {
-            throw NO_PARTICIPANT_EXCEPTION.create();
+            throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
         }
+
         return source -> {
             HeartDataState state = Hearts.getHeartDataState();
-            GameProfile profile = Objects.requireNonNull(source.getServer().getUserCache()).findByName(string).orElseThrow(NO_PARTICIPANT_EXCEPTION::create);
+            GameProfile profile = Objects.requireNonNull(source.getServer().getUserCache()).findByName(string)
+                    .orElseThrow(DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION::create);
             ParticipantHeartData data = state.getHeartData(profile.getId());
 
             if (data != null && this.filter.test(data)) {
                 return List.of(data);
             } else {
-                throw NO_DATA_EXCEPTION.create();
+                throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
             }
         };
     }

@@ -3,7 +3,7 @@ package net.pneumono.divorcesteal;
 import net.fabricmc.api.ModInitializer;
 
 import net.minecraft.util.Identifier;
-import net.pneumono.divorcesteal.registry.DivorcestealCommands;
+import net.pneumono.divorcesteal.command.DivorcestealCommands;
 import net.pneumono.divorcesteal.registry.DivorcestealEvents;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.slf4j.Logger;
