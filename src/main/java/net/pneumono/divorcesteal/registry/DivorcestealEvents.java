@@ -121,8 +121,7 @@ public class DivorcestealEvents {
                     data.getBanDate(), DivorcestealConfig.REVIVE_DAYS.getValue()
             ).before(new Date())) {
 
-                Hearts.unban(world.getServer(), data, true);
-                Hearts.updateData(null, world.getServer(), data);
+                Hearts.revive(world, data.getGameProfile());
             }
         }
     }
