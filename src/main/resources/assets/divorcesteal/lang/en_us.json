@@ -32,6 +32,7 @@
 
   "arguments.divorcesteal.error.no_data": "No data exists for that player selection!",
   "arguments.divorcesteal.error.not_deathbanned": "Cannot revive a player that isn't deathbanned!",
+  "arguments.divorcesteal.error.player_exists": "Player has already been added!",
   "commands.divorcesteal.player.add.multiple": "Added %s players to Player List",
   "commands.divorcesteal.player.add.single": "Added %s to Player List",
   "commands.divorcesteal.player.remove.multiple": "Removed %s players from Player List",

@@ -32,6 +32,7 @@
 
   "arguments.divorcesteal.error.no_data": "Dont have stuff 4 those kittehs!",
   "arguments.divorcesteal.error.not_deathbanned": "Cant bring bak a cat if they not gon!",
+  "arguments.divorcesteal.error.player_exists": "Kat alredy on kitteh list!!",
   "commands.divorcesteal.player.add.multiple": "addid %s cats to kitteh list",
   "commands.divorcesteal.player.add.single": "addid %s to kitteh list",
   "commands.divorcesteal.player.remove.multiple": "removd %s cats frm kitteh list",

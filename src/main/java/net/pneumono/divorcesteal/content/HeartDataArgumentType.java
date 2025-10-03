@@ -31,6 +31,9 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
     public static final SimpleCommandExceptionType NOT_DEATHBANNED_EXCEPTION = new SimpleCommandExceptionType(
             Text.translatable("arguments.divorcesteal.error.not_deathbanned")
     );
+    public static final SimpleCommandExceptionType PLAYER_EXISTS_EXCEPTION = new SimpleCommandExceptionType(
+            Text.translatable("arguments.divorcesteal.error.player_exists")
+    );
     public static final SimpleCommandExceptionType NO_PLAYER_EXCEPTION = new SimpleCommandExceptionType(
             Text.translatable("argument.player.unknown")
     );

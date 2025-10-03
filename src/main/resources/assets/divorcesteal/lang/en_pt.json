@@ -32,6 +32,7 @@
 
   "arguments.divorcesteal.error.no_data": "No logs exist fer that selection o' sailors!",
   "arguments.divorcesteal.error.not_deathbanned": "Ye can't rescue a sailor if they were never wi' Davy Jones in th' first place!",
+  "arguments.divorcesteal.error.player_exists": "Sailor already be upon th' ship!",
   "commands.divorcesteal.player.add.multiple": "%s sailors be part o' th' crew",
   "commands.divorcesteal.player.add.single": "%s be part o' th' crew",
   "commands.divorcesteal.player.remove.multiple": "%s sailors be returnin' t' land",

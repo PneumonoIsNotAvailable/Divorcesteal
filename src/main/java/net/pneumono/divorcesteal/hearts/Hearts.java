@@ -31,6 +31,7 @@ public class Hearts {
     }
 
     public static @Nullable PlayerHeartData getPlayerHeartData(PlayerEntity player) {
+        if (player == null) return null;
         return getHeartDataState().getHeartData(player.getGameProfile().getId());
     }
 
