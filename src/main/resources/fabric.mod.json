@@ -17,9 +17,6 @@
 		"client": [
 			"net.pneumono.divorcesteal.DivorcestealClient"
 		],
-		"fabric-datagen": [
-			"net.pneumono.divorcesteal.DivorcestealDataGenerator"
-		],
 		"modmenu": [
 			"net.pneumono.divorcesteal.DivorcestealModMenu"
 		]
