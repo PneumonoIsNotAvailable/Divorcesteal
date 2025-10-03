@@ -8,20 +8,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class HeartDataState {
-    public static final Codec<HeartDataState> CODEC = PlayerHeartData.CODEC.listOf().xmap(
+    public static final Codec<HeartDataState> CODEC = ParticipantHeartData.CODEC.listOf().xmap(
             HeartDataState::new,
             HeartDataState::getHeartDataList
     );
 
-    private final Map<UUID, PlayerHeartData> dataMap;
+    private final Map<UUID, ParticipantHeartData> dataMap;
 
     protected HeartDataState() {
         this(new ArrayList<>());
     }
 
-    public HeartDataState(List<PlayerHeartData> dataList) {
+    public HeartDataState(List<ParticipantHeartData> dataList) {
         this.dataMap = new HashMap<>();
-        for (PlayerHeartData data : dataList) {
+        for (ParticipantHeartData data : dataList) {
             this.dataMap.put(data.getUuid(), data);
         }
     }
@@ -30,19 +30,19 @@ public class HeartDataState {
         return DataSaving.getState();
     }
 
-    public List<PlayerHeartData> getHeartDataList() {
+    public List<ParticipantHeartData> getHeartDataList() {
         return this.dataMap.values().stream().toList();
     }
 
-    public @Nullable PlayerHeartData getHeartData(UUID uuid) {
+    public @Nullable ParticipantHeartData getHeartData(UUID uuid) {
         return dataMap.get(uuid);
     }
 
-    public void addPlayer(GameProfile profile) {
-        dataMap.put(profile.getId(), new PlayerHeartData(profile.getId(), profile.getName(), DivorcestealConfig.DEFAULT_HEARTS.getValue(), null));
+    public void addParticipant(GameProfile profile) {
+        dataMap.put(profile.getId(), new ParticipantHeartData(profile.getId(), profile.getName(), DivorcestealConfig.DEFAULT_HEARTS.getValue(), null));
     }
 
-    public void removePlayer(UUID uuid) {
+    public void removeParticipant(UUID uuid) {
         dataMap.remove(uuid);
     }
 }

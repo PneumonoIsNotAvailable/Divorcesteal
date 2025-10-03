@@ -105,14 +105,14 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
 
         for (int menuY = 0; menuY < 3; ++menuY) { for (int menuX = 0; menuX < 3; ++menuX) {
             int playerIndex = (menuY + this.visibleTopRow) * 3 + menuX;
-            ProfileComponent profile = resolved(this.handler.getRevivablePlayer(playerIndex));
+            ProfileComponent profile = resolved(this.handler.getRevivableParticipant(playerIndex));
             if (profile == null) break;
 
             drawPlayerSelect(
                     context,
                     mouseX, mouseY, menuX, menuY,
                     profile,
-                    playerIndex == this.handler.getSelectedPlayer()
+                    playerIndex == this.handler.getSelectedParticipant()
             );
         }}
 
@@ -287,7 +287,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
     }
 
     private int getRows() {
-        return MathHelper.ceilDiv(this.handler.revivablePlayers.size(), 3);
+        return MathHelper.ceilDiv(this.handler.revivableParticipants.size(), 3);
     }
 
     // Scuffed as hell

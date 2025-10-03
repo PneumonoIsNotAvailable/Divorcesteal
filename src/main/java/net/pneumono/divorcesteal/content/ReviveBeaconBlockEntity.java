@@ -63,7 +63,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
 
         return new ReviveBeaconScreenHandler(syncId, playerInventory,
                 ScreenHandlerContext.create(serverWorld, this.getPos()),
-                ReviveBeaconBlock.getRevivablePlayers(),
+                ReviveBeaconBlock.getRevivableParticipants(),
                 target.profile()
         );
     }

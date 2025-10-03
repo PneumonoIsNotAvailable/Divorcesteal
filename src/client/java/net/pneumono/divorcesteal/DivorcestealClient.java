@@ -39,6 +39,6 @@ public class DivorcestealClient implements ClientModInitializer {
 		}
 
 		beaconHandler.setTarget(payload.target());
-		beaconHandler.setRevivablePlayers(payload.revivablePlayers());
+		beaconHandler.setRevivableParticipants(payload.revivableParticipants());
 	}
 }

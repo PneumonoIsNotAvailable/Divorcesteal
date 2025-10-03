@@ -19,7 +19,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
-import net.pneumono.divorcesteal.hearts.PlayerHeartData;
+import net.pneumono.divorcesteal.hearts.ParticipantHeartData;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,7 +56,7 @@ public class ReviveBeaconBlock extends BlockWithEntity {
                 ServerPlayNetworking.send(serverPlayer, new ReviveBeaconInfoS2CPayload(
                         optionalInt.getAsInt(),
                         blockEntity.getOrCreateTarget(player.getUuid()).profile(),
-                        getRevivablePlayers()
+                        getRevivableParticipants()
                 ));
             }
         }
@@ -64,15 +64,15 @@ public class ReviveBeaconBlock extends BlockWithEntity {
         return ActionResult.SUCCESS;
     }
 
-    public static List<ProfileComponent> getRevivablePlayers() {
+    public static List<ProfileComponent> getRevivableParticipants() {
         HeartDataState state = Hearts.getHeartDataState();
-        return state.getHeartDataList().stream().filter(PlayerHeartData::isBanned).map(data -> new ProfileComponent(data.getGameProfile())).toList();
+        return state.getHeartDataList().stream().filter(ParticipantHeartData::isBanned).map(data -> new ProfileComponent(data.getGameProfile())).toList();
     }
 
     public static Optional<GameProfile> getRandomTarget(ServerWorld world, UUID except) {
         HeartDataState state = Hearts.getHeartDataState();
-        List<PlayerHeartData> unbannedList = state.getHeartDataList().stream().filter(data -> !data.isBanned()).toList();
-        List<PlayerHeartData> filteredUnbannedList = unbannedList.stream().filter(data -> !data.getUuid().equals(except)).toList();
+        List<ParticipantHeartData> unbannedList = state.getHeartDataList().stream().filter(data -> !data.isBanned()).toList();
+        List<ParticipantHeartData> filteredUnbannedList = unbannedList.stream().filter(data -> !data.getUuid().equals(except)).toList();
         if (!filteredUnbannedList.isEmpty()) {
             unbannedList = filteredUnbannedList;
         }
@@ -83,10 +83,10 @@ public class ReviveBeaconBlock extends BlockWithEntity {
         return Optional.of(unbannedList.get(random.nextBetween(0, unbannedList.size() - 1)).getGameProfile());
     }
 
-    public static void revivePlayer(ServerWorld world, BlockPos pos, GameProfile revived, PlayerEntity reviver) {
+    public static void reviveParticipant(ServerWorld world, BlockPos pos, GameProfile participant, PlayerEntity reviver) {
         world.playSound(null, pos, DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, SoundCategory.PLAYERS);
         reviver.incrementStat(DivorcestealRegistry.REVIVE_PLAYER_STAT);
-        Hearts.revive(world, revived);
+        Hearts.revive(world, participant);
     }
 
     @Nullable

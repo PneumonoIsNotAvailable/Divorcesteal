@@ -30,7 +30,7 @@ public class Hearts {
         return HeartDataState.get();
     }
 
-    public static @Nullable PlayerHeartData getPlayerHeartData(PlayerEntity player) {
+    public static @Nullable ParticipantHeartData getParticipantHeartData(PlayerEntity player) {
         if (player == null) return null;
         return getHeartDataState().getHeartData(player.getGameProfile().getId());
     }
@@ -39,7 +39,7 @@ public class Hearts {
      * @return Number of hearts added (may not be equal to {@code hearts} due to validation)
      */
     public static int addHeartsValidated(PlayerEntity player, int hearts, boolean allowDeathban) {
-        PlayerHeartData data = getPlayerHeartData(player);
+        ParticipantHeartData data = getParticipantHeartData(player);
         if (data == null) return 0;
 
         int currentHearts = data.getHearts();
@@ -51,7 +51,7 @@ public class Hearts {
 
     public static boolean revive(ServerWorld world, GameProfile profile) {
         HeartDataState state = getHeartDataState();
-        PlayerHeartData data = state.getHeartData(profile.getId());
+        ParticipantHeartData data = state.getHeartData(profile.getId());
         if (data == null || !data.isBanned()) return false;
 
         unban(world.getServer(), data, true);
@@ -59,13 +59,13 @@ public class Hearts {
     }
 
     public static void updateData(PlayerEntity player) {
-        PlayerHeartData data = getPlayerHeartData(player);
+        ParticipantHeartData data = getParticipantHeartData(player);
         if (data != null) {
             updateData(player, player.getServer(), data);
         }
     }
 
-    public static void updateData(@Nullable PlayerEntity player, @Nullable MinecraftServer server, PlayerHeartData data) {
+    public static void updateData(@Nullable PlayerEntity player, @Nullable MinecraftServer server, ParticipantHeartData data) {
         if (player != null) updateHearts(player, data.getHearts());
         if (server != null) updateBan(server, data, true);
     }
@@ -78,7 +78,7 @@ public class Hearts {
         }
     }
 
-    public static void updateBan(MinecraftServer server, PlayerHeartData data, boolean effects) {
+    public static void updateBan(MinecraftServer server, ParticipantHeartData data, boolean effects) {
         if (data.isBanned()) {
             deathban(server, data, effects);
         } else {
@@ -86,7 +86,7 @@ public class Hearts {
         }
     }
 
-    public static void deathban(MinecraftServer server, PlayerHeartData data, boolean effects) {
+    public static void deathban(MinecraftServer server, ParticipantHeartData data, boolean effects) {
         GameProfile profile = data.getGameProfile();
         BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
 
@@ -107,7 +107,7 @@ public class Hearts {
         }
     }
 
-    public static void unban(MinecraftServer server, PlayerHeartData data, boolean effects) {
+    public static void unban(MinecraftServer server, ParticipantHeartData data, boolean effects) {
         GameProfile profile = data.getGameProfile();
         BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
 

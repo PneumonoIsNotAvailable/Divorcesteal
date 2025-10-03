@@ -12,21 +12,21 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-public class PlayerHeartData {
-    public static final Codec<PlayerHeartData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Uuids.INT_STREAM_CODEC.fieldOf("uuid").forGetter(PlayerHeartData::getUuid),
-            Codecs.PLAYER_NAME.fieldOf("name").forGetter(PlayerHeartData::getName),
-            Codec.INT.fieldOf("hearts").forGetter(PlayerHeartData::getHearts),
+public class ParticipantHeartData {
+    public static final Codec<ParticipantHeartData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            Uuids.INT_STREAM_CODEC.fieldOf("uuid").forGetter(ParticipantHeartData::getUuid),
+            Codecs.PLAYER_NAME.fieldOf("name").forGetter(ParticipantHeartData::getName),
+            Codec.INT.fieldOf("hearts").forGetter(ParticipantHeartData::getHearts),
             Codec.LONG.optionalFieldOf("banDate").forGetter(data -> data.banDate == null ? Optional.empty() : Optional.of(data.banDate.getTime()))
-    ).apply(builder, PlayerHeartData::deserialize));
+    ).apply(builder, ParticipantHeartData::deserialize));
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private static PlayerHeartData deserialize(UUID uuid, String name, int hearts, Optional<Long> banDate) {
+    private static ParticipantHeartData deserialize(UUID uuid, String name, int hearts, Optional<Long> banDate) {
         if (hearts < 0) {
-            Divorcesteal.LOGGER.info("Player {} has {} hearts, setting to 0...", name, hearts);
+            Divorcesteal.LOGGER.info("Participant {} has {} hearts, setting to 0...", name, hearts);
             hearts = 0;
         }
-        PlayerHeartData data = new PlayerHeartData(uuid, name, hearts, banDate.map(Date::new).orElse(null));
+        ParticipantHeartData data = new ParticipantHeartData(uuid, name, hearts, banDate.map(Date::new).orElse(null));
         data.updateBannedState();
         return data;
     }
@@ -36,7 +36,7 @@ public class PlayerHeartData {
     private int hearts;
     private @Nullable Date banDate;
 
-    public PlayerHeartData(UUID uuid, String name, int hearts, @Nullable Date banDate) {
+    public ParticipantHeartData(UUID uuid, String name, int hearts, @Nullable Date banDate) {
         this.uuid = uuid;
         this.name = name;
         this.hearts = Math.max(hearts, 0);

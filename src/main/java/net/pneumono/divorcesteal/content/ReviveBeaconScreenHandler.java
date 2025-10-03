@@ -32,9 +32,9 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
     private final Slot leftHeartSlot;
     private final Slot rightHeartSlot;
     private final Slot headSlot;
-    public List<ProfileComponent> revivablePlayers;
+    public List<ProfileComponent> revivableParticipants;
     private ProfileComponent target;
-    private final Property selectedPlayer = Property.create();
+    private final Property selectedParticipant = Property.create();
 
     public ReviveBeaconScreenHandler(int syncId, PlayerInventory playerInventory) {
         this(syncId, playerInventory, ScreenHandlerContext.EMPTY, List.of(), null);
@@ -42,28 +42,28 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
 
     public ReviveBeaconScreenHandler(
             int syncId, PlayerInventory playerInventory, ScreenHandlerContext context,
-            List<ProfileComponent> revivablePlayers, ProfileComponent target
+            List<ProfileComponent> revivableParticipants, ProfileComponent target
     ) {
         super(DivorcestealRegistry.REVIVE_BEACON_SCREEN_HANDLER, syncId);
         this.playerInventory = playerInventory;
         this.context = context;
-        this.revivablePlayers = revivablePlayers;
+        this.revivableParticipants = revivableParticipants;
         this.target = target;
         this.topHeartSlot = this.addSlot(new HeartSlot(input, 0, 111, 8));
         this.leftHeartSlot = this.addSlot(new HeartSlot(input, 1, 87, 48));
         this.rightHeartSlot = this.addSlot(new HeartSlot(input, 2, 135, 48));
         this.headSlot = this.addSlot(new HeadSlot(input, 3, 111, 34));
         this.addPlayerSlots(playerInventory, 39, 97);
-        this.addProperty(this.selectedPlayer);
-        this.selectedPlayer.set(-1);
+        this.addProperty(this.selectedParticipant);
+        this.selectedParticipant.set(-1);
     }
 
-    public ProfileComponent getRevivablePlayer(int i) {
-        return i >= revivablePlayers.size() ? null : this.revivablePlayers.get(i);
+    public ProfileComponent getRevivableParticipant(int i) {
+        return i >= revivableParticipants.size() ? null : this.revivableParticipants.get(i);
     }
 
     public boolean canRevive() {
-        return this.selectedPlayer.get() >= 0 &&
+        return this.selectedParticipant.get() >= 0 &&
                 this.topHeartSlot.hasStack() &&
                 this.leftHeartSlot.hasStack() &&
                 this.rightHeartSlot.hasStack() &&
@@ -72,8 +72,8 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
 
     @Override
     public boolean onButtonClick(PlayerEntity player, int id) {
-        if (id >= 0 && id < this.revivablePlayers.size()) {
-            this.selectedPlayer.set(id);
+        if (id >= 0 && id < this.revivableParticipants.size()) {
+            this.selectedParticipant.set(id);
             return true;
         } else if (id == -2) {
             if (!canRevive()) return false;
@@ -82,8 +82,8 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
             this.leftHeartSlot.setStack(ItemStack.EMPTY);
             this.rightHeartSlot.setStack(ItemStack.EMPTY);
             this.headSlot.setStack(ItemStack.EMPTY);
-            context.run(this::reviveSelectedPlayer);
-            this.selectedPlayer.set(-1);
+            context.run(this::reviveSelectedParticipant);
+            this.selectedParticipant.set(-1);
 
             return true;
         } else {
@@ -91,13 +91,13 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
         }
     }
 
-    private void reviveSelectedPlayer(World world, BlockPos pos) {
+    private void reviveSelectedParticipant(World world, BlockPos pos) {
         if (!world.getBlockState(pos).isOf(DivorcestealRegistry.REVIVE_BEACON_BLOCK)) return;
 
-        int selectedPlayer = getSelectedPlayer();
-        ProfileComponent revived = selectedPlayer == -1 ? null : this.revivablePlayers.get(selectedPlayer);
+        int selectedParticipant = getSelectedParticipant();
+        ProfileComponent revived = selectedParticipant == -1 ? null : this.revivableParticipants.get(selectedParticipant);
         if (revived != null && world instanceof ServerWorld serverWorld) {
-            ReviveBeaconBlock.revivePlayer(serverWorld, pos, revived.gameProfile(), playerInventory.player);
+            ReviveBeaconBlock.reviveParticipant(serverWorld, pos, revived.gameProfile(), playerInventory.player);
         }
         world.breakBlock(pos, false);
     }
@@ -139,16 +139,16 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
         this.context.run((world, pos) -> this.dropInventory(player, this.input));
     }
 
-    public void setRevivablePlayers(List<ProfileComponent> revivablePlayers) {
-        this.revivablePlayers = revivablePlayers;
+    public void setRevivableParticipants(List<ProfileComponent> revivableParticipants) {
+        this.revivableParticipants = revivableParticipants;
     }
 
     public void setTarget(ProfileComponent target) {
         this.target = target;
     }
 
-    public int getSelectedPlayer() {
-        return this.selectedPlayer.get();
+    public int getSelectedParticipant() {
+        return this.selectedParticipant.get();
     }
 
     public ProfileComponent getTarget() {

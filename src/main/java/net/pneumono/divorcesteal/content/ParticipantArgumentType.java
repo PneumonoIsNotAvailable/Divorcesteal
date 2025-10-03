@@ -17,13 +17,13 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
-import net.pneumono.divorcesteal.hearts.PlayerHeartData;
+import net.pneumono.divorcesteal.hearts.ParticipantHeartData;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
-public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType.HeartDataArgument> {
+public class ParticipantArgumentType implements ArgumentType<ParticipantArgumentType.ParticipantArgument> {
     private static final Collection<String> EXAMPLES = Arrays.asList("Player", "0123", "dd12be42-52a9-4a91-a8a1-11c01849e498", "*");
     public static final SimpleCommandExceptionType NO_DATA_EXCEPTION = new SimpleCommandExceptionType(
             Text.translatable("arguments.divorcesteal.error.no_data")
@@ -31,55 +31,55 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
     public static final SimpleCommandExceptionType NOT_DEATHBANNED_EXCEPTION = new SimpleCommandExceptionType(
             Text.translatable("arguments.divorcesteal.error.not_deathbanned")
     );
-    public static final SimpleCommandExceptionType PLAYER_EXISTS_EXCEPTION = new SimpleCommandExceptionType(
-            Text.translatable("arguments.divorcesteal.error.player_exists")
+    public static final SimpleCommandExceptionType PARTICIPANT_LISTED_EXCEPTION = new SimpleCommandExceptionType(
+            Text.translatable("arguments.divorcesteal.error.participant_listed")
     );
-    public static final SimpleCommandExceptionType NO_PLAYER_EXCEPTION = new SimpleCommandExceptionType(
-            Text.translatable("argument.player.unknown")
+    public static final SimpleCommandExceptionType NO_PARTICIPANT_EXCEPTION = new SimpleCommandExceptionType(
+            Text.translatable("arguments.divorcesteal.error.participant_unlisted")
     );
 
     private final boolean singleTarget;
     private final Filter filter;
 
-    private HeartDataArgumentType(boolean singleTarget, Filter filter) {
+    private ParticipantArgumentType(boolean singleTarget, Filter filter) {
         this.singleTarget = singleTarget;
         this.filter = filter;
     }
 
-    public static HeartDataArgumentType player() {
-        return new HeartDataArgumentType(true, Filter.ALL);
+    public static ParticipantArgumentType participant() {
+        return new ParticipantArgumentType(true, Filter.ALL);
     }
 
-    public static HeartDataArgumentType players() {
-        return new HeartDataArgumentType(false, Filter.ALL);
+    public static ParticipantArgumentType participants() {
+        return new ParticipantArgumentType(false, Filter.ALL);
     }
 
-    public static HeartDataArgumentType bannedPlayer() {
-        return new HeartDataArgumentType(true, Filter.BANNED_ONLY);
+    public static ParticipantArgumentType bannedParticipant() {
+        return new ParticipantArgumentType(true, Filter.BANNED_ONLY);
     }
 
-    public static HeartDataArgumentType bannedPlayers() {
-        return new HeartDataArgumentType(false, Filter.BANNED_ONLY);
+    public static ParticipantArgumentType bannedParticipants() {
+        return new ParticipantArgumentType(false, Filter.BANNED_ONLY);
     }
 
-    public static HeartDataArgumentType unbannedPlayer() {
-        return new HeartDataArgumentType(true, Filter.UNBANNED_ONLY);
+    public static ParticipantArgumentType unbannedParticipant() {
+        return new ParticipantArgumentType(true, Filter.UNBANNED_ONLY);
     }
 
-    public static HeartDataArgumentType unbannedPlayers() {
-        return new HeartDataArgumentType(false, Filter.UNBANNED_ONLY);
+    public static ParticipantArgumentType unbannedParticipants() {
+        return new ParticipantArgumentType(false, Filter.UNBANNED_ONLY);
     }
 
-    public static PlayerHeartData getPlayer(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
-        return context.getArgument(name, HeartDataArgument.class).getData(context.getSource());
+    public static ParticipantHeartData getParticipant(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
+        return context.getArgument(name, ParticipantArgument.class).getData(context.getSource());
     }
 
-    public static List<PlayerHeartData> getPlayers(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
-        return context.getArgument(name, HeartDataArgument.class).getDataList(context.getSource());
+    public static List<ParticipantHeartData> getParticipants(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
+        return context.getArgument(name, ParticipantArgument.class).getDataList(context.getSource());
     }
 
     @Override
-    public HeartDataArgument parse(StringReader reader) throws CommandSyntaxException {
+    public ParticipantArgument parse(StringReader reader) throws CommandSyntaxException {
         int start = reader.getCursor();
         while (reader.canRead() && (isAllowedInString(reader.peek()))) reader.skip();
         String string = reader.getString().substring(start, reader.getCursor());
@@ -90,12 +90,12 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
                 return state.getHeartDataList().stream().filter(this.filter::test).toList();
             };
         } else if (string.length() > 16) {
-            throw NO_PLAYER_EXCEPTION.create();
+            throw NO_PARTICIPANT_EXCEPTION.create();
         }
         return source -> {
             HeartDataState state = Hearts.getHeartDataState();
-            GameProfile profile = Objects.requireNonNull(source.getServer().getUserCache()).findByName(string).orElseThrow(NO_PLAYER_EXCEPTION::create);
-            PlayerHeartData data = state.getHeartData(profile.getId());
+            GameProfile profile = Objects.requireNonNull(source.getServer().getUserCache()).findByName(string).orElseThrow(NO_PARTICIPANT_EXCEPTION::create);
+            ParticipantHeartData data = state.getHeartData(profile.getId());
 
             if (data != null && this.filter.test(data)) {
                 return List.of(data);
@@ -120,7 +120,7 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
         strings.addAll(state.getHeartDataList()
                 .stream()
                 .filter(this.filter::test)
-                .map(PlayerHeartData::getName)
+                .map(ParticipantHeartData::getName)
                 .toList()
         );
 
@@ -135,30 +135,30 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
         return EXAMPLES;
     }
 
-    public interface HeartDataArgument {
-        List<PlayerHeartData> getDataList(ServerCommandSource source) throws CommandSyntaxException;
+    public interface ParticipantArgument {
+        List<ParticipantHeartData> getDataList(ServerCommandSource source) throws CommandSyntaxException;
 
-        default PlayerHeartData getData(ServerCommandSource source) throws CommandSyntaxException {
+        default ParticipantHeartData getData(ServerCommandSource source) throws CommandSyntaxException {
             return getDataList(source).getFirst();
         }
     }
 
     public enum Filter {
         ALL(0, "all", data -> true),
-        BANNED_ONLY(1, "banned_only", PlayerHeartData::isBanned),
+        BANNED_ONLY(1, "banned_only", ParticipantHeartData::isBanned),
         UNBANNED_ONLY(2, "unbanned_only", data -> !data.isBanned());
 
         private final int id;
         private final String name;
-        private final Predicate<PlayerHeartData> predicate;
+        private final Predicate<ParticipantHeartData> predicate;
 
-        Filter(int id, String name, Predicate<PlayerHeartData> predicate) {
+        Filter(int id, String name, Predicate<ParticipantHeartData> predicate) {
             this.id = id;
             this.name = name;
             this.predicate = predicate;
         }
 
-        public boolean test(PlayerHeartData data) {
+        public boolean test(ParticipantHeartData data) {
             return this.predicate.test(data);
         }
 
@@ -167,7 +167,7 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
         }
     }
 
-    public static class Serializer implements ArgumentSerializer<HeartDataArgumentType, Serializer.Properties> {
+    public static class Serializer implements ArgumentSerializer<ParticipantArgumentType, Serializer.Properties> {
         @Override
         public void writePacket(Properties properties, PacketByteBuf buf) {
             int i = properties.single ? 0 : 3;
@@ -190,11 +190,11 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
         }
 
         @Override
-        public Properties getArgumentTypeProperties(HeartDataArgumentType argumentType) {
+        public Properties getArgumentTypeProperties(ParticipantArgumentType argumentType) {
             return new Properties(argumentType.singleTarget, argumentType.filter);
         }
 
-        public final class Properties implements ArgumentTypeProperties<HeartDataArgumentType> {
+        public final class Properties implements ArgumentTypeProperties<ParticipantArgumentType> {
             private final boolean single;
             private final Filter filter;
 
@@ -204,12 +204,12 @@ public class HeartDataArgumentType implements ArgumentType<HeartDataArgumentType
             }
 
             @Override
-            public HeartDataArgumentType createType(CommandRegistryAccess commandRegistryAccess) {
-                return new HeartDataArgumentType(single, filter);
+            public ParticipantArgumentType createType(CommandRegistryAccess commandRegistryAccess) {
+                return new ParticipantArgumentType(single, filter);
             }
 
             @Override
-            public ArgumentSerializer<HeartDataArgumentType, ?> getSerializer() {
+            public ArgumentSerializer<ParticipantArgumentType, ?> getSerializer() {
                 return Serializer.this;
             }
         }
