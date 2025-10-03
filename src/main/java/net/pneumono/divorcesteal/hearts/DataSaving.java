@@ -43,24 +43,32 @@ public class DataSaving {
     }
 
     private static HeartDataState read() {
+        Divorcesteal.LOGGER.info("Reading hearts data...");
+
         Path path = getHeartsPath();
 
         if (!path.toFile().exists()) return new HeartDataState();
 
-        NbtCompound compound = new NbtCompound();
+        NbtCompound compound;
         try {
             compound = NbtIo.readCompressed(path, NbtSizeTracker.ofUnlimitedBytes());
         } catch (IOException e) {
-            Divorcesteal.LOGGER.error("Failed to read Hearts data", e);
+            Divorcesteal.LOGGER.error("Failed to read hearts data", e);
+            return new HeartDataState();
         }
 
         NbtElement element = compound.get("values");
 
         DataResult<Pair<HeartDataState, NbtElement>> result = HeartDataState.CODEC.decode(NbtOps.INSTANCE, element);
         if (result.isSuccess()) {
+            Divorcesteal.LOGGER.info("Successfully read hearts data");
             return result.getOrThrow().getFirst();
         } else {
-            Divorcesteal.LOGGER.error("Failed to deserialize Hearts data");
+            String message = null;
+            if (result.error().isPresent()) {
+                message = result.error().get().message();
+            }
+            Divorcesteal.LOGGER.error("Failed to deserialize hearts data: {}", message);
             return new HeartDataState();
         }
     }
@@ -68,6 +76,8 @@ public class DataSaving {
     // Saving is NOT done asynchronously, or else the server closes before it can finish saving heart data
     @SuppressWarnings("LoggingSimilarMessage")
     public static void save() {
+        Divorcesteal.LOGGER.info("Saving hearts data...");
+
         Path path = getHeartsPath();
 
         DataResult<NbtElement> result = HeartDataState.CODEC.encodeStart(NbtOps.INSTANCE, STATE);
@@ -75,8 +85,12 @@ public class DataSaving {
         if (result.isSuccess()) {
             element = result.getOrThrow();
         } else {
-            Divorcesteal.LOGGER.error("Failed to serialize Hearts data");
-            element = new NbtCompound();
+            String message = null;
+            if (result.error().isPresent()) {
+                message = result.error().get().message();
+            }
+            Divorcesteal.LOGGER.error("Failed to serialize Hearts data: {}", message);
+            return;
         }
 
         NbtCompound compound = new NbtCompound();
@@ -86,11 +100,16 @@ public class DataSaving {
             NbtIo.writeCompressed(compound, path);
         } catch (IOException e) {
             Divorcesteal.LOGGER.error("Failed to write Hearts data", e);
+            return;
         }
+
+        Divorcesteal.LOGGER.info("Successfully saved hearts data");
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void makeBackup() {
+        Divorcesteal.LOGGER.info("Backing up hearts data...");
+
         Path source = getHeartsPath();
 
         if (!source.toFile().exists()) {
