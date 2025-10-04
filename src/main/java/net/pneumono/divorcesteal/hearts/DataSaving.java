@@ -77,7 +77,6 @@ public class DataSaving {
     }
 
     // Saving is NOT done asynchronously, or else the server closes before it can finish saving heart data
-    @SuppressWarnings("LoggingSimilarMessage")
     public static void save() {
         Divorcesteal.LOGGER.info("Saving hearts data...");
 
