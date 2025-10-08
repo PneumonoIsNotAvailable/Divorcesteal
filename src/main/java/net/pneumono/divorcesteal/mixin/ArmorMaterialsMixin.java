@@ -9,6 +9,22 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public interface ArmorMaterialsMixin {
     @ModifyConstant(
             method = "<clinit>",
+            constant = @Constant(intValue = 37)
+    )
+    private static int modifyDurability(int constant) {
+        return 33;
+    }
+
+    @ModifyConstant(
+            method = "<clinit>",
+            constant = @Constant(intValue = 15, ordinal = 3)
+    )
+    private static int modifyEnchantability(int constant) {
+        return 10;
+    }
+
+    @ModifyConstant(
+            method = "<clinit>",
             constant = @Constant(floatValue = 3.0F)
     )
     private static float modifyArmorToughness(float constant) {
