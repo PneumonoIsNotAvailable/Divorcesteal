@@ -92,10 +92,13 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
 
         int selectedParticipant = getSelectedParticipant();
         ProfileComponent revived = selectedParticipant == -1 ? null : this.revivableParticipants.get(selectedParticipant);
-        if (revived != null && world instanceof ServerWorld serverWorld) {
-            ReviveBeaconBlock.reviveParticipant(serverWorld, pos, revived.gameProfile(), playerInventory.player);
+        if (revived != null
+                && world instanceof ServerWorld serverWorld
+                && ReviveBeaconBlock.reviveParticipant(
+                        serverWorld, pos, revived.gameProfile(), playerInventory.player)
+        ) {
+            world.breakBlock(pos, false);
         }
-        world.breakBlock(pos, false);
     }
 
     @Override
