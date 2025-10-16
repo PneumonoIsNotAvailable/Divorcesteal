@@ -113,7 +113,8 @@ public class DivorcestealRegistry {
 
     private static Identifier registerStat(String name) {
         Identifier id = Divorcesteal.id(name);
-        Registry.register(Registries.CUSTOM_STAT, name, id);
+        Registry.register(Registries.CUSTOM_STAT, id, id);
+        Registries.CUSTOM_STAT.addAlias(Identifier.ofVanilla(name), id);
         Stats.CUSTOM.getOrCreateStat(id, StatFormatter.DEFAULT);
         return id;
     }
