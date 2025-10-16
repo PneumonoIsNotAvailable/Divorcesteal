@@ -3,7 +3,7 @@
   "item.divorcesteal.heart.crafted": "Craftd",
   "item.divorcesteal.player_head.killer": "Ded from %s",
   "item.divorcesteal.revive_beacon": "Com Bak Shiny",
-  "item.divorcesteal.revive_beacon.target": "Murdr: %s",
+  "item.divorcesteal.revive_beacon.wanted": "Murdr: %s",
 
   "divorcesteal.gui.deathban.title": "U haz no harts!!",
   "divorcesteal.gui.revive_beacon.add_head": "Putt Kat Hed",

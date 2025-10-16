@@ -3,7 +3,7 @@
   "item.divorcesteal.heart.crafted": "Craft'd",
   "item.divorcesteal.player_head.killer": "Plunder'd %s",
   "item.divorcesteal.revive_beacon": "Beacon o' Rescue",
-  "item.divorcesteal.revive_beacon.target": "Yer Target: %s",
+  "item.divorcesteal.revive_beacon.wanted": "Wanted: %s",
 
   "divorcesteal.gui.deathban.title": "Ye have not a heart more!",
   "divorcesteal.gui.revive_beacon.add_head": "Add yer Sailor Skull",
