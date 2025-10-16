@@ -17,6 +17,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import net.pneumono.divorcesteal.content.component.KillTargetComponent;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.ParticipantHeartData;
@@ -49,13 +50,14 @@ public class ReviveBeaconBlock extends BlockWithEntity {
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!world.isClient() && world.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity) {
-            if (blockEntity.getOrCreateTarget(player.getUuid()) == null) return ActionResult.FAIL;
+            KillTargetComponent killTargetComponent = blockEntity.getOrCreateTarget(player.getUuid());
+            if (killTargetComponent == null) return ActionResult.FAIL;
 
             OptionalInt optionalInt = player.openHandledScreen(blockEntity);
             if (player instanceof ServerPlayerEntity serverPlayer && optionalInt.isPresent()) {
                 ServerPlayNetworking.send(serverPlayer, new ReviveBeaconInfoS2CPayload(
                         optionalInt.getAsInt(),
-                        blockEntity.getOrCreateTarget(player.getUuid()).profile(),
+                        killTargetComponent.profile(),
                         getRevivableParticipants()
                 ));
             }

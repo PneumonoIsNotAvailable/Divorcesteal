@@ -38,7 +38,7 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
         super(DivorcestealRegistry.REVIVE_BEACON_ENTITY, pos, state);
     }
 
-    public KillTargetComponent getOrCreateTarget(UUID except) {
+    public @Nullable KillTargetComponent getOrCreateTarget(UUID except) {
         if (this.target != null) return target;
 
         if (this.getWorld() instanceof ServerWorld serverWorld) {
@@ -56,13 +56,11 @@ public class ReviveBeaconBlockEntity extends BlockEntity implements NamedScreenH
     @Nullable
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-        if (!(getWorld() instanceof ServerWorld serverWorld)) return null;
-
         KillTargetComponent target = getOrCreateTarget(player.getUuid());
         if (target == null) return null;
 
         return new ReviveBeaconScreenHandler(syncId, playerInventory,
-                ScreenHandlerContext.create(serverWorld, this.getPos()),
+                ScreenHandlerContext.create(getWorld(), this.getPos()),
                 ReviveBeaconBlock.getRevivableParticipants(),
                 target.profile()
         );
