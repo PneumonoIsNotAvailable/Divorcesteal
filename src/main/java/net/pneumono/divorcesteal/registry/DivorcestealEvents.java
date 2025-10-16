@@ -69,11 +69,9 @@ public class DivorcestealEvents {
             if (Hearts.addHeartsValidated(attacker, 1, false) == 0) {
 
                 ItemStack heartStack = new ItemStack(DivorcestealRegistry.HEART_ITEM);
-                if (!attacker.getInventory().insertStack(heartStack)) {
-                    ItemEntity heartItemEntity = attacker.dropItem(heartStack, false);
-                    if (heartItemEntity != null) {
-                        heartItemEntity.resetPickupDelay();
-                    }
+                ItemEntity heartItemEntity = target.dropItem(heartStack, true, false);
+                if (heartItemEntity != null) {
+                    heartItemEntity.resetPickupDelay();
                 }
             }
         }
