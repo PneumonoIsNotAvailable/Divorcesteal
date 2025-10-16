@@ -16,6 +16,7 @@ import net.minecraft.item.Items;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.content.component.KilledByComponent;
 import net.pneumono.divorcesteal.hearts.*;
@@ -42,27 +43,34 @@ public class DivorcestealEvents {
     }
 
     private static void afterDeath(Entity entity, DamageSource damageSource) {
-        if (!(entity instanceof ServerPlayerEntity player) || !Hearts.isParticipant(player)) return;
+        if (!(entity instanceof ServerPlayerEntity target) || !Hearts.isParticipant(target)) return;
 
-        Hearts.addHeartsValidated(player, -1, true);
+        Hearts.addHeartsValidated(target, -1, true);
 
         if (
-                player.getAttacker() instanceof ServerPlayerEntity attacker &&
+                target.getAttacker() instanceof ServerPlayerEntity attacker &&
                 Hearts.isParticipant(attacker) &&
-                !attacker.getUuid().equals(entity.getUuid())
+                !attacker.getUuid().equals(target.getUuid())
         ) {
             ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
 
-            headStack.set(DataComponentTypes.PROFILE, createProfileComponent(player));
-            headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(createProfileComponent(attacker)));
-            ItemEntity headItemEntity = player.dropItem(headStack, true, false);
+            ProfileComponent targetComponent = createProfileComponent(target);
+            if (targetComponent != null) {
+                headStack.set(DataComponentTypes.PROFILE, targetComponent);
+            }
+            ProfileComponent attackerComponent = createProfileComponent(attacker);
+            if (attackerComponent != null) {
+                headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(attackerComponent));
+            }
+
+            ItemEntity headItemEntity = target.dropItem(headStack, true, false);
             if (headItemEntity != null) {
                 headItemEntity.resetPickupDelay();
             }
 
-            ParticipantHeartData data = Hearts.getParticipantHeartData(player);
+            ParticipantHeartData data = Hearts.getParticipantHeartData(target);
             if (data != null && data.isBanned()) {
-                player.incrementStat(DivorcestealRegistry.DEATHBAN_SELF_STAT);
+                target.incrementStat(DivorcestealRegistry.DEATHBAN_SELF_STAT);
                 attacker.incrementStat(DivorcestealRegistry.DEATHBAN_PLAYER_STAT);
             }
 
@@ -91,6 +99,7 @@ public class DivorcestealEvents {
         }
 
         if (!texturePropertyValue.contains("cHJvZmlsZUlk")) {
+            Divorcesteal.LOGGER.info("Could not create profile component for player {}. I think this is due to authentication issues???", player.getGameProfile().getName());
             return null;
         }
 
