@@ -4,6 +4,7 @@
   "item.divorcesteal.player_head.killer": "Killed by %s",
   "item.divorcesteal.revive_beacon": "Revive Beacon",
   "item.divorcesteal.revive_beacon.wanted": "Wanted: %s",
+  "block.divorcesteal.revive_beacon.fail_roll": "There be no survivin' crew members to choose from",
 
   "divorcesteal.gui.deathban.title": "You ran out of hearts!",
   "divorcesteal.gui.revive_beacon.add_head": "Add Wanted Head",

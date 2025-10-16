@@ -12,6 +12,7 @@ import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -51,7 +52,10 @@ public class ReviveBeaconBlock extends BlockWithEntity {
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!world.isClient() && world.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity) {
             KillTargetComponent killTargetComponent = blockEntity.getOrCreateTarget(player.getUuid());
-            if (killTargetComponent == null) return ActionResult.FAIL;
+            if (killTargetComponent == null) {
+                player.sendMessage(Text.translatable("block.divorcesteal.revive_beacon.fail_roll"), true);
+                return ActionResult.FAIL;
+            }
 
             player.incrementStat(DivorcestealRegistry.INTERACT_WITH_REVIVE_BEACON_STAT);
 
@@ -87,10 +91,14 @@ public class ReviveBeaconBlock extends BlockWithEntity {
         return Optional.of(unbannedList.get(random.nextBetween(0, unbannedList.size() - 1)).getGameProfile());
     }
 
-    public static void reviveParticipant(ServerWorld world, BlockPos pos, GameProfile participant, PlayerEntity reviver) {
-        world.playSound(null, pos, DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, SoundCategory.PLAYERS);
-        reviver.incrementStat(DivorcestealRegistry.REVIVE_PLAYER_STAT);
-        Hearts.revive(world, participant);
+    public static boolean reviveParticipant(ServerWorld world, BlockPos pos, GameProfile participant, PlayerEntity reviver) {
+        if (Hearts.revive(world, participant)) {
+            world.playSound(null, pos, DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, SoundCategory.PLAYERS);
+            reviver.incrementStat(DivorcestealRegistry.REVIVE_PLAYER_STAT);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static void sendBeaconUpdatePacket(ServerPlayerEntity player, int syncId, ProfileComponent target, List<ProfileComponent> revivableParticipants) {
