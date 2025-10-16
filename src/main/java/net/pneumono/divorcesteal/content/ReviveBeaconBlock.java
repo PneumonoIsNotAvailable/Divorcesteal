@@ -55,11 +55,11 @@ public class ReviveBeaconBlock extends BlockWithEntity {
 
             OptionalInt optionalInt = player.openHandledScreen(blockEntity);
             if (player instanceof ServerPlayerEntity serverPlayer && optionalInt.isPresent()) {
-                ServerPlayNetworking.send(serverPlayer, new ReviveBeaconInfoS2CPayload(
+                sendBeaconUpdatePacket(serverPlayer,
                         optionalInt.getAsInt(),
                         killTargetComponent.profile(),
                         getRevivableParticipants()
-                ));
+                );
             }
         }
 
@@ -89,6 +89,14 @@ public class ReviveBeaconBlock extends BlockWithEntity {
         world.playSound(null, pos, DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, SoundCategory.PLAYERS);
         reviver.incrementStat(DivorcestealRegistry.REVIVE_PLAYER_STAT);
         Hearts.revive(world, participant);
+    }
+
+    public static void sendBeaconUpdatePacket(ServerPlayerEntity player, int syncId, ProfileComponent target, List<ProfileComponent> revivableParticipants) {
+        ServerPlayNetworking.send(player, new ReviveBeaconInfoS2CPayload(
+                syncId,
+                target,
+                revivableParticipants
+        ));
     }
 
     @Nullable

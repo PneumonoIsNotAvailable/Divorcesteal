@@ -17,6 +17,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.DivorcestealConfig;
+import net.pneumono.divorcesteal.content.ReviveBeaconBlock;
+import net.pneumono.divorcesteal.content.ReviveBeaconScreenHandler;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,14 +89,27 @@ public class Hearts {
     }
 
     public static void updateBan(MinecraftServer server, ParticipantHeartData data, boolean effects) {
+        boolean changed;
         if (data.isBanned()) {
-            deathban(server, data, effects);
+            changed = deathban(server, data, effects);
         } else {
-            unban(server, data, effects);
+            changed = unban(server, data, effects);
+        }
+
+        if (changed) {
+            for (ServerPlayerEntity player : PlayerLookup.all(server)) {
+                if (player.currentScreenHandler instanceof ReviveBeaconScreenHandler handler) {
+                    ReviveBeaconBlock.sendBeaconUpdatePacket(player,
+                            handler.syncId,
+                            handler.getTarget(),
+                            ReviveBeaconBlock.getRevivableParticipants()
+                    );
+                }
+            }
         }
     }
 
-    public static void deathban(MinecraftServer server, ParticipantHeartData data, boolean effects) {
+    public static boolean deathban(MinecraftServer server, ParticipantHeartData data, boolean effects) {
         GameProfile profile = data.getGameProfile();
         BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
 
@@ -112,10 +127,13 @@ public class Hearts {
             Date date = new Date();
             BannedPlayerEntry bannedPlayerEntry = new BannedPlayerEntry(profile, date, ZERO_HEART_BAN_ID, null, "Zero-Heart Deathban (can be revoked at any time via Revive Beacons)");
             bannedPlayerList.add(bannedPlayerEntry);
+
+            return true;
         }
+        return false;
     }
 
-    public static void unban(MinecraftServer server, ParticipantHeartData data, boolean effects) {
+    public static boolean unban(MinecraftServer server, ParticipantHeartData data, boolean effects) {
         GameProfile profile = data.getGameProfile();
         BannedPlayerList bannedPlayerList = server.getPlayerManager().getUserBanList();
 
@@ -130,6 +148,9 @@ public class Hearts {
                     globalPlayer.playSoundToPlayer(DivorcestealRegistry.REVIVE_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
             }
+
+            return true;
         }
+        return false;
     }
 }
