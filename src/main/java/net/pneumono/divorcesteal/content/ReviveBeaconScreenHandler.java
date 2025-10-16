@@ -20,13 +20,8 @@ import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import java.util.List;
 
 public class ReviveBeaconScreenHandler extends ScreenHandler {
-    private final Inventory input = new SimpleInventory(4) {
-        @Override
-        public int getMaxCountPerStack() {
-            return 1;
-        }
-    };
     private final PlayerInventory playerInventory;
+    private final Inventory inventory;
     private final ScreenHandlerContext context;
     private final Slot topHeartSlot;
     private final Slot leftHeartSlot;
@@ -37,22 +32,23 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
     private final Property selectedParticipant = Property.create();
 
     public ReviveBeaconScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, ScreenHandlerContext.EMPTY, List.of(), null);
+        this(syncId, playerInventory, new SimpleInventory(4), ScreenHandlerContext.EMPTY, List.of(), null);
     }
 
     public ReviveBeaconScreenHandler(
-            int syncId, PlayerInventory playerInventory, ScreenHandlerContext context,
+            int syncId, PlayerInventory playerInventory, Inventory inventory, ScreenHandlerContext context,
             List<ProfileComponent> revivableParticipants, ProfileComponent target
     ) {
         super(DivorcestealRegistry.REVIVE_BEACON_SCREEN_HANDLER, syncId);
         this.playerInventory = playerInventory;
+        this.inventory = inventory;
         this.context = context;
         this.revivableParticipants = revivableParticipants;
         this.target = target;
-        this.topHeartSlot = this.addSlot(new HeartSlot(input, 0, 111, 8));
-        this.leftHeartSlot = this.addSlot(new HeartSlot(input, 1, 87, 48));
-        this.rightHeartSlot = this.addSlot(new HeartSlot(input, 2, 135, 48));
-        this.headSlot = this.addSlot(new HeadSlot(input, 3, 111, 34));
+        this.topHeartSlot = this.addSlot(new HeartSlot(inventory, 0, 111, 8));
+        this.leftHeartSlot = this.addSlot(new HeartSlot(inventory, 1, 87, 48));
+        this.rightHeartSlot = this.addSlot(new HeartSlot(inventory, 2, 135, 48));
+        this.headSlot = this.addSlot(new HeadSlot(inventory, 3, 111, 34));
         this.addPlayerSlots(playerInventory, 39, 97);
         this.addProperty(this.selectedParticipant);
         this.selectedParticipant.set(-1);
@@ -130,13 +126,7 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return canUse(this.context, player, DivorcestealRegistry.REVIVE_BEACON_BLOCK);
-    }
-
-    @Override
-    public void onClosed(PlayerEntity player) {
-        super.onClosed(player);
-        this.context.run((world, pos) -> this.dropInventory(player, this.input));
+        return this.inventory.canPlayerUse(player);
     }
 
     public void setRevivableParticipants(List<ProfileComponent> revivableParticipants) {
