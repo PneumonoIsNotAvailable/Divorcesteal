@@ -1,7 +1,5 @@
 package net.pneumono.divorcesteal.registry;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -16,7 +14,6 @@ import net.minecraft.item.Items;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.content.component.KilledByComponent;
 import net.pneumono.divorcesteal.hearts.*;
@@ -54,14 +51,8 @@ public class DivorcestealEvents {
         ) {
             ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
 
-            ProfileComponent targetComponent = createProfileComponent(target);
-            if (targetComponent != null) {
-                headStack.set(DataComponentTypes.PROFILE, targetComponent);
-            }
-            ProfileComponent attackerComponent = createProfileComponent(attacker);
-            if (attackerComponent != null) {
-                headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(attackerComponent));
-            }
+            headStack.set(DataComponentTypes.PROFILE, new ProfileComponent(target.getGameProfile()));
+            headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(attacker.getGameProfile()));
 
             ItemEntity headItemEntity = target.dropItem(headStack, true, false);
             if (headItemEntity != null) {
@@ -86,29 +77,6 @@ public class DivorcestealEvents {
                 }
             }
         }
-    }
-
-    // Copied from elsewhere idfk what this is
-    private static ProfileComponent createProfileComponent(ServerPlayerEntity player) {
-        String texturePropertyValue = "";
-        for (Property textureProperty : player.getGameProfile().getProperties().get("textures")) {
-            if (textureProperty.name().equals("textures")) {
-                texturePropertyValue = textureProperty.value();
-                break;
-            }
-        }
-
-        if (!texturePropertyValue.contains("cHJvZmlsZUlk")) {
-            Divorcesteal.LOGGER.info("Could not create profile component for player {}. I think this is due to authentication issues???", player.getGameProfile().getName());
-            return null;
-        }
-
-        String textures = "ewogICJ0aW1lc3RhbXAiIDogMCwKICAicHJvZmlsZUlk" + texturePropertyValue.split("cHJvZmlsZUlk")[1];
-
-        GameProfile newProfile = new GameProfile(player.getGameProfile().getId(), player.getGameProfile().getName());
-        newProfile.getProperties().put("textures", new Property("textures", textures));
-
-        return new ProfileComponent(newProfile);
     }
 
     private static void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
