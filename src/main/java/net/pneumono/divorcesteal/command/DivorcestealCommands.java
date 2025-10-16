@@ -324,7 +324,6 @@ public class DivorcestealCommands {
             ItemEntity itemEntity = player.dropItem(stack, false);
             if (itemEntity != null) {
                 itemEntity.resetPickupDelay();
-                itemEntity.setOwner(player.getUuid());
             }
         }
 
