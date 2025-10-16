@@ -60,7 +60,9 @@ public class Hearts {
         ParticipantHeartData data = state.getHeartData(profile.getId());
         if (data == null || !data.isBanned()) return false;
 
-        unban(world.getServer(), data, true);
+        data.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());
+        updateData(null, world.getServer(), data);
+
         return true;
     }
 
@@ -115,8 +117,6 @@ public class Hearts {
 
         if (!bannedPlayerList.contains(profile)) {
             if (effects) {
-                data.setHearts(0);
-
                 for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
                     globalPlayer.playSoundToPlayer(DivorcestealRegistry.DEATHBAN_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
                     Text banAnnouncement = Text.translatable("divorcesteal.deathban_global", profile.getName());
@@ -142,8 +142,6 @@ public class Hearts {
             bannedPlayerList.remove(profile);
 
             if (effects) {
-                data.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());
-
                 for (ServerPlayerEntity globalPlayer : PlayerLookup.all(server)) {
                     globalPlayer.playSoundToPlayer(DivorcestealRegistry.REVIVE_SOUND, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
