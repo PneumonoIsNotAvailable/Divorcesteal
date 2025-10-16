@@ -42,7 +42,7 @@ public class DivorcestealEvents {
     }
 
     private static void afterDeath(Entity entity, DamageSource damageSource) {
-        if (!(entity instanceof ServerPlayerEntity player) || Hearts.isParticipant(player)) return;
+        if (!(entity instanceof ServerPlayerEntity player) || !Hearts.isParticipant(player)) return;
 
         Hearts.addHeartsValidated(player, -1, true);
 
@@ -51,7 +51,6 @@ public class DivorcestealEvents {
                 Hearts.isParticipant(attacker) &&
                 !attacker.getUuid().equals(entity.getUuid())
         ) {
-
             ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
 
             headStack.set(DataComponentTypes.PROFILE, createProfileComponent(player));
