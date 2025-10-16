@@ -4,7 +4,7 @@
   "item.divorcesteal.player_head.killer": "Plunder'd %s",
   "item.divorcesteal.revive_beacon": "Beacon o' Rescue",
   "item.divorcesteal.revive_beacon.wanted": "Wanted: %s",
-  "block.divorcesteal.revive_beacon.fail_roll": "There are no unbanned players to pick from",
+  "block.divorcesteal.revive_beacon.fail_roll": "There be no survivin' crew members to choose from",
 
   "divorcesteal.gui.deathban.title": "Ye have not a heart more!",
   "divorcesteal.gui.revive_beacon.add_head": "Add yer Sailor Skull",
