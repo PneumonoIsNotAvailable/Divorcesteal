@@ -23,6 +23,7 @@
 
   "stat.divorcesteal.deathban_player": "Sailors sent t' Davy Jones",
   "stat.divorcesteal.deathban_self": "Times sent t' Davy Jones",
+  "stat.divorcesteal.interact_with_revive_beacon": "Beacon o' Rescue us'd",
   "stat.divorcesteal.revive_player": "Mateys saved from Davy Jones",
   "stat.divorcesteal.steal_life": "Hearts Plundered",
   "stat.divorcesteal.withdraw_heart": "Hearts Withdrawn",

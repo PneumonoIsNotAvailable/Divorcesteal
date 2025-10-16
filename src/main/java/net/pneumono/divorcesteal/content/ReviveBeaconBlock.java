@@ -53,6 +53,8 @@ public class ReviveBeaconBlock extends BlockWithEntity {
             KillTargetComponent killTargetComponent = blockEntity.getOrCreateTarget(player.getUuid());
             if (killTargetComponent == null) return ActionResult.FAIL;
 
+            player.incrementStat(DivorcestealRegistry.INTERACT_WITH_REVIVE_BEACON_STAT);
+
             OptionalInt optionalInt = player.openHandledScreen(blockEntity);
             if (player instanceof ServerPlayerEntity serverPlayer && optionalInt.isPresent()) {
                 sendBeaconUpdatePacket(serverPlayer,

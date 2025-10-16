@@ -23,6 +23,7 @@
 
   "stat.divorcesteal.deathban_player": "Players Deathbanned",
   "stat.divorcesteal.deathban_self": "Times Deathbanned",
+  "stat.divorcesteal.interact_with_revive_beacon": "Interactions with Revive Beacon",
   "stat.divorcesteal.revive_player": "Players Revived",
   "stat.divorcesteal.steal_life": "Lives Stolen",
   "stat.divorcesteal.withdraw_heart": "Hearts Withdrawn",

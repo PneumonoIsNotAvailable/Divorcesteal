@@ -79,6 +79,7 @@ public class DivorcestealRegistry {
     public static final Identifier REVIVE_PLAYER_STAT = registerStat("revive_player");
     public static final Identifier DEATHBAN_PLAYER_STAT = registerStat("deathban_player");
     public static final Identifier DEATHBAN_SELF_STAT = registerStat("deathban_self");
+    public static final Identifier INTERACT_WITH_REVIVE_BEACON_STAT = registerStat("interact_with_revive_beacon");
 
     private static ReviveBeaconBlock registerReviveBeaconBlock() {
         RegistryKey<Block> key = RegistryKey.of(RegistryKeys.BLOCK, Divorcesteal.id("revive_beacon"));
