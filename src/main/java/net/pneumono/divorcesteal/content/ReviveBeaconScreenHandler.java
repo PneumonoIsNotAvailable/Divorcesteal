@@ -167,6 +167,11 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
         }
 
         @Override
+        public int getMaxItemCount() {
+            return 1;
+        }
+
+        @Override
         public boolean canInsert(ItemStack stack) {
             if (!(stack.getItem() instanceof HeartItem)) return false;
 
@@ -177,6 +182,11 @@ public class ReviveBeaconScreenHandler extends ScreenHandler {
     private class HeadSlot extends Slot {
         public HeadSlot(Inventory inventory, int index, int x, int y) {
             super(inventory, index, x, y);
+        }
+
+        @Override
+        public int getMaxItemCount() {
+            return 1;
         }
 
         @Override
