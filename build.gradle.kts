@@ -17,9 +17,16 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 
-	maven("https://jitpack.io")
-
 	maven("https://maven.terraformersmc.com/")
+
+	exclusiveContent {
+		forRepository {
+			maven("https://api.modrinth.com/maven")
+		}
+		filter {
+			includeGroup("maven.modrinth")
+		}
+	}
 }
 
 loom {
@@ -45,7 +52,7 @@ dependencies {
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}")
 
 	// Core mod
-	modImplementation("com.github.pneumonoisnotavailable:pneumonocore:${property("core_version")}")
+	modImplementation("maven.modrinth:pneumono_core:${property("core_version")}")
 
 	// ModMenu
 	modImplementation("com.terraformersmc:modmenu:${property("modmenu_version")}")
