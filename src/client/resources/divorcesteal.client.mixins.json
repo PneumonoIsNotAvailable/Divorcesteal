@@ -3,9 +3,9 @@
     "package": "net.pneumono.divorcesteal.mixin.client",
     "compatibilityLevel": "JAVA_21",
     "client": [
-        "ClientPlayNetworkHandlerMixin",
+        "ClientPacketListenerMixin",
         "DeathScreenMixin",
-        "MinecraftClientMixin"
+        "MinecraftMixin"
     ],
     "injectors": {
         "defaultRequire": 1

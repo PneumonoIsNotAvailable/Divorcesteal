@@ -11,13 +11,14 @@ version = "${project.property("mod_version")}"
 base.archivesName.set(project.property("archives_base_name") as String)
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
-
-	maven("https://maven.terraformersmc.com/")
+	exclusiveContent {
+		forRepository {
+			maven("https://maven.terraformersmc.com/")
+		}
+		filter {
+			includeGroup("com.terraformersmc")
+		}
+	}
 
 	exclusiveContent {
 		forRepository {
@@ -43,12 +44,11 @@ loom {
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
 	minecraft("com.mojang:minecraft:${property("minecraft_version")}")
-	mappings("net.fabricmc:yarn:${property("yarn_mappings")}:v2")
+	mappings(loom.officialMojangMappings())
 	modImplementation("net.fabricmc:fabric-loader:${property("loader_version")}")
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
+	// Fabric API
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}")
 
 	// Core mod

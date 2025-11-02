@@ -1,8 +1,7 @@
 package net.pneumono.divorcesteal;
 
 import net.fabricmc.api.ModInitializer;
-
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.pneumono.divorcesteal.command.DivorcestealCommands;
 import net.pneumono.divorcesteal.registry.DivorcestealEvents;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
@@ -23,7 +22,7 @@ public class Divorcesteal implements ModInitializer {
 		DivorcestealCommands.registerDivorcestealCommands();
 	}
 
-	public static Identifier id(String path) {
-		return Identifier.of(MOD_ID, path);
+	public static ResourceLocation id(String path) {
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 	}
 }

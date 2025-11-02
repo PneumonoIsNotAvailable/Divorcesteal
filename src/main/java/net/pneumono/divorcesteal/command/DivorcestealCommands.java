@@ -10,14 +10,14 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class DivorcestealCommands {
     public static void registerDivorcestealCommands() {
@@ -39,7 +39,7 @@ public class DivorcestealCommands {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> {
             dispatcher.register(literal("divorcesteal")
-                    .requires(source -> source.hasPermissionLevel(3))
+                    .requires(source -> source.hasPermission(3))
                     .then(literal("participants")
                             .then(literal("add")
                                     .then(argument("target", StringArgumentType.word())
@@ -62,7 +62,7 @@ public class DivorcestealCommands {
                     )
                     .then(literal("get")
                             .executes(context -> executeGet(context.getSource(),
-                                    Hearts.getParticipantHeartData(context.getSource().getPlayerOrThrow())
+                                    Hearts.getParticipantHeartData(context.getSource().getPlayerOrException())
                             ))
                             .then(argument("target", ParticipantArgumentType.participant())
                                     .executes(context -> executeGet(context.getSource(),
@@ -141,10 +141,10 @@ public class DivorcestealCommands {
                     )
             );
             dispatcher.register(literal("withdraw")
-                    .executes(context -> executeWithdraw(context.getSource(), context.getSource().getPlayerOrThrow(), 1))
+                    .executes(context -> executeWithdraw(context.getSource(), context.getSource().getPlayerOrException(), 1))
                     .then(argument("amount", IntegerArgumentType.integer(1))
                             .executes(context -> executeWithdraw(context.getSource(),
-                                    context.getSource().getPlayerOrThrow(),
+                                    context.getSource().getPlayerOrException(),
                                     IntegerArgumentType.getInteger(context, "amount")
                             ))
                     )
@@ -152,8 +152,8 @@ public class DivorcestealCommands {
         });
     }
 
-    private static int executeParticipantAdd(ServerCommandSource source, String target) throws CommandSyntaxException {
-        GameProfile profile = Objects.requireNonNull(source.getServer().getUserCache()).findByName(target)
+    private static int executeParticipantAdd(CommandSourceStack source, String target) throws CommandSyntaxException {
+        GameProfile profile = Objects.requireNonNull(source.getServer().getProfileCache()).get(target)
                 .orElseThrow(DivorcestealExceptions.NO_PLAYER_EXCEPTION::create);
 
         HeartDataState state = Hearts.getHeartDataState();
@@ -162,7 +162,7 @@ public class DivorcestealCommands {
 
             updateData(source, state.getHeartData(profile.getId()), false);
 
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.participant.add", profile.getName()), true);
+            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.participant.add", profile.getName()), true);
         } else {
             throw DivorcestealExceptions.PARTICIPANT_LISTED_EXCEPTION.create();
         }
@@ -171,33 +171,33 @@ public class DivorcestealCommands {
     }
 
     private static CompletableFuture<Suggestions> suggestParticipantAdd(CommandContext<?> context, SuggestionsBuilder builder) {
-        if (!(context.getSource() instanceof CommandSource source)) return Suggestions.empty();
+        if (!(context.getSource() instanceof SharedSuggestionProvider source)) return Suggestions.empty();
 
         List<String> invalidNames = Hearts.getHeartDataState().getHeartDataList().stream().map(ParticipantHeartData::getName).toList();
 
-        return CommandSource.suggestMatching(
-                source.getPlayerNames().stream()
+        return SharedSuggestionProvider.suggest(
+                source.getOnlinePlayerNames().stream()
                         .filter(string -> !invalidNames.contains(string))
                         .toList(),
                 builder
         );
     }
 
-    private static int executeParticipantRemove(ServerCommandSource source, ParticipantHeartData data) {
+    private static int executeParticipantRemove(CommandSourceStack source, ParticipantHeartData data) {
         data.setHearts(10);
         updateData(source, data, false);
         Hearts.getHeartDataState().removeParticipant(data.getUuid());
 
-        source.sendFeedback(() -> Text.translatable("commands.divorcesteal.participant.remove", data.getName()), true);
+        source.sendSuccess(() -> Component.translatable("commands.divorcesteal.participant.remove", data.getName()), true);
 
         return 1;
     }
 
-    private static int executeParticipantList(ServerCommandSource source) {
+    private static int executeParticipantList(CommandSourceStack source) {
         List<String> names = Hearts.getHeartDataState().getHeartDataList().stream().map(ParticipantHeartData::getName).toList();
 
         if (names.isEmpty()) {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.participant.list.empty"), true);
+            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.participant.list.empty"), true);
             return 0;
         }
 
@@ -212,21 +212,21 @@ public class DivorcestealCommands {
             first = false;
         }
 
-        source.sendFeedback(() -> Text.translatable("commands.divorcesteal.participant.list", builder.toString()), true);
+        source.sendSuccess(() -> Component.translatable("commands.divorcesteal.participant.list", builder.toString()), true);
 
         return names.size();
     }
 
-    private static int executeGet(ServerCommandSource source, ParticipantHeartData data) throws CommandSyntaxException {
+    private static int executeGet(CommandSourceStack source, ParticipantHeartData data) throws CommandSyntaxException {
         if (data == null) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
-        source.sendFeedback(() -> Text.translatable("commands.divorcesteal.get", data.getName(), data.getHearts()), true);
+        source.sendSuccess(() -> Component.translatable("commands.divorcesteal.get", data.getName(), data.getHearts()), true);
         return data.getHearts();
     }
 
-    private static int executeSet(ServerCommandSource source, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
+    private static int executeSet(CommandSourceStack source, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
         if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
-        int finalAmount = bypassMax ? amount : MathHelper.clamp(amount, 0, DivorcestealConfig.MAX_HEARTS.getValue());
+        int finalAmount = bypassMax ? amount : Mth.clamp(amount, 0, DivorcestealConfig.MAX_HEARTS.getValue());
 
         int successes = 0;
         for (ParticipantHeartData data : dataList) {
@@ -234,24 +234,24 @@ public class DivorcestealCommands {
             data.setHearts(finalAmount);
             updateData(source, data);
             if (finalAmount == 0) {
-                ServerPlayerEntity bannedPlayer = playerFromData(source, data);
+                ServerPlayer bannedPlayer = playerFromData(source, data);
                 if (bannedPlayer != null) {
-                    bannedPlayer.networkHandler.disconnect(Text.translatable("divorcesteal.deathban"));
+                    bannedPlayer.connection.disconnect(Component.translatable("divorcesteal.deathban"));
                 }
             }
             successes++;
         }
 
         if (dataList.size() == 1) {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.set.single", dataList.getFirst().getName(), finalAmount), true);
+            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.set.single", dataList.getFirst().getName(), finalAmount), true);
         } else {
             int finalSuccesses = successes;
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.set.multiple", finalSuccesses, finalAmount), true);
+            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.set.multiple", finalSuccesses, finalAmount), true);
         }
         return successes;
     }
 
-    private static int executeAdd(ServerCommandSource source, boolean add, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
+    private static int executeAdd(CommandSourceStack source, boolean add, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
         if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
         int successes = 0;
@@ -265,9 +265,9 @@ public class DivorcestealCommands {
             data.setHearts(finalAmount);
             updateData(source, data);
             if (finalAmount == 0) {
-                ServerPlayerEntity bannedPlayer = playerFromData(source, data);
+                ServerPlayer bannedPlayer = playerFromData(source, data);
                 if (bannedPlayer != null) {
-                    bannedPlayer.networkHandler.disconnect(Text.translatable("divorcesteal.deathban"));
+                    bannedPlayer.connection.disconnect(Component.translatable("divorcesteal.deathban"));
                 }
             }
             successes++;
@@ -275,76 +275,76 @@ public class DivorcestealCommands {
 
         String translation = "commands.divorcesteal." + (add ? "add" : "remove") + ".";
         if (dataList.size() == 1) {
-            source.sendFeedback(() -> Text.translatable(translation + "single", amount, dataList.getFirst().getName()), true);
+            source.sendSuccess(() -> Component.translatable(translation + "single", amount, dataList.getFirst().getName()), true);
         } else {
             int finalSuccesses = successes;
-            source.sendFeedback(() -> Text.translatable(translation + "multiple", amount, finalSuccesses), true);
+            source.sendSuccess(() -> Component.translatable(translation + "multiple", amount, finalSuccesses), true);
         }
         return successes;
     }
 
-    private static int executeRevive(ServerCommandSource source, List<ParticipantHeartData> dataList) throws CommandSyntaxException {
+    private static int executeRevive(CommandSourceStack source, List<ParticipantHeartData> dataList) throws CommandSyntaxException {
         if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
         int successes = 0;
         boolean single = dataList.size() == 1;
         if (single) {
-            if (!Hearts.revive(source.getWorld(), dataList.getFirst().getGameProfile())) throw DivorcestealExceptions.NOT_DEATHBANNED_EXCEPTION.create();
+            if (!Hearts.revive(source.getLevel(), dataList.getFirst().getGameProfile())) throw DivorcestealExceptions.NOT_DEATHBANNED_EXCEPTION.create();
             successes = 1;
 
         } else {
             for (ParticipantHeartData data : dataList) {
                 if (data == null) continue;
-                Hearts.revive(source.getWorld(), data.getGameProfile());
+                Hearts.revive(source.getLevel(), data.getGameProfile());
                 successes++;
             }
         }
 
         if (dataList.size() == 1) {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.revive.single", dataList.getFirst().getName()), true);
+            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.revive.single", dataList.getFirst().getName()), true);
         } else {
             int finalSuccesses = successes;
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.revive.multiple", finalSuccesses), true);
+            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.revive.multiple", finalSuccesses), true);
         }
         return successes;
     }
 
-    private static int executeWithdraw(ServerCommandSource source, ServerPlayerEntity player, int amount) {
+    private static int executeWithdraw(CommandSourceStack source, ServerPlayer player, int amount) {
         int heartsWithdrawn = -Hearts.addHeartsValidated(player, -amount, false);
         if (heartsWithdrawn == 0) {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.withdraw.fail").formatted(Formatting.RED), false);
+            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.withdraw.fail").withStyle(ChatFormatting.RED), false);
         } else if (heartsWithdrawn == 1) {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.withdraw.single"), false);
+            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.withdraw.single"), false);
         } else {
-            source.sendFeedback(() -> Text.translatable("commands.divorcesteal.withdraw.multiple", heartsWithdrawn), false);
+            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.withdraw.multiple", heartsWithdrawn), false);
         }
 
         ItemStack stack = new ItemStack(DivorcestealRegistry.HEART_ITEM, heartsWithdrawn);
-        if (!stack.isEmpty() && !player.getInventory().insertStack(stack)) {
-            ItemEntity itemEntity = player.dropItem(stack, false);
+        if (!stack.isEmpty() && !player.getInventory().add(stack)) {
+            ItemEntity itemEntity = player.drop(stack, false);
             if (itemEntity != null) {
-                itemEntity.resetPickupDelay();
+                itemEntity.setNoPickUpDelay();
             }
         }
 
-        player.increaseStat(DivorcestealRegistry.WITHDRAW_HEART_STAT, heartsWithdrawn);
+        player.awardStat(DivorcestealRegistry.WITHDRAW_HEART_STAT, heartsWithdrawn);
 
         return heartsWithdrawn;
     }
 
-    private static void updateData(ServerCommandSource source, ParticipantHeartData data) {
+    private static void updateData(CommandSourceStack source, ParticipantHeartData data) {
         updateData(source, data, true);
     }
 
-    private static void updateData(ServerCommandSource source, ParticipantHeartData data, boolean effects) {
+    private static void updateData(CommandSourceStack source, ParticipantHeartData data, boolean effects) {
         Hearts.updateData(playerFromData(source, data), source.getServer(), data, effects);
     }
 
-    private static @Nullable ParticipantHeartData dataFromSource(ServerCommandSource source) throws CommandSyntaxException {
-        return Hearts.getParticipantHeartData(source.getPlayerOrThrow());
+    private static @Nullable ParticipantHeartData dataFromSource(CommandSourceStack source) throws CommandSyntaxException {
+        return Hearts.getParticipantHeartData(source.getPlayerOrException());
     }
 
-    private static @Nullable ServerPlayerEntity playerFromData(ServerCommandSource source, @Nullable ParticipantHeartData data) {
-        return data == null ? null : (ServerPlayerEntity) source.getWorld().getPlayerByUuid(data.getUuid());
+    private static @Nullable ServerPlayer playerFromData(CommandSourceStack source, @Nullable ParticipantHeartData data) {
+        return data == null ? null : (ServerPlayer) source.getLevel().getPlayerByUUID(data.getUuid());
     }
 }

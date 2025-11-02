@@ -1,6 +1,6 @@
 package net.pneumono.divorcesteal.mixin;
 
-import net.minecraft.item.equipment.ArmorMaterials;
+import net.minecraft.world.item.equipment.ArmorMaterials;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;

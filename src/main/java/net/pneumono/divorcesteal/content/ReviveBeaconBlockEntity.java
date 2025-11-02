@@ -1,34 +1,35 @@
 package net.pneumono.divorcesteal.content;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.ComponentsAccess;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.pneumono.divorcesteal.content.component.KillTargetComponent;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class ReviveBeaconBlockEntity extends LockableContainerBlockEntity {
-    private DefaultedList<ItemStack> inventory = DefaultedList.ofSize(4, ItemStack.EMPTY);
+public class ReviveBeaconBlockEntity extends BaseContainerBlockEntity {
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
     private KillTargetComponent target;
 
     public ReviveBeaconBlockEntity(BlockPos pos, BlockState state) {
@@ -38,11 +39,11 @@ public class ReviveBeaconBlockEntity extends LockableContainerBlockEntity {
     public @Nullable KillTargetComponent getOrCreateTarget(UUID except) {
         if (this.target != null) return target;
 
-        if (this.getWorld() instanceof ServerWorld serverWorld) {
-            GameProfile randomTarget = ReviveBeaconBlock.getRandomTarget(serverWorld, except).orElse(null);
+        if (this.getLevel() instanceof ServerLevel serverLevel) {
+            GameProfile randomTarget = ReviveBeaconBlock.getRandomTarget(serverLevel, except).orElse(null);
             if (randomTarget != null) {
                 this.target = new KillTargetComponent(randomTarget);
-                markDirty();
+                setChanged();
                 return this.target;
             }
         }
@@ -50,83 +51,86 @@ public class ReviveBeaconBlockEntity extends LockableContainerBlockEntity {
         return this.target;
     }
 
+    // No idea, it'll probably cause some horrible problems if this returns null but oh well.
+    // The mod can crash the server for fun, as a treat.
+    @SuppressWarnings("DataFlowIssue")
     @Override
-    protected ScreenHandler createScreenHandler(int syncId, PlayerInventory playerInventory) {
-        KillTargetComponent target = getOrCreateTarget(playerInventory.player.getUuid());
+    protected @NotNull AbstractContainerMenu createMenu(int syncId, Inventory playerInventory) {
+        KillTargetComponent target = getOrCreateTarget(playerInventory.player.getUUID());
         if (target == null) return null;
 
-        return new ReviveBeaconScreenHandler(syncId, playerInventory, this,
-                ScreenHandlerContext.create(getWorld(), this.getPos()),
+        return new ReviveBeaconMenu(syncId, playerInventory, this,
+                ContainerLevelAccess.create(getLevel(), this.getBlockPos()),
                 ReviveBeaconBlock.getRevivableParticipants(),
                 target.profile()
         );
     }
 
     @Override
-    public int getMaxCountPerStack() {
+    public int getMaxStackSize() {
         return 1;
     }
 
     @Override
-    protected void readData(ReadView view) {
-        super.readData(view);
-        Inventories.readData(view, this.inventory);
-        this.target = view.read("target", KillTargetComponent.CODEC).orElse(null);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        ContainerHelper.loadAllItems(input, this.inventory);
+        this.target = input.read("target", KillTargetComponent.CODEC).orElse(null);
     }
 
     @Override
-    protected void writeData(WriteView view) {
-        super.writeData(view);
-        Inventories.writeData(view, this.inventory);
-        view.putNullable("target", KillTargetComponent.CODEC, this.target);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        ContainerHelper.saveAllItems(output, this.inventory);
+        output.storeNullable("target", KillTargetComponent.CODEC, this.target);
     }
 
     @Override
-    protected void readComponents(ComponentsAccess components) {
-        super.readComponents(components);
+    protected void applyImplicitComponents(DataComponentGetter components) {
+        super.applyImplicitComponents(components);
         this.target = components.get(DivorcestealRegistry.KILL_TARGET_COMPONENT);
     }
 
     @Override
-    protected void addComponents(ComponentMap.Builder builder) {
-        super.addComponents(builder);
-        builder.add(DivorcestealRegistry.KILL_TARGET_COMPONENT, this.target);
+    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+        super.collectImplicitComponents(builder);
+        builder.set(DivorcestealRegistry.KILL_TARGET_COMPONENT, this.target);
     }
 
     @Override
-    public void removeFromCopiedStackData(WriteView view) {
-        super.removeFromCopiedStackData(view);
-        view.remove("target");
+    public void removeComponentsFromTag(ValueOutput output) {
+        super.removeComponentsFromTag(output);
+        output.discard("target");
     }
 
     @Override
-    public int size() {
+    public int getContainerSize() {
         return this.inventory.size();
     }
 
     @Override
-    protected Text getContainerName() {
-        return Text.translatable("divorcesteal.gui.revive_beacon.title");
+    protected @NotNull Component getDefaultName() {
+        return Component.translatable("divorcesteal.gui.revive_beacon.title");
     }
 
     @Override
-    protected DefaultedList<ItemStack> getHeldStacks() {
+    protected @NotNull NonNullList<ItemStack> getItems() {
         return this.inventory;
     }
 
     @Override
-    protected void setHeldStacks(DefaultedList<ItemStack> inventory) {
+    protected void setItems(NonNullList<ItemStack> inventory) {
         this.inventory = inventory;
     }
 
     @Nullable
     @Override
-    public Packet<ClientPlayPacketListener> toUpdatePacket() {
-        return BlockEntityUpdateS2CPacket.create(this);
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registries) {
-        return this.createNbt(registries);
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithoutMetadata(registries);
     }
 }

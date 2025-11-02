@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.world.level.storage.LevelResource;
 import net.pneumono.divorcesteal.Divorcesteal;
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class DataSaving {
     }
 
     public static void backupAndLoadHeartDataState(MinecraftServer server) {
-        ROOT_PATH = server.getSavePath(WorldSavePath.ROOT);
+        ROOT_PATH = server.getWorldPath(LevelResource.ROOT);
         STATE = null;
 
         CompletableFuture.runAsync(() -> {
@@ -52,17 +52,17 @@ public class DataSaving {
             return new HeartDataState();
         }
 
-        NbtCompound compound;
+        CompoundTag compound;
         try {
-            compound = NbtIo.readCompressed(path, NbtSizeTracker.ofUnlimitedBytes());
+            compound = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
         } catch (IOException e) {
             Divorcesteal.LOGGER.error("Failed to read hearts data", e);
             return new HeartDataState();
         }
 
-        NbtElement element = compound.get("values");
+        Tag tag = compound.get("values");
 
-        DataResult<Pair<HeartDataState, NbtElement>> result = HeartDataState.CODEC.decode(NbtOps.INSTANCE, element);
+        DataResult<Pair<HeartDataState, Tag>> result = HeartDataState.CODEC.decode(NbtOps.INSTANCE, tag);
         if (result.isSuccess()) {
             Divorcesteal.LOGGER.info("Successfully read hearts data");
             return result.getOrThrow().getFirst();
@@ -82,10 +82,10 @@ public class DataSaving {
 
         Path path = getHeartsPath();
 
-        DataResult<NbtElement> result = HeartDataState.CODEC.encodeStart(NbtOps.INSTANCE, STATE);
-        NbtElement element;
+        DataResult<Tag> result = HeartDataState.CODEC.encodeStart(NbtOps.INSTANCE, STATE);
+        Tag tag;
         if (result.isSuccess()) {
-            element = result.getOrThrow();
+            tag = result.getOrThrow();
         } else {
             String message = null;
             if (result.error().isPresent()) {
@@ -95,8 +95,8 @@ public class DataSaving {
             return;
         }
 
-        NbtCompound compound = new NbtCompound();
-        compound.put("values", element);
+        CompoundTag compound = new CompoundTag();
+        compound.put("values", tag);
 
         try {
             NbtIo.writeCompressed(compound, path);

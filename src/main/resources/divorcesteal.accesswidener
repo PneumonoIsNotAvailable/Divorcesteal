@@ -1,8 +1,8 @@
 accessWidener v2 named
 
-accessible field net/minecraft/client/gui/screen/DeathScreen ticksSinceDeath I
-accessible field net/minecraft/client/gui/screen/DeathScreen buttons Ljava/util/List;
-accessible field net/minecraft/client/gui/screen/DeathScreen titleScreenButton Lnet/minecraft/client/gui/widget/ButtonWidget;
-accessible method net/minecraft/client/gui/screen/DeathScreen quitLevel ()V
-accessible method net/minecraft/client/gui/screen/DeathScreen setButtonsActive (Z)V
-accessible field net/minecraft/client/gui/screen/DeathScreen scoreText Lnet/minecraft/text/Text;
+accessible field net/minecraft/client/gui/screens/DeathScreen delayTicker I
+accessible field net/minecraft/client/gui/screens/DeathScreen exitButtons Ljava/util/List;
+accessible field net/minecraft/client/gui/screens/DeathScreen exitToTitleButton Lnet/minecraft/client/gui/components/Button;
+accessible method net/minecraft/client/gui/screens/DeathScreen exitToTitleScreen ()V
+accessible method net/minecraft/client/gui/screens/DeathScreen setButtonsActive (Z)V
+accessible field net/minecraft/client/gui/screens/DeathScreen deathScore Lnet/minecraft/network/chat/Component;

@@ -1,19 +1,19 @@
 package net.pneumono.divorcesteal.mixin;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.SkullBlockEntity;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.ComponentsAccess;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.LoreComponent;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.storage.ReadView;
-import net.minecraft.storage.WriteView;
-import net.minecraft.text.Text;
-import net.minecraft.text.TextCodecs;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemLore;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.SkullBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.pneumono.divorcesteal.content.component.KilledByComponent;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
@@ -31,68 +31,68 @@ public abstract class SkullBlockEntityMixin extends BlockEntity {
 
     @Unique
     @Nullable
-    private LoreComponent lore;
+    private ItemLore lore;
     @Unique
     @Nullable
-    private Text itemName; // Not to be confused with custom_name, they're different I swear!
+    private Component itemName; // Not to be confused with custom_name, they're different I swear!
     @Unique
     @Nullable
-    private NbtComponent customData;
+    private CustomData customData;
     @Unique
     @Nullable
     private KilledByComponent killer;
 
     @Inject(
-            method = "writeData",
+            method = "saveAdditional",
             at = @At("RETURN")
     )
-    private void writeExtraData(WriteView view, CallbackInfo ci) {
-        view.putNullable("lore", LoreComponent.CODEC, this.lore);
-        view.putNullable("item_name", TextCodecs.CODEC, this.itemName);
-        view.putNullable("custom_data", NbtComponent.CODEC, this.customData);
-        view.putNullable("killer", KilledByComponent.CODEC, this.killer);
+    private void saveExtra(ValueOutput view, CallbackInfo ci) {
+        view.storeNullable("lore", ItemLore.CODEC, this.lore);
+        view.storeNullable("item_name", ComponentSerialization.CODEC, this.itemName);
+        view.storeNullable("custom_data", CustomData.CODEC, this.customData);
+        view.storeNullable("killer", KilledByComponent.CODEC, this.killer);
     }
 
     @Inject(
-            method = "readData",
+            method = "loadAdditional",
             at = @At("RETURN")
     )
-    private void readExtraData(ReadView view, CallbackInfo ci) {
-        this.lore = view.read("lore", LoreComponent.CODEC).orElse(null);
-        this.itemName = tryParseCustomName(view, "item_name");
-        this.customData = view.read("custom_data", NbtComponent.CODEC).orElse(null);
+    private void loadExtra(ValueInput view, CallbackInfo ci) {
+        this.lore = view.read("lore", ItemLore.CODEC).orElse(null);
+        this.itemName = parseCustomNameSafe(view, "item_name");
+        this.customData = view.read("custom_data", CustomData.CODEC).orElse(null);
         this.killer = view.read("killer", KilledByComponent.CODEC).orElse(null);
     }
 
     @Inject(
-            method = "readComponents",
+            method = "applyImplicitComponents",
             at = @At("RETURN")
     )
-    private void readExtraComponents(ComponentsAccess components, CallbackInfo ci) {
-        this.lore = components.get(DataComponentTypes.LORE);
-        this.itemName = components.get(DataComponentTypes.ITEM_NAME);
-        this.customData = components.get(DataComponentTypes.CUSTOM_DATA);
+    private void applyExtraComponents(DataComponentGetter components, CallbackInfo ci) {
+        this.lore = components.get(DataComponents.LORE);
+        this.itemName = components.get(DataComponents.ITEM_NAME);
+        this.customData = components.get(DataComponents.CUSTOM_DATA);
         this.killer = components.get(DivorcestealRegistry.KILLED_BY_COMPONENT);
     }
 
     @Inject(
-            method = "addComponents",
+            method = "collectImplicitComponents",
             at = @At("RETURN")
     )
-    private void addExtraComponents(ComponentMap.Builder builder, CallbackInfo ci) {
-        builder.add(DataComponentTypes.LORE, this.lore);
-        builder.add(DataComponentTypes.ITEM_NAME, this.itemName);
-        builder.add(DataComponentTypes.CUSTOM_DATA, this.customData);
-        builder.add(DivorcestealRegistry.KILLED_BY_COMPONENT, this.killer);
+    private void collectExtraComponents(DataComponentMap.Builder builder, CallbackInfo ci) {
+        builder.set(DataComponents.LORE, this.lore);
+        builder.set(DataComponents.ITEM_NAME, this.itemName);
+        builder.set(DataComponents.CUSTOM_DATA, this.customData);
+        builder.set(DivorcestealRegistry.KILLED_BY_COMPONENT, this.killer);
     }
 
     @Inject(
-            method = "removeFromCopiedStackData",
+            method = "removeComponentsFromTag",
             at = @At("RETURN")
     )
-    private void removeExtraFromCopiedStackData(WriteView view, CallbackInfo ci) {
-        view.remove("lore");
-        view.remove("item_name");
-        view.remove("custom_data");
+    private void removeExtraComponentsFromTag(ValueOutput view, CallbackInfo ci) {
+        view.discard("lore");
+        view.discard("item_name");
+        view.discard("custom_data");
     }
 }

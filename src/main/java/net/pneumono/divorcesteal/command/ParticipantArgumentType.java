@@ -8,14 +8,15 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.serialize.ArgumentSerializer;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo;
+import net.minecraft.network.FriendlyByteBuf;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.ParticipantHeartData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -56,11 +57,11 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
         return new ParticipantArgumentType(false, Filter.UNBANNED_ONLY);
     }
 
-    public static ParticipantHeartData getParticipant(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
+    public static ParticipantHeartData getParticipant(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
         return context.getArgument(name, ParticipantArgument.class).getData(context.getSource());
     }
 
-    public static List<ParticipantHeartData> getParticipants(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException {
+    public static List<ParticipantHeartData> getParticipants(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
         return context.getArgument(name, ParticipantArgument.class).getDataList(context.getSource());
     }
 
@@ -81,7 +82,7 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
 
         return source -> {
             HeartDataState state = Hearts.getHeartDataState();
-            GameProfile profile = Objects.requireNonNull(source.getServer().getUserCache()).findByName(string)
+            GameProfile profile = Objects.requireNonNull(source.getServer().getProfileCache()).get(string)
                     .orElseThrow(DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION::create);
             ParticipantHeartData data = state.getHeartData(profile.getId());
 
@@ -99,8 +100,8 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        if (!(context.getSource() instanceof CommandSource source)) return Suggestions.empty();
-        if (!(context.getSource() instanceof ServerCommandSource)) return source.getCompletions(context);
+        if (!(context.getSource() instanceof SharedSuggestionProvider source)) return Suggestions.empty();
+        if (!(context.getSource() instanceof CommandSourceStack)) return source.customSuggestion(context);
 
         HeartDataState state = Hearts.getHeartDataState();
         List<String> strings = new ArrayList<>();
@@ -112,7 +113,7 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
                 .toList()
         );
 
-        return CommandSource.suggestMatching(
+        return SharedSuggestionProvider.suggest(
                 strings,
                 builder
         );
@@ -124,9 +125,9 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
     }
 
     public interface ParticipantArgument {
-        List<ParticipantHeartData> getDataList(ServerCommandSource source) throws CommandSyntaxException;
+        List<ParticipantHeartData> getDataList(CommandSourceStack source) throws CommandSyntaxException;
 
-        default ParticipantHeartData getData(ServerCommandSource source) throws CommandSyntaxException {
+        default ParticipantHeartData getData(CommandSourceStack source) throws CommandSyntaxException {
             return getDataList(source).getFirst();
         }
     }
@@ -155,9 +156,9 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
         }
     }
 
-    public static class Serializer implements ArgumentSerializer<ParticipantArgumentType, Serializer.Properties> {
+    public static class Serializer implements ArgumentTypeInfo<ParticipantArgumentType, Serializer.Properties> {
         @Override
-        public void writePacket(Properties properties, PacketByteBuf buf) {
+        public void serializeToNetwork(Properties properties, FriendlyByteBuf buf) {
             int i = properties.single ? 0 : 3;
 
             i += properties.filter.id;
@@ -166,23 +167,23 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
         }
 
         @Override
-        public Properties fromPacket(PacketByteBuf buf) {
+        public @NotNull Properties deserializeFromNetwork(FriendlyByteBuf buf) {
             byte b = buf.readByte();
             return new Properties(b < 3, Filter.fromId(b));
         }
 
         @Override
-        public void writeJson(Properties properties, JsonObject json) {
+        public void serializeToJson(Properties properties, JsonObject json) {
             json.addProperty("amount", properties.single ? "single" : "multiple");
             json.addProperty("type", properties.filter.name);
         }
 
         @Override
-        public Properties getArgumentTypeProperties(ParticipantArgumentType argumentType) {
+        public @NotNull Properties unpack(ParticipantArgumentType argumentType) {
             return new Properties(argumentType.singleTarget, argumentType.filter);
         }
 
-        public final class Properties implements ArgumentTypeProperties<ParticipantArgumentType> {
+        public final class Properties implements ArgumentTypeInfo.Template<ParticipantArgumentType> {
             private final boolean single;
             private final Filter filter;
 
@@ -192,12 +193,12 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
             }
 
             @Override
-            public ParticipantArgumentType createType(CommandRegistryAccess commandRegistryAccess) {
+            public @NotNull ParticipantArgumentType instantiate(CommandBuildContext commandRegistryAccess) {
                 return new ParticipantArgumentType(single, filter);
             }
 
             @Override
-            public ArgumentSerializer<ParticipantArgumentType, ?> getSerializer() {
+            public @NotNull ArgumentTypeInfo<ParticipantArgumentType, ?> type() {
                 return Serializer.this;
             }
         }

@@ -2,16 +2,16 @@ package net.pneumono.divorcesteal.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.client.gui.screen.DeathScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.pneumono.divorcesteal.gui.DeathbanScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(DeathScreen.class)
 public abstract class DeathScreenMixin extends Screen {
-    protected DeathScreenMixin(Text title) {
+    protected DeathScreenMixin(Component title) {
         super(title);
     }
 
@@ -19,12 +19,12 @@ public abstract class DeathScreenMixin extends Screen {
             method = "render",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/client/gui/screen/DeathScreen;title:Lnet/minecraft/text/Text;"
+                    target = "Lnet/minecraft/client/gui/screens/DeathScreen;title:Lnet/minecraft/network/chat/Component;"
             )
     )
-    private Text useDeathbanTitle(DeathScreen instance, Operation<Text> original) {
+    private Component useDeathbanTitle(DeathScreen instance, Operation<Component> original) {
         if ((Object)this instanceof DeathbanScreen) {
-            return Text.translatable("divorcesteal.gui.deathban.title");
+            return Component.translatable("divorcesteal.gui.deathban.title");
         }
 
         return original.call(instance);

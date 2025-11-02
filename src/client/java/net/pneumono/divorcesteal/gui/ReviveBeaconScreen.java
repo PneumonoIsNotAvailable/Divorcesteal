@@ -1,167 +1,167 @@
 package net.pneumono.divorcesteal.gui;
 
 import com.mojang.authlib.properties.PropertyMap;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.pneumono.divorcesteal.Divorcesteal;
-import net.pneumono.divorcesteal.content.ReviveBeaconScreenHandler;
+import net.pneumono.divorcesteal.content.ReviveBeaconMenu;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 
 import java.util.Objects;
 import java.util.Optional;
 
-public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler> {
-    private static final Identifier HEART_SLOT_TEXTURE = Divorcesteal.id("heart");
-    private static final Identifier HEAD_SLOT_TEXTURE = Identifier.ofVanilla("container/slot/helmet");
-    private static final Text HEART_SLOT_TOOLTIP = Text.translatable("divorcesteal.gui.revive_beacon.add_heart");
-    private static final Text HEAD_SLOT_TOOLTIP = Text.translatable("divorcesteal.gui.revive_beacon.add_head");
-    private static final Identifier PLAYER_TEXTURE = Divorcesteal.id("player");
-    private static final Identifier PLAYER_HIGHLIGHTED_TEXTURE = Divorcesteal.id("player_highlighted");
-    private static final Identifier PLAYER_SELECTED_TEXTURE = Divorcesteal.id("player_selected");
-    private static final Identifier SCROLLER_TEXTURE = Divorcesteal.id("scroller");
-    private static final Identifier SCROLLER_DISABLED_TEXTURE = Divorcesteal.id("scroller_disabled");
-    private static final Identifier REVIVE_BUTTON_TEXTURE = Divorcesteal.id("revive_button");
-    private static final Identifier REVIVE_BUTTON_HIGHLIGHTED_TEXTURE = Divorcesteal.id("revive_button_highlighted");
-    private static final Identifier TEXTURE = Divorcesteal.id("textures/gui/revive_beacon.png");
+public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu> {
+    private static final ResourceLocation HEART_SLOT_TEXTURE = Divorcesteal.id("heart");
+    private static final ResourceLocation HEAD_SLOT_TEXTURE = ResourceLocation.withDefaultNamespace("container/slot/helmet");
+    private static final Component HEART_SLOT_TOOLTIP = Component.translatable("divorcesteal.gui.revive_beacon.add_heart");
+    private static final Component HEAD_SLOT_TOOLTIP = Component.translatable("divorcesteal.gui.revive_beacon.add_head");
+    private static final ResourceLocation PLAYER_TEXTURE = Divorcesteal.id("player");
+    private static final ResourceLocation PLAYER_HIGHLIGHTED_TEXTURE = Divorcesteal.id("player_highlighted");
+    private static final ResourceLocation PLAYER_SELECTED_TEXTURE = Divorcesteal.id("player_selected");
+    private static final ResourceLocation SCROLLER_TEXTURE = Divorcesteal.id("scroller");
+    private static final ResourceLocation SCROLLER_DISABLED_TEXTURE = Divorcesteal.id("scroller_disabled");
+    private static final ResourceLocation REVIVE_BUTTON_TEXTURE = Divorcesteal.id("revive_button");
+    private static final ResourceLocation REVIVE_BUTTON_HIGHLIGHTED_TEXTURE = Divorcesteal.id("revive_button_highlighted");
+    private static final ResourceLocation TEXTURE = Divorcesteal.id("textures/gui/revive_beacon.png");
 
     private float scrollPosition = 0.0F;
     private int visibleTopRow = 0;
     private boolean scrollbarClicked = false;
 
-    public ReviveBeaconScreen(ReviveBeaconScreenHandler handler, PlayerInventory playerInventory, Text title) {
+    public ReviveBeaconScreen(ReviveBeaconMenu handler, Inventory playerInventory, Component title) {
         super(handler, playerInventory, title);
-        this.backgroundWidth = 238;
-        this.backgroundHeight = 179;
-        this.playerInventoryTitleX = 39;
-        this.playerInventoryTitleY = this.backgroundHeight - 93;
+        this.imageWidth = 238;
+        this.imageHeight = 179;
+        this.inventoryLabelX = 39;
+        this.inventoryLabelY = this.imageHeight - 93;
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
         super.render(context, mouseX, mouseY, deltaTicks);
-        this.drawMouseoverTooltip(context, mouseX, mouseY);
+        this.renderTooltip(context, mouseX, mouseY);
     }
 
     @Override
-    protected void drawBackground(DrawContext context, float deltaTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics graphics, float deltaTicks, int mouseX, int mouseY) {
         // GUI frame
-        context.drawTexture(
+        graphics.blit(
                 RenderPipelines.GUI_TEXTURED, TEXTURE,
-                this.x, this.y,
+                this.leftPos, this.topPos,
                 0.0F, 0.0F,
-                this.backgroundWidth, this.backgroundHeight,
+                this.imageWidth, this.imageHeight,
                 256, 256
         );
 
         // Item input
-        Slot topHeartSlot = this.handler.getTopHeartSlot();
-        Slot leftHeartSlot = this.handler.getLeftHeartSlot();
-        Slot rightHeartSlot = this.handler.getRightHeartSlot();
-        Slot headSlot = this.handler.getHeadSlot();
-        drawEmptySlot(context, mouseX, mouseY, topHeartSlot, HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
-        drawEmptySlot(context, mouseX, mouseY, leftHeartSlot, HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
-        drawEmptySlot(context, mouseX, mouseY, rightHeartSlot, HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
-        drawEmptySlot(context, mouseX, mouseY, headSlot, HEAD_SLOT_TEXTURE, HEAD_SLOT_TOOLTIP);
+        Slot topHeartSlot = this.menu.getTopHeartSlot();
+        Slot leftHeartSlot = this.menu.getLeftHeartSlot();
+        Slot rightHeartSlot = this.menu.getRightHeartSlot();
+        Slot headSlot = this.menu.getHeadSlot();
+        drawEmptySlot(graphics, mouseX, mouseY, topHeartSlot, HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
+        drawEmptySlot(graphics, mouseX, mouseY, leftHeartSlot, HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
+        drawEmptySlot(graphics, mouseX, mouseY, rightHeartSlot, HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
+        drawEmptySlot(graphics, mouseX, mouseY, headSlot, HEAD_SLOT_TEXTURE, HEAD_SLOT_TOOLTIP);
 
         // Wanted poster
-        Text wantedText = Text.translatable("divorcesteal.gui.revive_beacon.wanted");
-        context.drawText(this.textRenderer,
+        Component wantedText = Component.translatable("divorcesteal.gui.revive_beacon.wanted");
+        graphics.drawString(this.font,
                 wantedText,
-                this.x + 43 - (textRenderer.getWidth(wantedText) / 2), this.y + 28,
-                Colors.DARK_GRAY, false
+                this.leftPos + 43 - (font.width(wantedText) / 2), this.topPos + 28,
+                CommonColors.DARK_GRAY, false
         );
 
-        ProfileComponent target = resolved(this.handler.getTarget());
+        ResolvableProfile target = resolved(this.menu.getTarget());
         if (target != null) {
             ItemStack targetHeadStack = new ItemStack(Items.PLAYER_HEAD);
-            targetHeadStack.set(DataComponentTypes.PROFILE, target);
-            context.drawItem(targetHeadStack, this.x + 35, this.y + 41);
-            if (this.isPointWithinBounds(35, 41, 16, 16, mouseX, mouseY)) {
-                Text targetTooltipText = target.name().map(Text::literal).orElseGet(
-                        () -> Text.translatable("divorcesteal.unknown")
-                ).formatted(Formatting.YELLOW);
-                context.drawOrderedTooltip(this.textRenderer, this.textRenderer.wrapLines(targetTooltipText, 115), mouseX, mouseY);
+            targetHeadStack.set(DataComponents.PROFILE, target);
+            graphics.renderItem(targetHeadStack, this.leftPos + 35, this.topPos + 41);
+            if (this.isHovering(35, 41, 16, 16, mouseX, mouseY)) {
+                Component targetTooltipText = target.name().map(Component::literal).orElseGet(
+                        () -> Component.translatable("divorcesteal.unknown")
+                ).withStyle(ChatFormatting.YELLOW);
+                graphics.setTooltipForNextFrame(this.font, this.font.split(targetTooltipText, 115), mouseX, mouseY);
             }
         }
 
         // Player select
-        Identifier scrollTexture = canScroll() ? SCROLLER_TEXTURE : SCROLLER_DISABLED_TEXTURE;
+        ResourceLocation scrollTexture = canScroll() ? SCROLLER_TEXTURE : SCROLLER_DISABLED_TEXTURE;
         int scrollOffset = (int)(39.0F * this.scrollPosition);
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, scrollTexture, this.x + 218, this.y + 22 + scrollOffset, 12, 15);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, scrollTexture, this.leftPos + 218, this.topPos + 22 + scrollOffset, 12, 15);
 
         for (int menuY = 0; menuY < 3; ++menuY) { for (int menuX = 0; menuX < 3; ++menuX) {
             int playerIndex = (menuY + this.visibleTopRow) * 3 + menuX;
-            ProfileComponent profile = resolved(this.handler.getRevivableParticipant(playerIndex));
+            ResolvableProfile profile = resolved(this.menu.getRevivableParticipant(playerIndex));
             if (profile == null) break;
 
             drawPlayerSelect(
-                    context,
+                    graphics,
                     mouseX, mouseY, menuX, menuY,
                     profile,
-                    playerIndex == this.handler.getSelectedParticipant()
+                    playerIndex == this.menu.getSelectedParticipant()
             );
         }}
 
         // Revive button
-        if (this.handler.canRevive()) {
-            int buttonX = this.x + 87;
-            int buttonY = this.y + 74;
+        if (this.menu.canRevive()) {
+            int buttonX = this.leftPos + 87;
+            int buttonY = this.topPos + 74;
 
             boolean highlighted = isPointStrictlyWithinBounds(87, 74, 64, 11, mouseX, mouseY);
-            Identifier buttonTexture = highlighted ? REVIVE_BUTTON_HIGHLIGHTED_TEXTURE : REVIVE_BUTTON_TEXTURE;
+            ResourceLocation buttonTexture = highlighted ? REVIVE_BUTTON_HIGHLIGHTED_TEXTURE : REVIVE_BUTTON_TEXTURE;
 
-            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, buttonTexture, buttonX, buttonY, 64, 11);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, buttonTexture, buttonX, buttonY, 64, 11);
 
-            Text reviveText = Text.translatable("divorcesteal.gui.revive_beacon.revive");
-            context.drawText(this.textRenderer,
+            Component reviveText = Component.translatable("divorcesteal.gui.revive_beacon.revive");
+            graphics.drawString(this.font,
                     reviveText,
-                    buttonX + 32 - (textRenderer.getWidth(reviveText) / 2), buttonY + 2,
+                    buttonX + 32 - (font.width(reviveText) / 2), buttonY + 2,
                     highlighted ? -128 : -9937334, false
             );
         }
     }
 
-    private void drawEmptySlot(DrawContext context, int mouseX, int mouseY, Slot slot, Identifier texture, Text text) {
-        if (slot.hasStack()) return;
+    private void drawEmptySlot(GuiGraphics graphics, int mouseX, int mouseY, Slot slot, ResourceLocation texture, Component text) {
+        if (slot.hasItem()) return;
 
-        context.drawGuiTexture(
+        graphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED, texture,
-                this.x + slot.x, this.y + slot.y,
+                this.leftPos + slot.x, this.topPos + slot.y,
                 16, 16
         );
 
-        if (this.isPointWithinBounds(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
-            context.drawOrderedTooltip(this.textRenderer, this.textRenderer.wrapLines(text, 115), mouseX, mouseY);
+        if (this.isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(this.font, this.font.split(text, 115), mouseX, mouseY);
         }
     }
 
     private void drawPlayerSelect(
-            DrawContext context,
+            GuiGraphics graphics,
             int mouseX, int mouseY,
             int menuX, int menuY,
-            ProfileComponent profile,
+            ResolvableProfile profile,
             boolean selected
     ) {
-        int finalX = this.x + 161 + (menuX * 18);
-        int finalY = this.y + 22 + (menuY * 18);
+        int finalX = this.leftPos + 161 + (menuX * 18);
+        int finalY = this.topPos + 22 + (menuY * 18);
 
-        boolean highlighted = this.isPointStrictlyWithinBounds(finalX - this.x, finalY - this.y, 18, 18, mouseX, mouseY);
+        boolean highlighted = this.isPointStrictlyWithinBounds(finalX - this.leftPos, finalY - this.topPos, 18, 18, mouseX, mouseY);
 
-        Identifier texture;
+        ResourceLocation texture;
         if (selected) {
             texture = PLAYER_SELECTED_TEXTURE;
         } else if (highlighted) {
@@ -170,17 +170,17 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
             texture = PLAYER_TEXTURE;
         }
 
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, texture, finalX, finalY, 18, 18);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, texture, finalX, finalY, 18, 18);
 
         ItemStack targetHeadStack = new ItemStack(Items.PLAYER_HEAD);
-        targetHeadStack.set(DataComponentTypes.PROFILE, profile);
-        context.drawItem(targetHeadStack, finalX + 1, finalY + 1);
+        targetHeadStack.set(DataComponents.PROFILE, profile);
+        graphics.renderItem(targetHeadStack, finalX + 1, finalY + 1);
 
         if (highlighted) {
-            Text text = profile.name().map(Text::literal).orElseGet(
-                    () -> Text.translatable("divorcesteal.unknown")
+            Component text = profile.name().map(Component::literal).orElseGet(
+                    () -> Component.translatable("divorcesteal.unknown")
             );
-            context.drawOrderedTooltip(this.textRenderer, this.textRenderer.wrapLines(text, 115), mouseX, mouseY);
+            graphics.setTooltipForNextFrame(this.font, this.font.split(text, 115), mouseX, mouseY);
         }
     }
 
@@ -193,11 +193,11 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
     }
 
     private boolean handlePlayerSelectMouseClick(double mouseX, double mouseY) {
-        Objects.requireNonNull(this.client);
+        Objects.requireNonNull(this.minecraft);
         this.scrollbarClicked = false;
 
-        int finalX = this.x + 161;
-        int finalY = this.y + 22;
+        int finalX = this.leftPos + 161;
+        int finalY = this.topPos + 22;
         for (int menuY = 0; menuY < 3; menuY++) { for (int menuX = 0; menuX < 3; menuX++) {
 
             double mouseXOffset = mouseX - (finalX + menuX * 18);
@@ -209,19 +209,19 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
                             mouseYOffset > 0.0 &&
                             mouseXOffset < 18.0 &&
                             mouseYOffset < 18.0 &&
-                            this.handler.onButtonClick(this.client.player, playerIndex)
+                            this.menu.clickMenuButton(this.minecraft.player, playerIndex)
             ) {
-                MinecraftClient.getInstance().getSoundManager().play(
-                        PositionedSoundInstance.master(DivorcestealRegistry.REVIVE_BEACON_SELECT_SOUND, 1.0F)
+                Minecraft.getInstance().getSoundManager().play(
+                        SimpleSoundInstance.forUI(DivorcestealRegistry.REVIVE_BEACON_SELECT_SOUND, 1.0F)
                 );
-                Objects.requireNonNull(this.client.interactionManager).clickButton(this.handler.syncId, playerIndex);
+                Objects.requireNonNull(this.minecraft.gameMode).handleInventoryButtonClick(this.menu.containerId, playerIndex);
                 return true;
             }
         }}
 
         if (canScroll()) {
-            finalX = this.x + 218;
-            finalY = this.y + 22;
+            finalX = this.leftPos + 218;
+            finalY = this.topPos + 22;
             if (mouseX >= finalX && mouseX < finalX + 12 && mouseY >= finalY && mouseY < finalY + 54) {
                 this.scrollbarClicked = true;
                 return true;
@@ -232,19 +232,19 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
     }
 
     private boolean handleReviveButtonMouseClick(double mouseX, double mouseY) {
-        Objects.requireNonNull(this.client);
-        if (!this.handler.canRevive()) return false;
+        Objects.requireNonNull(this.minecraft);
+        if (!this.menu.canRevive()) return false;
 
-        int finalX = this.x + 88;
-        int finalY = this.y + 75;
+        int finalX = this.leftPos + 88;
+        int finalY = this.topPos + 75;
         if (!(mouseX >= finalX && mouseX < finalX + 64 && mouseY >= finalY && mouseY < finalY + 11)) return false;
 
-        if (this.handler.onButtonClick(this.client.player, -2)) {
-            MinecraftClient.getInstance().getSoundManager().play(
-                    PositionedSoundInstance.master(DivorcestealRegistry.REVIVE_BEACON_SELECT_SOUND, 1.0F)
+        if (this.menu.clickMenuButton(this.minecraft.player, -2)) {
+            Minecraft.getInstance().getSoundManager().play(
+                    SimpleSoundInstance.forUI(DivorcestealRegistry.REVIVE_BEACON_SELECT_SOUND, 1.0F)
             );
-            Objects.requireNonNull(this.client.interactionManager).clickButton(this.handler.syncId, -2);
-            this.client.setScreen(null);
+            Objects.requireNonNull(this.minecraft.gameMode).handleInventoryButtonClick(this.menu.containerId, -2);
+            this.minecraft.setScreen(null);
             return true;
         }
 
@@ -256,10 +256,10 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
         if (!canScroll() || !this.scrollbarClicked) return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
 
         int rows = this.getRows() - 3;
-        int topY = this.y + 22;
+        int topY = this.topPos + 22;
         int bottomY = topY + 54;
         this.scrollPosition = ((float)mouseY - topY - 7.5F) / (bottomY - topY - 15.0F);
-        this.scrollPosition = MathHelper.clamp(this.scrollPosition, 0.0F, 1.0F);
+        this.scrollPosition = Mth.clamp(this.scrollPosition, 0.0F, 1.0F);
         this.visibleTopRow = Math.max((int)(this.scrollPosition * rows + 0.5), 0);
         return true;
     }
@@ -271,7 +271,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
         if (canScroll()) {
             int rows = this.getRows() - 3;
             float f = (float)verticalAmount / rows;
-            this.scrollPosition = MathHelper.clamp(this.scrollPosition - f, 0.0F, 1.0F);
+            this.scrollPosition = Mth.clamp(this.scrollPosition - f, 0.0F, 1.0F);
             this.visibleTopRow = Math.max((int)(this.scrollPosition * rows + 0.5F), 0);
         }
 
@@ -279,7 +279,7 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
     }
 
     private boolean isPointStrictlyWithinBounds(int x, int y, int width, int height, double pointX, double pointY) {
-        return this.isPointWithinBounds(x + 1, y + 1, width - 2, height - 2, pointX, pointY);
+        return this.isHovering(x + 1, y + 1, width - 2, height - 2, pointX, pointY);
     }
 
     private boolean canScroll() {
@@ -287,12 +287,12 @@ public class ReviveBeaconScreen extends HandledScreen<ReviveBeaconScreenHandler>
     }
 
     private int getRows() {
-        return MathHelper.ceilDiv(this.handler.revivableParticipants.size(), 3);
+        return Mth.positiveCeilDiv(this.menu.revivableParticipants.size(), 3);
     }
 
     // Scuffed as hell
-    private ProfileComponent resolved(ProfileComponent component) {
+    private ResolvableProfile resolved(ResolvableProfile component) {
         if (component == null) return null;
-        return new ProfileComponent(component.name(), Optional.empty(), new PropertyMap()).resolve();
+        return new ResolvableProfile(component.name(), Optional.empty(), new PropertyMap()).pollResolve();
     }
 }

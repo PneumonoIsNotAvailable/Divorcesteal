@@ -3,8 +3,8 @@ package net.pneumono.divorcesteal.hearts;
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.Uuids;
-import net.minecraft.util.dynamic.Codecs;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.util.ExtraCodecs;
 import net.pneumono.divorcesteal.Divorcesteal;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,8 +14,8 @@ import java.util.UUID;
 
 public class ParticipantHeartData {
     public static final Codec<ParticipantHeartData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Uuids.INT_STREAM_CODEC.fieldOf("uuid").forGetter(ParticipantHeartData::getUuid),
-            Codecs.PLAYER_NAME.fieldOf("name").forGetter(ParticipantHeartData::getName),
+            UUIDUtil.CODEC.fieldOf("uuid").forGetter(ParticipantHeartData::getUuid),
+            ExtraCodecs.PLAYER_NAME.fieldOf("name").forGetter(ParticipantHeartData::getName),
             Codec.INT.fieldOf("hearts").forGetter(ParticipantHeartData::getHearts),
             Codec.LONG.optionalFieldOf("banDate").forGetter(data -> data.banDate == null ? Optional.empty() : Optional.of(data.banDate.getTime()))
     ).apply(builder, ParticipantHeartData::deserialize));

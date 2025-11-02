@@ -4,16 +4,16 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ProfileComponent;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.content.component.KilledByComponent;
 import net.pneumono.divorcesteal.hearts.*;
@@ -31,7 +31,7 @@ public class DivorcestealEvents {
         ServerLifecycleEvents.AFTER_SAVE.register(DivorcestealEvents::afterSave);
     }
 
-    private static void join(ServerPlayerEntity player) {
+    private static void join(ServerPlayer player) {
         ParticipantHeartData data = Hearts.getParticipantHeartData(player);
         if (data != null) {
             data.setName(player.getGameProfile().getName());
@@ -40,49 +40,49 @@ public class DivorcestealEvents {
     }
 
     private static void afterDeath(Entity entity, DamageSource damageSource) {
-        if (!(entity instanceof ServerPlayerEntity target) || !Hearts.isParticipant(target)) return;
+        if (!(entity instanceof ServerPlayer target) || !Hearts.isParticipant(target)) return;
 
         Hearts.addHeartsValidated(target, -1, true);
 
         if (
-                target.getAttacker() instanceof ServerPlayerEntity attacker &&
+                target.getLastHurtByMob() instanceof ServerPlayer attacker &&
                 Hearts.isParticipant(attacker) &&
-                !attacker.getUuid().equals(target.getUuid())
+                !attacker.getUUID().equals(target.getUUID())
         ) {
             ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
 
-            headStack.set(DataComponentTypes.PROFILE, new ProfileComponent(target.getGameProfile()));
+            headStack.set(DataComponents.PROFILE, new ResolvableProfile(target.getGameProfile()));
             headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(attacker.getGameProfile()));
 
-            ItemEntity headItemEntity = target.dropItem(headStack, true, false);
+            ItemEntity headItemEntity = target.drop(headStack, true, false);
             if (headItemEntity != null) {
-                headItemEntity.resetPickupDelay();
+                headItemEntity.setNoPickUpDelay();
             }
 
             ParticipantHeartData data = Hearts.getParticipantHeartData(target);
             if (data != null && data.isBanned()) {
-                target.incrementStat(DivorcestealRegistry.DEATHBAN_SELF_STAT);
-                attacker.incrementStat(DivorcestealRegistry.DEATHBAN_PLAYER_STAT);
+                target.awardStat(DivorcestealRegistry.DEATHBAN_SELF_STAT);
+                attacker.awardStat(DivorcestealRegistry.DEATHBAN_PLAYER_STAT);
             }
 
-            attacker.incrementStat(DivorcestealRegistry.STEAL_LIFE_STAT);
+            attacker.awardStat(DivorcestealRegistry.STEAL_LIFE_STAT);
             if (Hearts.addHeartsValidated(attacker, 1, false) == 0) {
 
                 ItemStack heartStack = new ItemStack(DivorcestealRegistry.HEART_ITEM);
-                ItemEntity heartItemEntity = target.dropItem(heartStack, true, false);
+                ItemEntity heartItemEntity = target.drop(heartStack, true, false);
                 if (heartItemEntity != null) {
-                    heartItemEntity.resetPickupDelay();
+                    heartItemEntity.setNoPickUpDelay();
                 }
             }
         }
     }
 
-    private static void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
+    private static void afterRespawn(ServerPlayer oldPlayer, ServerPlayer newPlayer, boolean alive) {
         Hearts.updateData(newPlayer);
     }
 
-    private static void startWorldTick(ServerWorld world) {
-        if (world.getTime() % 200 != 0) return;
+    private static void startWorldTick(ServerLevel level) {
+        if (level.getGameTime() % 200 != 0) return;
 
         if (DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
 
@@ -93,7 +93,7 @@ public class DivorcestealEvents {
                     data.getBanDate(), DivorcestealConfig.REVIVE_DAYS.getValue()
             ).before(new Date())) {
 
-                Hearts.revive(world, data.getGameProfile());
+                Hearts.revive(level, data.getGameProfile());
             }
         }
     }

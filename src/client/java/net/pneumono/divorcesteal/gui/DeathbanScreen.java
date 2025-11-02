@@ -1,29 +1,29 @@
 package net.pneumono.divorcesteal.gui;
 
-import net.minecraft.client.gui.screen.DeathScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
 public class DeathbanScreen extends DeathScreen {
-    public DeathbanScreen(@Nullable Text message, boolean isHardcore) {
+    public DeathbanScreen(@Nullable Component message, boolean isHardcore) {
         super(message, isHardcore);
     }
 
-    public static boolean showShow(PlayerEntity player) {
-        EntityAttributeInstance instance = player.getAttributeInstance(EntityAttributes.MAX_HEALTH);
+    public static boolean showShow(Player player) {
+        AttributeInstance instance = player.getAttribute(Attributes.MAX_HEALTH);
         if (instance != null) {
-            EntityAttributeModifier modifier = instance.getModifier(Hearts.HEARTS_MODIFIER_ID);
+            AttributeModifier modifier = instance.getModifier(Hearts.HEARTS_MODIFIER_ID);
             if (modifier != null) {
-                return (int) modifier.value() == -18;
+                return (int) modifier.amount() == -18;
             }
         }
         return false;
@@ -32,25 +32,25 @@ public class DeathbanScreen extends DeathScreen {
     // Same as DeathScreen but the respawn button is not created
     @Override
     protected void init() {
-        Objects.requireNonNull(this.client);
-        this.ticksSinceDeath = 0;
-        this.buttons.clear();
-        this.titleScreenButton = this.addDrawableChild(
-                ButtonWidget.builder(
-                                Text.translatable("deathScreen.titleScreen"),
-                                button -> this.client.getAbuseReportContext().tryShowDraftScreen(
-                                        this.client, this, this::quitLevel, true
+        Objects.requireNonNull(this.minecraft);
+        this.delayTicker = 0;
+        this.exitButtons.clear();
+        this.exitToTitleButton = this.addRenderableWidget(
+                Button.builder(
+                                Component.translatable("deathScreen.titleScreen"),
+                                button -> this.minecraft.getReportingContext().draftReportHandled(
+                                        this.minecraft, this, this::exitToTitleScreen, true
                                 )
                         )
-                        .dimensions(this.width / 2 - 100, this.height / 4 + 96, 200, 20)
+                        .bounds(this.width / 2 - 100, this.height / 4 + 96, 200, 20)
                         .build()
         );
-        this.buttons.add(this.titleScreenButton);
+        this.exitButtons.add(this.exitToTitleButton);
         this.setButtonsActive(false);
-        this.scoreText = Text.translatable(
+        this.deathScore = Component.translatable(
                 "deathScreen.score.value",
-                Text.literal(
-                        Integer.toString(Objects.requireNonNull(this.client.player).getScore())
-                ).formatted(Formatting.YELLOW));
+                Component.literal(
+                        Integer.toString(Objects.requireNonNull(this.minecraft.player).getScore())
+                ).withStyle(ChatFormatting.YELLOW));
     }
 }

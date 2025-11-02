@@ -1,45 +1,46 @@
 package net.pneumono.divorcesteal.content;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.ParticipantHeartData;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
+import org.jetbrains.annotations.NotNull;
 
 public class HeartItem extends Item {
-    public HeartItem(Settings settings) {
+    public HeartItem(Properties settings) {
         super(settings);
     }
 
     @Override
-    public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        ItemStack stack = user.getStackInHand(hand);
-        if (world.isClient()) return ActionResult.CONSUME;
+    public @NotNull InteractionResult use(Level level, Player user, InteractionHand hand) {
+        ItemStack stack = user.getItemInHand(hand);
+        if (level.isClientSide()) return InteractionResult.CONSUME;
 
-        if (stack.contains(DivorcestealRegistry.CRAFTED_COMPONENT) && getHearts(user) >= DivorcestealConfig.CRAFTED_HEART_LIMIT.getValue()) return ActionResult.FAIL;
+        if (stack.has(DivorcestealRegistry.CRAFTED_COMPONENT) && getHearts(user) >= DivorcestealConfig.CRAFTED_HEART_LIMIT.getValue()) return InteractionResult.FAIL;
 
         int addedHearts = Hearts.addHeartsValidated(user, 1, false);
 
         if (addedHearts > 0) {
-            world.playSound(null, user.getBlockPos(), DivorcestealRegistry.USE_HEART_SOUND, SoundCategory.PLAYERS);
-            user.incrementStat(Stats.USED.getOrCreateStat(this));
-            user.getItemCooldownManager().set(stack, 1);
-            stack.decrement(1);
-            return ActionResult.SUCCESS_SERVER;
+            level.playSound(null, user.blockPosition(), DivorcestealRegistry.USE_HEART_SOUND, SoundSource.PLAYERS);
+            user.awardStat(Stats.ITEM_USED.get(this));
+            user.getCooldowns().addCooldown(stack, 1);
+            stack.shrink(1);
+            return InteractionResult.SUCCESS_SERVER;
 
         } else {
-            return ActionResult.FAIL;
+            return InteractionResult.FAIL;
         }
     }
 
-    private static int getHearts(PlayerEntity user) {
+    private static int getHearts(Player user) {
         ParticipantHeartData data = Hearts.getHeartDataState().getHeartData(user.getGameProfile().getId());
         return data == null ? -1 : data.getHearts();
     }
