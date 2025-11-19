@@ -18,8 +18,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.pneumono.divorcesteal.content.component.KillTargetComponent;
+import net.pneumono.divorcesteal.hearts.HeartsUtil;
 import net.pneumono.divorcesteal.hearts.ParticipantMap;
-import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.Participant;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.NotNull;
@@ -73,12 +73,12 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
     }
 
     public static List<ResolvableProfile> getRevivableParticipants() {
-        ParticipantMap state = Hearts.getHeartDataState();
+        ParticipantMap state = HeartsUtil.getHeartDataState();
         return state.getParticipants().stream().filter(Participant::isBanned).map(data -> new ResolvableProfile(data.getGameProfile())).toList();
     }
 
     public static Optional<GameProfile> getRandomTarget(ServerLevel level, UUID except) {
-        ParticipantMap state = Hearts.getHeartDataState();
+        ParticipantMap state = HeartsUtil.getHeartDataState();
         List<Participant> unbannedList = state.getParticipants().stream().filter(participant -> !participant.isBanned()).toList();
         List<Participant> filteredUnbannedList = unbannedList.stream().filter(participant -> !participant.getUuid().equals(except)).toList();
         if (!filteredUnbannedList.isEmpty()) {
@@ -92,7 +92,7 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
     }
 
     public static boolean reviveParticipant(ServerLevel level, BlockPos pos, GameProfile participant, Player reviver) {
-        if (Hearts.revive(level, participant)) {
+        if (HeartsUtil.revive(level, participant)) {
             level.playSound(null, pos, DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, SoundSource.PLAYERS);
             reviver.awardStat(DivorcestealRegistry.REVIVE_PLAYER_STAT);
             return true;

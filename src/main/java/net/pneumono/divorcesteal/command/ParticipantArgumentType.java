@@ -13,8 +13,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
+import net.pneumono.divorcesteal.hearts.HeartsUtil;
 import net.pneumono.divorcesteal.hearts.ParticipantMap;
-import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.Participant;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,7 +73,7 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
 
         if (!this.singleTarget && string.equals("*")) {
             return source -> {
-                ParticipantMap state = Hearts.getHeartDataState();
+                ParticipantMap state = HeartsUtil.getHeartDataState();
                 return state.getParticipants().stream().filter(this.filter::test).toList();
             };
         } else if (string.length() > 16) {
@@ -81,7 +81,7 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
         }
 
         return source -> {
-            ParticipantMap state = Hearts.getHeartDataState();
+            ParticipantMap state = HeartsUtil.getHeartDataState();
             GameProfile profile = Objects.requireNonNull(source.getServer().getProfileCache()).get(string)
                     .orElseThrow(DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION::create);
             Participant participant = state.getParticipant(profile.getId());
@@ -103,7 +103,7 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
         if (!(context.getSource() instanceof SharedSuggestionProvider source)) return Suggestions.empty();
         if (!(context.getSource() instanceof CommandSourceStack)) return source.customSuggestion(context);
 
-        ParticipantMap state = Hearts.getHeartDataState();
+        ParticipantMap state = HeartsUtil.getHeartDataState();
         List<String> strings = new ArrayList<>();
         if (!singleTarget) strings.add("*");
         strings.addAll(state.getParticipants()

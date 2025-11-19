@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
 
-public class Hearts {
+public class HeartsUtil {
     public static final ResourceLocation HEARTS_MODIFIER_ID = Divorcesteal.id("hearts");
     public static final String ZERO_HEART_BAN_ID = "zero_heart_ban";
 
@@ -138,7 +138,7 @@ public class Hearts {
         UserBanList bannedPlayerList = server.getPlayerList().getBans();
 
         UserBanListEntry entry = bannedPlayerList.get(profile);
-        if (entry != null && entry.getSource().equals(Hearts.ZERO_HEART_BAN_ID)) {
+        if (entry != null && entry.getSource().equals(HeartsUtil.ZERO_HEART_BAN_ID)) {
             bannedPlayerList.remove(profile);
 
             if (effects) {

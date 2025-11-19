@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.pneumono.divorcesteal.DivorcestealConfig;
-import net.pneumono.divorcesteal.hearts.Hearts;
+import net.pneumono.divorcesteal.hearts.HeartsUtil;
 import net.pneumono.divorcesteal.hearts.Participant;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public class HeartItem extends Item {
 
         if (stack.has(DivorcestealRegistry.CRAFTED_COMPONENT) && getHearts(user) >= DivorcestealConfig.CRAFTED_HEART_LIMIT.getValue()) return InteractionResult.FAIL;
 
-        int addedHearts = Hearts.addHeartsValidated(user, 1, false);
+        int addedHearts = HeartsUtil.addHeartsValidated(user, 1, false);
 
         if (addedHearts > 0) {
             level.playSound(null, user.blockPosition(), DivorcestealRegistry.USE_HEART_SOUND, SoundSource.PLAYERS);
@@ -41,7 +41,7 @@ public class HeartItem extends Item {
     }
 
     private static int getHearts(Player user) {
-        Participant participant = Hearts.getHeartDataState().getParticipant(user.getGameProfile().getId());
+        Participant participant = HeartsUtil.getHeartDataState().getParticipant(user.getGameProfile().getId());
         return participant == null ? -1 : participant.getHearts();
     }
 }

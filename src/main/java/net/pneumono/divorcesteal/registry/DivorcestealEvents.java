@@ -32,21 +32,21 @@ public class DivorcestealEvents {
     }
 
     private static void join(ServerPlayer player) {
-        Participant participant = Hearts.getParticipant(player);
+        Participant participant = HeartsUtil.getParticipant(player);
         if (participant != null) {
             participant.setName(player.getGameProfile().getName());
-            Hearts.updateParticipant(player);
+            HeartsUtil.updateParticipant(player);
         }
     }
 
     private static void afterDeath(Entity entity, DamageSource damageSource) {
-        if (!(entity instanceof ServerPlayer target) || !Hearts.isParticipant(target)) return;
+        if (!(entity instanceof ServerPlayer target) || !HeartsUtil.isParticipant(target)) return;
 
-        Hearts.addHeartsValidated(target, -1, true);
+        HeartsUtil.addHeartsValidated(target, -1, true);
 
         if (
                 target.getLastHurtByMob() instanceof ServerPlayer attacker &&
-                Hearts.isParticipant(attacker) &&
+                HeartsUtil.isParticipant(attacker) &&
                 !attacker.getUUID().equals(target.getUUID())
         ) {
             ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
@@ -59,14 +59,14 @@ public class DivorcestealEvents {
                 headItemEntity.setNoPickUpDelay();
             }
 
-            Participant participant = Hearts.getParticipant(target);
+            Participant participant = HeartsUtil.getParticipant(target);
             if (participant != null && participant.isBanned()) {
                 target.awardStat(DivorcestealRegistry.DEATHBAN_SELF_STAT);
                 attacker.awardStat(DivorcestealRegistry.DEATHBAN_PLAYER_STAT);
             }
 
             attacker.awardStat(DivorcestealRegistry.STEAL_LIFE_STAT);
-            if (Hearts.addHeartsValidated(attacker, 1, false) == 0) {
+            if (HeartsUtil.addHeartsValidated(attacker, 1, false) == 0) {
 
                 ItemStack heartStack = new ItemStack(DivorcestealRegistry.HEART_ITEM);
                 ItemEntity heartItemEntity = target.drop(heartStack, true, false);
@@ -78,7 +78,7 @@ public class DivorcestealEvents {
     }
 
     private static void afterRespawn(ServerPlayer oldPlayer, ServerPlayer newPlayer, boolean alive) {
-        Hearts.updateParticipant(newPlayer);
+        HeartsUtil.updateParticipant(newPlayer);
     }
 
     private static void startWorldTick(ServerLevel level) {
@@ -86,14 +86,14 @@ public class DivorcestealEvents {
 
         if (DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
 
-        ParticipantMap state = Hearts.getHeartDataState();
+        ParticipantMap state = HeartsUtil.getHeartDataState();
         for (Participant participant : state.getParticipants().stream().toList()) {
 
             if (participant.getBanDate() != null && DateUtils.addDays(
                     participant.getBanDate(), DivorcestealConfig.REVIVE_DAYS.getValue()
             ).before(new Date())) {
 
-                Hearts.revive(level, participant.getGameProfile());
+                HeartsUtil.revive(level, participant.getGameProfile());
             }
         }
     }

@@ -8,7 +8,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.pneumono.divorcesteal.hearts.Hearts;
+import net.pneumono.divorcesteal.hearts.HeartsUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -21,7 +21,7 @@ public class DeathbanScreen extends DeathScreen {
     public static boolean showShow(Player player) {
         AttributeInstance instance = player.getAttribute(Attributes.MAX_HEALTH);
         if (instance != null) {
-            AttributeModifier modifier = instance.getModifier(Hearts.HEARTS_MODIFIER_ID);
+            AttributeModifier modifier = instance.getModifier(HeartsUtil.HEARTS_MODIFIER_ID);
             if (modifier != null) {
                 return (int) modifier.amount() == -18;
             }
