@@ -22,7 +22,7 @@ import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
-import net.pneumono.divorcesteal.hearts.ParticipantHeartData;
+import net.pneumono.divorcesteal.hearts.Participant;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
@@ -175,7 +175,7 @@ public class DivorcestealCommands {
     private static CompletableFuture<Suggestions> suggestParticipantsAdd(CommandContext<?> context, SuggestionsBuilder builder) {
         if (!(context.getSource() instanceof SharedSuggestionProvider source)) return Suggestions.empty();
 
-        List<String> invalidNames = Hearts.getHeartDataState().getHeartDataList().stream().map(ParticipantHeartData::getName).toList();
+        List<String> invalidNames = Hearts.getHeartDataState().getHeartDataList().stream().map(Participant::getName).toList();
 
         return SharedSuggestionProvider.suggest(
                 source.getOnlinePlayerNames().stream()
@@ -185,7 +185,7 @@ public class DivorcestealCommands {
         );
     }
 
-    private static int executeParticipantsRemove(CommandSourceStack source, ParticipantHeartData data) {
+    private static int executeParticipantsRemove(CommandSourceStack source, Participant data) {
         data.setHearts(10);
         updateData(source, data, false);
         Hearts.getHeartDataState().removeParticipant(data.getUuid());
@@ -196,7 +196,7 @@ public class DivorcestealCommands {
     }
 
     private static int executeParticipantsList(CommandSourceStack source) {
-        List<String> names = Hearts.getHeartDataState().getHeartDataList().stream().map(ParticipantHeartData::getName).toList();
+        List<String> names = Hearts.getHeartDataState().getHeartDataList().stream().map(Participant::getName).toList();
 
         if (names.isEmpty()) {
             source.sendSuccess(() -> Component.translatable("commands.divorcesteal.participant.list.empty"), true);
@@ -219,19 +219,19 @@ public class DivorcestealCommands {
         return names.size();
     }
 
-    private static int executeHeartsGet(CommandSourceStack source, ParticipantHeartData data) throws CommandSyntaxException {
+    private static int executeHeartsGet(CommandSourceStack source, Participant data) throws CommandSyntaxException {
         if (data == null) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
         source.sendSuccess(() -> Component.translatable("commands.divorcesteal.get", data.getName(), data.getHearts()), true);
         return data.getHearts();
     }
 
-    private static int executeHeartsSet(CommandSourceStack source, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
+    private static int executeHeartsSet(CommandSourceStack source, int amount, List<Participant> dataList, boolean bypassMax) throws CommandSyntaxException {
         if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
         int finalAmount = bypassMax ? amount : Mth.clamp(amount, 0, DivorcestealConfig.MAX_HEARTS.getValue());
 
         int successes = 0;
-        for (ParticipantHeartData data : dataList) {
+        for (Participant data : dataList) {
             if (data == null) continue;
             data.setHearts(finalAmount);
             updateData(source, data);
@@ -253,11 +253,11 @@ public class DivorcestealCommands {
         return successes;
     }
 
-    private static int executeHeartsAdd(CommandSourceStack source, boolean add, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
+    private static int executeHeartsAdd(CommandSourceStack source, boolean add, int amount, List<Participant> dataList, boolean bypassMax) throws CommandSyntaxException {
         if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
         int successes = 0;
-        for (ParticipantHeartData data : dataList) {
+        for (Participant data : dataList) {
             if (data == null) continue;
             int hearts = data.getHearts();
             int finalAmount = Math.max(hearts + (add ? amount : -amount), 0);
@@ -285,7 +285,7 @@ public class DivorcestealCommands {
         return successes;
     }
 
-    private static int executeRevive(CommandSourceStack source, List<ParticipantHeartData> dataList) throws CommandSyntaxException {
+    private static int executeRevive(CommandSourceStack source, List<Participant> dataList) throws CommandSyntaxException {
         if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
         int successes = 0;
@@ -295,7 +295,7 @@ public class DivorcestealCommands {
             successes = 1;
 
         } else {
-            for (ParticipantHeartData data : dataList) {
+            for (Participant data : dataList) {
                 if (data == null) continue;
                 Hearts.revive(source.getLevel(), data.getGameProfile());
                 successes++;
@@ -340,19 +340,19 @@ public class DivorcestealCommands {
         return heartsWithdrawn;
     }
 
-    private static void updateData(CommandSourceStack source, ParticipantHeartData data) {
+    private static void updateData(CommandSourceStack source, Participant data) {
         updateData(source, data, true);
     }
 
-    private static void updateData(CommandSourceStack source, ParticipantHeartData data, boolean effects) {
+    private static void updateData(CommandSourceStack source, Participant data, boolean effects) {
         Hearts.updateData(playerFromData(source, data), source.getServer(), data, effects);
     }
 
-    private static @Nullable ParticipantHeartData dataFromSource(CommandSourceStack source) throws CommandSyntaxException {
+    private static @Nullable Participant dataFromSource(CommandSourceStack source) throws CommandSyntaxException {
         return Hearts.getParticipantHeartData(source.getPlayerOrException());
     }
 
-    private static @Nullable ServerPlayer playerFromData(CommandSourceStack source, @Nullable ParticipantHeartData data) {
+    private static @Nullable ServerPlayer playerFromData(CommandSourceStack source, @Nullable Participant data) {
         return data == null ? null : (ServerPlayer) source.getLevel().getPlayerByUUID(data.getUuid());
     }
 }

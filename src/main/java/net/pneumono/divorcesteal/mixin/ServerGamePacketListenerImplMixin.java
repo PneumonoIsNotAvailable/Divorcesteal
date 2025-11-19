@@ -5,7 +5,7 @@ import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.pneumono.divorcesteal.hearts.Hearts;
-import net.pneumono.divorcesteal.hearts.ParticipantHeartData;
+import net.pneumono.divorcesteal.hearts.Participant;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,7 +29,7 @@ public abstract class ServerGamePacketListenerImplMixin {
         ServerboundClientCommandPacket.Action mode = packet.getAction();
         if (mode != ServerboundClientCommandPacket.Action.PERFORM_RESPAWN) return;
         ServerPlayer player = getPlayer();
-        ParticipantHeartData data = Hearts.getParticipantHeartData(player);
+        Participant data = Hearts.getParticipantHeartData(player);
         if (data != null && data.isBanned()) {
             player.connection.disconnect(Component.translatable("divorcesteal.deathban"));
             ci.cancel();

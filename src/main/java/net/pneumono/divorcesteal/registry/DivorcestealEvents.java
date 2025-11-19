@@ -32,7 +32,7 @@ public class DivorcestealEvents {
     }
 
     private static void join(ServerPlayer player) {
-        ParticipantHeartData data = Hearts.getParticipantHeartData(player);
+        Participant data = Hearts.getParticipantHeartData(player);
         if (data != null) {
             data.setName(player.getGameProfile().getName());
             Hearts.updateData(player);
@@ -59,7 +59,7 @@ public class DivorcestealEvents {
                 headItemEntity.setNoPickUpDelay();
             }
 
-            ParticipantHeartData data = Hearts.getParticipantHeartData(target);
+            Participant data = Hearts.getParticipantHeartData(target);
             if (data != null && data.isBanned()) {
                 target.awardStat(DivorcestealRegistry.DEATHBAN_SELF_STAT);
                 attacker.awardStat(DivorcestealRegistry.DEATHBAN_PLAYER_STAT);
@@ -87,7 +87,7 @@ public class DivorcestealEvents {
         if (DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
 
         HeartDataState state = Hearts.getHeartDataState();
-        for (ParticipantHeartData data : state.getHeartDataList().stream().toList()) {
+        for (Participant data : state.getHeartDataList().stream().toList()) {
 
             if (data.getBanDate() != null && DateUtils.addDays(
                     data.getBanDate(), DivorcestealConfig.REVIVE_DAYS.getValue()

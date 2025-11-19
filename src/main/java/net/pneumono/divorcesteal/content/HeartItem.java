@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.hearts.Hearts;
-import net.pneumono.divorcesteal.hearts.ParticipantHeartData;
+import net.pneumono.divorcesteal.hearts.Participant;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public class HeartItem extends Item {
     }
 
     private static int getHearts(Player user) {
-        ParticipantHeartData data = Hearts.getHeartDataState().getHeartData(user.getGameProfile().getId());
+        Participant data = Hearts.getHeartDataState().getHeartData(user.getGameProfile().getId());
         return data == null ? -1 : data.getHearts();
     }
 }

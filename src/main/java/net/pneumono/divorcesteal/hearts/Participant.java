@@ -12,21 +12,21 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-public class ParticipantHeartData {
-    public static final Codec<ParticipantHeartData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            UUIDUtil.CODEC.fieldOf("uuid").forGetter(ParticipantHeartData::getUuid),
-            ExtraCodecs.PLAYER_NAME.fieldOf("name").forGetter(ParticipantHeartData::getName),
-            Codec.INT.fieldOf("hearts").forGetter(ParticipantHeartData::getHearts),
+public class Participant {
+    public static final Codec<Participant> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            UUIDUtil.CODEC.fieldOf("uuid").forGetter(Participant::getUuid),
+            ExtraCodecs.PLAYER_NAME.fieldOf("name").forGetter(Participant::getName),
+            Codec.INT.fieldOf("hearts").forGetter(Participant::getHearts),
             Codec.LONG.optionalFieldOf("banDate").forGetter(data -> data.banDate == null ? Optional.empty() : Optional.of(data.banDate.getTime()))
-    ).apply(builder, ParticipantHeartData::deserialize));
+    ).apply(builder, Participant::deserialize));
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private static ParticipantHeartData deserialize(UUID uuid, String name, int hearts, Optional<Long> banDate) {
+    private static Participant deserialize(UUID uuid, String name, int hearts, Optional<Long> banDate) {
         if (hearts < 0) {
             Divorcesteal.LOGGER.info("Participant {} has {} hearts, setting to 0...", name, hearts);
             hearts = 0;
         }
-        ParticipantHeartData data = new ParticipantHeartData(uuid, name, hearts, banDate.map(Date::new).orElse(null));
+        Participant data = new Participant(uuid, name, hearts, banDate.map(Date::new).orElse(null));
         data.updateBannedState();
         return data;
     }
@@ -36,7 +36,7 @@ public class ParticipantHeartData {
     private int hearts;
     private @Nullable Date banDate;
 
-    public ParticipantHeartData(UUID uuid, String name, int hearts, @Nullable Date banDate) {
+    public Participant(UUID uuid, String name, int hearts, @Nullable Date banDate) {
         this.uuid = uuid;
         this.name = name;
         this.hearts = Math.max(hearts, 0);

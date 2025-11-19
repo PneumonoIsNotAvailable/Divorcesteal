@@ -15,7 +15,7 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.pneumono.divorcesteal.hearts.HeartDataState;
 import net.pneumono.divorcesteal.hearts.Hearts;
-import net.pneumono.divorcesteal.hearts.ParticipantHeartData;
+import net.pneumono.divorcesteal.hearts.Participant;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -57,11 +57,11 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
         return new ParticipantArgumentType(false, Filter.UNBANNED_ONLY);
     }
 
-    public static ParticipantHeartData getParticipant(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+    public static Participant getParticipant(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
         return context.getArgument(name, ParticipantArgument.class).getData(context.getSource());
     }
 
-    public static List<ParticipantHeartData> getParticipants(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+    public static List<Participant> getParticipants(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
         return context.getArgument(name, ParticipantArgument.class).getDataList(context.getSource());
     }
 
@@ -84,7 +84,7 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
             HeartDataState state = Hearts.getHeartDataState();
             GameProfile profile = Objects.requireNonNull(source.getServer().getProfileCache()).get(string)
                     .orElseThrow(DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION::create);
-            ParticipantHeartData data = state.getHeartData(profile.getId());
+            Participant data = state.getHeartData(profile.getId());
 
             if (data != null && this.filter.test(data)) {
                 return List.of(data);
@@ -109,7 +109,7 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
         strings.addAll(state.getHeartDataList()
                 .stream()
                 .filter(this.filter::test)
-                .map(ParticipantHeartData::getName)
+                .map(Participant::getName)
                 .toList()
         );
 
@@ -125,29 +125,29 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
     }
 
     public interface ParticipantArgument {
-        List<ParticipantHeartData> getDataList(CommandSourceStack source) throws CommandSyntaxException;
+        List<Participant> getDataList(CommandSourceStack source) throws CommandSyntaxException;
 
-        default ParticipantHeartData getData(CommandSourceStack source) throws CommandSyntaxException {
+        default Participant getData(CommandSourceStack source) throws CommandSyntaxException {
             return getDataList(source).getFirst();
         }
     }
 
     public enum Filter {
         ALL(0, "all", data -> true),
-        BANNED_ONLY(1, "banned_only", ParticipantHeartData::isBanned),
+        BANNED_ONLY(1, "banned_only", Participant::isBanned),
         UNBANNED_ONLY(2, "unbanned_only", data -> !data.isBanned());
 
         private final int id;
         private final String name;
-        private final Predicate<ParticipantHeartData> predicate;
+        private final Predicate<Participant> predicate;
 
-        Filter(int id, String name, Predicate<ParticipantHeartData> predicate) {
+        Filter(int id, String name, Predicate<Participant> predicate) {
             this.id = id;
             this.name = name;
             this.predicate = predicate;
         }
 
-        public boolean test(ParticipantHeartData data) {
+        public boolean test(Participant data) {
             return this.predicate.test(data);
         }
 
