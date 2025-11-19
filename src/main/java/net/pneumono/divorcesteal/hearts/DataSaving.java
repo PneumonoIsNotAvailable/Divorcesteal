@@ -14,28 +14,26 @@ import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class DataSaving {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss");
-    private static volatile HeartDataState STATE = null;
+    private static volatile CompletableFuture<HeartDataState> STATE = null;
     private static Path ROOT_PATH = null;
 
     public static HeartDataState getState() {
-        while (STATE == null) {
-            Thread.onSpinWait();
+        try {
+            return STATE.get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException("Failed to get hearts data", e);
         }
-        return STATE;
     }
 
     public static void backupAndLoadHeartDataState(MinecraftServer server) {
         ROOT_PATH = server.getWorldPath(LevelResource.ROOT);
-        STATE = null;
 
-        CompletableFuture.runAsync(() -> {
-            makeBackup();
-
-            STATE = read();
-        });
+        CompletableFuture.runAsync(DataSaving::makeBackup);
+        STATE = CompletableFuture.supplyAsync(DataSaving::read);
     }
 
     private static Path getHeartsPath() {
@@ -82,7 +80,15 @@ public class DataSaving {
 
         Path path = getHeartsPath();
 
-        DataResult<Tag> result = HeartDataState.CODEC.encodeStart(NbtOps.INSTANCE, STATE);
+        HeartDataState state;
+        try {
+            state = STATE.get();
+        } catch (ExecutionException | InterruptedException e) {
+            Divorcesteal.LOGGER.error("Failed to get hearts data", e);
+            return;
+        }
+
+        DataResult<Tag> result = HeartDataState.CODEC.encodeStart(NbtOps.INSTANCE, state);
         Tag tag;
         if (result.isSuccess()) {
             tag = result.getOrThrow();
