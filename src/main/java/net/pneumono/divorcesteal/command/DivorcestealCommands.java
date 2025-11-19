@@ -43,92 +43,94 @@ public class DivorcestealCommands {
                     .then(literal("participants")
                             .then(literal("add")
                                     .then(argument("target", StringArgumentType.word())
-                                            .executes(context -> executeParticipantAdd(context.getSource(),
+                                            .executes(context -> executeParticipantsAdd(context.getSource(),
                                                     StringArgumentType.getString(context, "target")
                                             ))
-                                            .suggests(DivorcestealCommands::suggestParticipantAdd)
+                                            .suggests(DivorcestealCommands::suggestParticipantsAdd)
                                     )
                             )
                             .then(literal("remove")
                                     .then(argument("target", ParticipantArgumentType.participant())
-                                            .executes(context -> executeParticipantRemove(context.getSource(),
+                                            .executes(context -> executeParticipantsRemove(context.getSource(),
                                                     ParticipantArgumentType.getParticipant(context, "target")
                                             ))
                                     )
                             )
                             .then(literal("list")
-                                    .executes(context -> executeParticipantList(context.getSource()))
+                                    .executes(context -> executeParticipantsList(context.getSource()))
                             )
                     )
-                    .then(literal("get")
-                            .executes(context -> executeGet(context.getSource(),
-                                    Hearts.getParticipantHeartData(context.getSource().getPlayerOrException())
-                            ))
-                            .then(argument("target", ParticipantArgumentType.participant())
-                                    .executes(context -> executeGet(context.getSource(),
-                                            ParticipantArgumentType.getParticipant(context, "target")
+                    .then(literal("hearts")
+                            .then(literal("get")
+                                    .executes(context -> executeHeartsGet(context.getSource(),
+                                            Hearts.getParticipantHeartData(context.getSource().getPlayerOrException())
                                     ))
+                                    .then(argument("target", ParticipantArgumentType.participant())
+                                            .executes(context -> executeHeartsGet(context.getSource(),
+                                                    ParticipantArgumentType.getParticipant(context, "target")
+                                            ))
+                                    )
                             )
-                    )
-                    .then(literal("set")
-                            .then(argument("amount", IntegerArgumentType.integer(0))
-                                    .executes(context -> executeSet(context.getSource(),
-                                            IntegerArgumentType.getInteger(context, "amount"),
-                                            List.of(dataFromSource(context.getSource())),
-                                            false
-                                    ))
-                                    .then(argument("targets", ParticipantArgumentType.participants())
-                                            .executes(context -> executeSet(context.getSource(),
+                            .then(literal("set")
+                                    .then(argument("amount", IntegerArgumentType.integer(0))
+                                            .executes(context -> executeHeartsSet(context.getSource(),
                                                     IntegerArgumentType.getInteger(context, "amount"),
-                                                    ParticipantArgumentType.getParticipants(context, "targets"),
+                                                    List.of(dataFromSource(context.getSource())),
                                                     false
                                             ))
-                                            .then(argument("bypassMax", BoolArgumentType.bool())
-                                                    .executes(context -> executeSet(context.getSource(),
+                                            .then(argument("targets", ParticipantArgumentType.participants())
+                                                    .executes(context -> executeHeartsSet(context.getSource(),
                                                             IntegerArgumentType.getInteger(context, "amount"),
                                                             ParticipantArgumentType.getParticipants(context, "targets"),
-                                                            BoolArgumentType.getBool(context, "bypassMax")
+                                                            false
                                                     ))
+                                                    .then(argument("bypassMax", BoolArgumentType.bool())
+                                                            .executes(context -> executeHeartsSet(context.getSource(),
+                                                                    IntegerArgumentType.getInteger(context, "amount"),
+                                                                    ParticipantArgumentType.getParticipants(context, "targets"),
+                                                                    BoolArgumentType.getBool(context, "bypassMax")
+                                                            ))
+                                                    )
                                             )
                                     )
                             )
-                    )
-                    .then(literal("add")
-                            .then(argument("amount", IntegerArgumentType.integer(0))
-                                    .executes(context -> executeAdd(context.getSource(), true,
-                                            IntegerArgumentType.getInteger(context, "amount"),
-                                            List.of(dataFromSource(context.getSource())),
-                                            false
-                                    ))
-                                    .then(argument("targets", ParticipantArgumentType.unbannedParticipants())
-                                            .executes(context -> executeAdd(context.getSource(), true,
+                            .then(literal("add")
+                                    .then(argument("amount", IntegerArgumentType.integer(0))
+                                            .executes(context -> executeHeartsAdd(context.getSource(), true,
                                                     IntegerArgumentType.getInteger(context, "amount"),
-                                                    ParticipantArgumentType.getParticipants(context, "targets"),
+                                                    List.of(dataFromSource(context.getSource())),
                                                     false
                                             ))
-                                            .then(argument("bypassMax", BoolArgumentType.bool())
-                                                    .executes(context -> executeAdd(context.getSource(), true,
+                                            .then(argument("targets", ParticipantArgumentType.unbannedParticipants())
+                                                    .executes(context -> executeHeartsAdd(context.getSource(), true,
                                                             IntegerArgumentType.getInteger(context, "amount"),
                                                             ParticipantArgumentType.getParticipants(context, "targets"),
-                                                            BoolArgumentType.getBool(context, "bypassMax")
+                                                            false
                                                     ))
+                                                    .then(argument("bypassMax", BoolArgumentType.bool())
+                                                            .executes(context -> executeHeartsAdd(context.getSource(), true,
+                                                                    IntegerArgumentType.getInteger(context, "amount"),
+                                                                    ParticipantArgumentType.getParticipants(context, "targets"),
+                                                                    BoolArgumentType.getBool(context, "bypassMax")
+                                                            ))
+                                                    )
                                             )
                                     )
                             )
-                    )
-                    .then(literal("remove")
-                            .then(argument("amount", IntegerArgumentType.integer(0))
-                                    .executes(context -> executeAdd(context.getSource(), false,
-                                            IntegerArgumentType.getInteger(context, "amount"),
-                                            List.of(dataFromSource(context.getSource())),
-                                            false
-                                    ))
-                                    .then(argument("targets", ParticipantArgumentType.unbannedParticipants())
-                                            .executes(context -> executeAdd(context.getSource(), false,
+                            .then(literal("remove")
+                                    .then(argument("amount", IntegerArgumentType.integer(0))
+                                            .executes(context -> executeHeartsAdd(context.getSource(), false,
                                                     IntegerArgumentType.getInteger(context, "amount"),
-                                                    ParticipantArgumentType.getParticipants(context, "targets"),
+                                                    List.of(dataFromSource(context.getSource())),
                                                     false
                                             ))
+                                            .then(argument("targets", ParticipantArgumentType.unbannedParticipants())
+                                                    .executes(context -> executeHeartsAdd(context.getSource(), false,
+                                                            IntegerArgumentType.getInteger(context, "amount"),
+                                                            ParticipantArgumentType.getParticipants(context, "targets"),
+                                                            false
+                                                    ))
+                                            )
                                     )
                             )
                     )
@@ -152,7 +154,7 @@ public class DivorcestealCommands {
         });
     }
 
-    private static int executeParticipantAdd(CommandSourceStack source, String target) throws CommandSyntaxException {
+    private static int executeParticipantsAdd(CommandSourceStack source, String target) throws CommandSyntaxException {
         GameProfile profile = Objects.requireNonNull(source.getServer().getProfileCache()).get(target)
                 .orElseThrow(DivorcestealExceptions.NO_PLAYER_EXCEPTION::create);
 
@@ -170,7 +172,7 @@ public class DivorcestealCommands {
         return 1;
     }
 
-    private static CompletableFuture<Suggestions> suggestParticipantAdd(CommandContext<?> context, SuggestionsBuilder builder) {
+    private static CompletableFuture<Suggestions> suggestParticipantsAdd(CommandContext<?> context, SuggestionsBuilder builder) {
         if (!(context.getSource() instanceof SharedSuggestionProvider source)) return Suggestions.empty();
 
         List<String> invalidNames = Hearts.getHeartDataState().getHeartDataList().stream().map(ParticipantHeartData::getName).toList();
@@ -183,7 +185,7 @@ public class DivorcestealCommands {
         );
     }
 
-    private static int executeParticipantRemove(CommandSourceStack source, ParticipantHeartData data) {
+    private static int executeParticipantsRemove(CommandSourceStack source, ParticipantHeartData data) {
         data.setHearts(10);
         updateData(source, data, false);
         Hearts.getHeartDataState().removeParticipant(data.getUuid());
@@ -193,7 +195,7 @@ public class DivorcestealCommands {
         return 1;
     }
 
-    private static int executeParticipantList(CommandSourceStack source) {
+    private static int executeParticipantsList(CommandSourceStack source) {
         List<String> names = Hearts.getHeartDataState().getHeartDataList().stream().map(ParticipantHeartData::getName).toList();
 
         if (names.isEmpty()) {
@@ -217,13 +219,13 @@ public class DivorcestealCommands {
         return names.size();
     }
 
-    private static int executeGet(CommandSourceStack source, ParticipantHeartData data) throws CommandSyntaxException {
+    private static int executeHeartsGet(CommandSourceStack source, ParticipantHeartData data) throws CommandSyntaxException {
         if (data == null) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
         source.sendSuccess(() -> Component.translatable("commands.divorcesteal.get", data.getName(), data.getHearts()), true);
         return data.getHearts();
     }
 
-    private static int executeSet(CommandSourceStack source, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
+    private static int executeHeartsSet(CommandSourceStack source, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
         if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
         int finalAmount = bypassMax ? amount : Mth.clamp(amount, 0, DivorcestealConfig.MAX_HEARTS.getValue());
@@ -251,7 +253,7 @@ public class DivorcestealCommands {
         return successes;
     }
 
-    private static int executeAdd(CommandSourceStack source, boolean add, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
+    private static int executeHeartsAdd(CommandSourceStack source, boolean add, int amount, List<ParticipantHeartData> dataList, boolean bypassMax) throws CommandSyntaxException {
         if (dataList.isEmpty()) throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
 
         int successes = 0;
