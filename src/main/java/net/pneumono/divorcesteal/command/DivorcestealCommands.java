@@ -310,9 +310,15 @@ public class DivorcestealCommands {
     }
 
     private static int executeWithdraw(CommandSourceStack source, ServerPlayer player, int amount) {
+        if (!Hearts.isParticipant(player)) {
+            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.withdraw.non_participant").withStyle(ChatFormatting.RED), false);
+            return 0;
+        }
+
         int heartsWithdrawn = -Hearts.addHeartsValidated(player, -amount, false);
         if (heartsWithdrawn == 0) {
             source.sendSuccess(() -> Component.translatable("commands.divorcesteal.withdraw.fail").withStyle(ChatFormatting.RED), false);
+            return 0;
         } else if (heartsWithdrawn == 1) {
             source.sendSuccess(() -> Component.translatable("commands.divorcesteal.withdraw.single"), false);
         } else {

@@ -51,6 +51,7 @@
   "commands.divorcesteal.remove.single": "Took %1$s hearts from %2$s",
   "commands.divorcesteal.revive.multiple": "Revived %s players",
   "commands.divorcesteal.revive.single": "Revived %s",
+  "commands.divorcesteal.withdraw.non_participant": "Non-participants cannot withdraw hearts!",
   "commands.divorcesteal.withdraw.fail": "Could not withdraw any more hearts!",
   "commands.divorcesteal.withdraw.multiple": "Withdrew %s hearts",
   "commands.divorcesteal.withdraw.single": "Withdrew 1 heart",
