@@ -7,27 +7,23 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class HeartDataState {
-    public static final Codec<HeartDataState> CODEC = Participant.CODEC.listOf().xmap(
-            HeartDataState::new,
-            HeartDataState::getParticipants
+public class ParticipantMap {
+    public static final Codec<ParticipantMap> CODEC = Participant.CODEC.listOf().xmap(
+            ParticipantMap::new,
+            ParticipantMap::getParticipants
     );
 
     private final Map<UUID, Participant> dataMap;
 
-    protected HeartDataState() {
+    protected ParticipantMap() {
         this(new ArrayList<>());
     }
 
-    public HeartDataState(List<Participant> participants) {
+    public ParticipantMap(List<Participant> participants) {
         this.dataMap = new HashMap<>();
         for (Participant participant : participants) {
             this.dataMap.put(participant.getUuid(), participant);
         }
-    }
-
-    public static HeartDataState get() {
-        return DataSaving.getState();
     }
 
     public List<Participant> getParticipants() {

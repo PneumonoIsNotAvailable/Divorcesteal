@@ -18,10 +18,10 @@ import java.util.concurrent.ExecutionException;
 
 public class DataSaving {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM-dd-yyyy_HH-mm-ss");
-    private static volatile CompletableFuture<HeartDataState> STATE = null;
+    private static volatile CompletableFuture<ParticipantMap> STATE = null;
     private static Path ROOT_PATH = null;
 
-    public static HeartDataState getState() {
+    public static ParticipantMap getState() {
         try {
             return STATE.get();
         } catch (ExecutionException | InterruptedException e) {
@@ -40,14 +40,14 @@ public class DataSaving {
         return ROOT_PATH.resolve("hearts.dat");
     }
 
-    private static HeartDataState read() {
+    private static ParticipantMap read() {
         Divorcesteal.LOGGER.info("Reading hearts data...");
 
         Path path = getHeartsPath();
 
         if (!path.toFile().exists()) {
             Divorcesteal.LOGGER.info("No hearts data exists, creating empty data");
-            return new HeartDataState();
+            return new ParticipantMap();
         }
 
         CompoundTag compound;
@@ -55,12 +55,12 @@ public class DataSaving {
             compound = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
         } catch (IOException e) {
             Divorcesteal.LOGGER.error("Failed to read hearts data", e);
-            return new HeartDataState();
+            return new ParticipantMap();
         }
 
         Tag tag = compound.get("values");
 
-        DataResult<Pair<HeartDataState, Tag>> result = HeartDataState.CODEC.decode(NbtOps.INSTANCE, tag);
+        DataResult<Pair<ParticipantMap, Tag>> result = ParticipantMap.CODEC.decode(NbtOps.INSTANCE, tag);
         if (result.isSuccess()) {
             Divorcesteal.LOGGER.info("Successfully read hearts data");
             return result.getOrThrow().getFirst();
@@ -70,7 +70,7 @@ public class DataSaving {
                 message = result.error().get().message();
             }
             Divorcesteal.LOGGER.error("Failed to deserialize hearts data: {}", message);
-            return new HeartDataState();
+            return new ParticipantMap();
         }
     }
 
@@ -80,7 +80,7 @@ public class DataSaving {
 
         Path path = getHeartsPath();
 
-        HeartDataState state;
+        ParticipantMap state;
         try {
             state = STATE.get();
         } catch (ExecutionException | InterruptedException e) {
@@ -88,7 +88,7 @@ public class DataSaving {
             return;
         }
 
-        DataResult<Tag> result = HeartDataState.CODEC.encodeStart(NbtOps.INSTANCE, state);
+        DataResult<Tag> result = ParticipantMap.CODEC.encodeStart(NbtOps.INSTANCE, state);
         Tag tag;
         if (result.isSuccess()) {
             tag = result.getOrThrow();

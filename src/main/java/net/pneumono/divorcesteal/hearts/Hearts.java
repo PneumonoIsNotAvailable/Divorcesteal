@@ -28,8 +28,8 @@ public class Hearts {
     public static final ResourceLocation HEARTS_MODIFIER_ID = Divorcesteal.id("hearts");
     public static final String ZERO_HEART_BAN_ID = "zero_heart_ban";
 
-    public static HeartDataState getHeartDataState() {
-        return HeartDataState.get();
+    public static ParticipantMap getHeartDataState() {
+        return DataSaving.getState();
     }
 
     public static boolean isParticipant(@Nullable Player player) {
@@ -56,7 +56,7 @@ public class Hearts {
     }
 
     public static boolean revive(ServerLevel level, GameProfile profile) {
-        HeartDataState state = getHeartDataState();
+        ParticipantMap state = getHeartDataState();
         Participant participant = state.getParticipant(profile.getId());
         if (participant == null || !participant.isBanned()) return false;
 

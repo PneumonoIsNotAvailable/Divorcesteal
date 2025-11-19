@@ -20,7 +20,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.DivorcestealConfig;
-import net.pneumono.divorcesteal.hearts.HeartDataState;
+import net.pneumono.divorcesteal.hearts.ParticipantMap;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.Participant;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
@@ -158,7 +158,7 @@ public class DivorcestealCommands {
         GameProfile profile = Objects.requireNonNull(source.getServer().getProfileCache()).get(target)
                 .orElseThrow(DivorcestealExceptions.NO_PLAYER_EXCEPTION::create);
 
-        HeartDataState state = Hearts.getHeartDataState();
+        ParticipantMap state = Hearts.getHeartDataState();
         if (state.getParticipant(profile.getId()) == null) {
             state.addParticipant(profile);
 

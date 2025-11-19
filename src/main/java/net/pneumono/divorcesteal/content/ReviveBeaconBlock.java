@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.pneumono.divorcesteal.content.component.KillTargetComponent;
-import net.pneumono.divorcesteal.hearts.HeartDataState;
+import net.pneumono.divorcesteal.hearts.ParticipantMap;
 import net.pneumono.divorcesteal.hearts.Hearts;
 import net.pneumono.divorcesteal.hearts.Participant;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
@@ -73,12 +73,12 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
     }
 
     public static List<ResolvableProfile> getRevivableParticipants() {
-        HeartDataState state = Hearts.getHeartDataState();
+        ParticipantMap state = Hearts.getHeartDataState();
         return state.getParticipants().stream().filter(Participant::isBanned).map(data -> new ResolvableProfile(data.getGameProfile())).toList();
     }
 
     public static Optional<GameProfile> getRandomTarget(ServerLevel level, UUID except) {
-        HeartDataState state = Hearts.getHeartDataState();
+        ParticipantMap state = Hearts.getHeartDataState();
         List<Participant> unbannedList = state.getParticipants().stream().filter(participant -> !participant.isBanned()).toList();
         List<Participant> filteredUnbannedList = unbannedList.stream().filter(participant -> !participant.getUuid().equals(except)).toList();
         if (!filteredUnbannedList.isEmpty()) {

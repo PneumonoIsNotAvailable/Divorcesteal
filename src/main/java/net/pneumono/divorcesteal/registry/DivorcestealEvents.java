@@ -86,7 +86,7 @@ public class DivorcestealEvents {
 
         if (DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
 
-        HeartDataState state = Hearts.getHeartDataState();
+        ParticipantMap state = Hearts.getHeartDataState();
         for (Participant participant : state.getParticipants().stream().toList()) {
 
             if (participant.getBanDate() != null && DateUtils.addDays(
