@@ -74,13 +74,13 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
 
     public static List<ResolvableProfile> getRevivableParticipants() {
         HeartDataState state = Hearts.getHeartDataState();
-        return state.getHeartDataList().stream().filter(Participant::isBanned).map(data -> new ResolvableProfile(data.getGameProfile())).toList();
+        return state.getParticipants().stream().filter(Participant::isBanned).map(data -> new ResolvableProfile(data.getGameProfile())).toList();
     }
 
     public static Optional<GameProfile> getRandomTarget(ServerLevel level, UUID except) {
         HeartDataState state = Hearts.getHeartDataState();
-        List<Participant> unbannedList = state.getHeartDataList().stream().filter(data -> !data.isBanned()).toList();
-        List<Participant> filteredUnbannedList = unbannedList.stream().filter(data -> !data.getUuid().equals(except)).toList();
+        List<Participant> unbannedList = state.getParticipants().stream().filter(participant -> !participant.isBanned()).toList();
+        List<Participant> filteredUnbannedList = unbannedList.stream().filter(participant -> !participant.getUuid().equals(except)).toList();
         if (!filteredUnbannedList.isEmpty()) {
             unbannedList = filteredUnbannedList;
         }

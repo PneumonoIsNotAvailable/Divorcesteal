@@ -10,7 +10,7 @@ import java.util.*;
 public class HeartDataState {
     public static final Codec<HeartDataState> CODEC = Participant.CODEC.listOf().xmap(
             HeartDataState::new,
-            HeartDataState::getHeartDataList
+            HeartDataState::getParticipants
     );
 
     private final Map<UUID, Participant> dataMap;
@@ -19,10 +19,10 @@ public class HeartDataState {
         this(new ArrayList<>());
     }
 
-    public HeartDataState(List<Participant> dataList) {
+    public HeartDataState(List<Participant> participants) {
         this.dataMap = new HashMap<>();
-        for (Participant data : dataList) {
-            this.dataMap.put(data.getUuid(), data);
+        for (Participant participant : participants) {
+            this.dataMap.put(participant.getUuid(), participant);
         }
     }
 
@@ -30,11 +30,11 @@ public class HeartDataState {
         return DataSaving.getState();
     }
 
-    public List<Participant> getHeartDataList() {
+    public List<Participant> getParticipants() {
         return this.dataMap.values().stream().toList();
     }
 
-    public @Nullable Participant getHeartData(UUID uuid) {
+    public @Nullable Participant getParticipant(UUID uuid) {
         return dataMap.get(uuid);
     }
 

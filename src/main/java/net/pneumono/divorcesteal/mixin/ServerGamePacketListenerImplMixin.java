@@ -29,8 +29,8 @@ public abstract class ServerGamePacketListenerImplMixin {
         ServerboundClientCommandPacket.Action mode = packet.getAction();
         if (mode != ServerboundClientCommandPacket.Action.PERFORM_RESPAWN) return;
         ServerPlayer player = getPlayer();
-        Participant data = Hearts.getParticipantHeartData(player);
-        if (data != null && data.isBanned()) {
+        Participant participant = Hearts.getParticipant(player);
+        if (participant != null && participant.isBanned()) {
             player.connection.disconnect(Component.translatable("divorcesteal.deathban"));
             ci.cancel();
         }

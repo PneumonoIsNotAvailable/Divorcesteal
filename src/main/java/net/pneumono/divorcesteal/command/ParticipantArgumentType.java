@@ -74,7 +74,7 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
         if (!this.singleTarget && string.equals("*")) {
             return source -> {
                 HeartDataState state = Hearts.getHeartDataState();
-                return state.getHeartDataList().stream().filter(this.filter::test).toList();
+                return state.getParticipants().stream().filter(this.filter::test).toList();
             };
         } else if (string.length() > 16) {
             throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
@@ -84,10 +84,10 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
             HeartDataState state = Hearts.getHeartDataState();
             GameProfile profile = Objects.requireNonNull(source.getServer().getProfileCache()).get(string)
                     .orElseThrow(DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION::create);
-            Participant data = state.getHeartData(profile.getId());
+            Participant participant = state.getParticipant(profile.getId());
 
-            if (data != null && this.filter.test(data)) {
-                return List.of(data);
+            if (participant != null && this.filter.test(participant)) {
+                return List.of(participant);
             } else {
                 throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
             }
@@ -106,7 +106,7 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
         HeartDataState state = Hearts.getHeartDataState();
         List<String> strings = new ArrayList<>();
         if (!singleTarget) strings.add("*");
-        strings.addAll(state.getHeartDataList()
+        strings.addAll(state.getParticipants()
                 .stream()
                 .filter(this.filter::test)
                 .map(Participant::getName)

@@ -32,10 +32,10 @@ public class DivorcestealEvents {
     }
 
     private static void join(ServerPlayer player) {
-        Participant data = Hearts.getParticipantHeartData(player);
-        if (data != null) {
-            data.setName(player.getGameProfile().getName());
-            Hearts.updateData(player);
+        Participant participant = Hearts.getParticipant(player);
+        if (participant != null) {
+            participant.setName(player.getGameProfile().getName());
+            Hearts.updateParticipant(player);
         }
     }
 
@@ -59,8 +59,8 @@ public class DivorcestealEvents {
                 headItemEntity.setNoPickUpDelay();
             }
 
-            Participant data = Hearts.getParticipantHeartData(target);
-            if (data != null && data.isBanned()) {
+            Participant participant = Hearts.getParticipant(target);
+            if (participant != null && participant.isBanned()) {
                 target.awardStat(DivorcestealRegistry.DEATHBAN_SELF_STAT);
                 attacker.awardStat(DivorcestealRegistry.DEATHBAN_PLAYER_STAT);
             }
@@ -78,7 +78,7 @@ public class DivorcestealEvents {
     }
 
     private static void afterRespawn(ServerPlayer oldPlayer, ServerPlayer newPlayer, boolean alive) {
-        Hearts.updateData(newPlayer);
+        Hearts.updateParticipant(newPlayer);
     }
 
     private static void startWorldTick(ServerLevel level) {
@@ -87,13 +87,13 @@ public class DivorcestealEvents {
         if (DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
 
         HeartDataState state = Hearts.getHeartDataState();
-        for (Participant data : state.getHeartDataList().stream().toList()) {
+        for (Participant participant : state.getParticipants().stream().toList()) {
 
-            if (data.getBanDate() != null && DateUtils.addDays(
-                    data.getBanDate(), DivorcestealConfig.REVIVE_DAYS.getValue()
+            if (participant.getBanDate() != null && DateUtils.addDays(
+                    participant.getBanDate(), DivorcestealConfig.REVIVE_DAYS.getValue()
             ).before(new Date())) {
 
-                Hearts.revive(level, data.getGameProfile());
+                Hearts.revive(level, participant.getGameProfile());
             }
         }
     }

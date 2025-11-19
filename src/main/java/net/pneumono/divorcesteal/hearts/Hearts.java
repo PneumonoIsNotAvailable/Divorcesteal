@@ -33,53 +33,53 @@ public class Hearts {
     }
 
     public static boolean isParticipant(@Nullable Player player) {
-        return player != null && getHeartDataState().getHeartData(player.getGameProfile().getId()) != null;
+        return player != null && getHeartDataState().getParticipant(player.getGameProfile().getId()) != null;
     }
 
-    public static @Nullable Participant getParticipantHeartData(@Nullable Player player) {
+    public static @Nullable Participant getParticipant(@Nullable Player player) {
         if (player == null) return null;
-        return getHeartDataState().getHeartData(player.getGameProfile().getId());
+        return getHeartDataState().getParticipant(player.getGameProfile().getId());
     }
 
     /**
      * @return Number of hearts added (may not be equal to {@code hearts} due to validation)
      */
     public static int addHeartsValidated(Player player, int hearts, boolean allowDeathban) {
-        Participant data = getParticipantHeartData(player);
-        if (data == null) return 0;
+        Participant participant = getParticipant(player);
+        if (participant == null) return 0;
 
-        int currentHearts = data.getHearts();
+        int currentHearts = participant.getHearts();
         int finalHearts = Mth.clamp(currentHearts + hearts, allowDeathban ? 0 : 1, Math.max(DivorcestealConfig.MAX_HEARTS.getValue(), currentHearts));
-        data.setHearts(finalHearts);
-        updateData(player);
+        participant.setHearts(finalHearts);
+        updateParticipant(player);
         return finalHearts - currentHearts;
     }
 
     public static boolean revive(ServerLevel level, GameProfile profile) {
         HeartDataState state = getHeartDataState();
-        Participant data = state.getHeartData(profile.getId());
-        if (data == null || !data.isBanned()) return false;
+        Participant participant = state.getParticipant(profile.getId());
+        if (participant == null || !participant.isBanned()) return false;
 
-        data.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());
-        updateData(null, level.getServer(), data);
+        participant.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());
+        updateParticipant(null, level.getServer(), participant);
 
         return true;
     }
 
-    public static void updateData(Player player) {
-        Participant data = getParticipantHeartData(player);
-        if (data != null) {
-            updateData(player, player.getServer(), data);
+    public static void updateParticipant(Player player) {
+        Participant participant = getParticipant(player);
+        if (participant != null) {
+            updateParticipant(player, player.getServer(), participant);
         }
     }
 
-    public static void updateData(@Nullable Player player, @Nullable MinecraftServer server, Participant data) {
-        updateData(player, server, data, true);
+    public static void updateParticipant(@Nullable Player player, @Nullable MinecraftServer server, Participant participant) {
+        updateParticipant(player, server, participant, true);
     }
 
-    public static void updateData(@Nullable Player player, @Nullable MinecraftServer server, Participant data, boolean effects) {
-        if (player != null) updateHearts(player, data.getHearts());
-        if (server != null) updateBan(server, data, effects);
+    public static void updateParticipant(@Nullable Player player, @Nullable MinecraftServer server, Participant participant, boolean effects) {
+        if (player != null) updateHearts(player, participant.getHearts());
+        if (server != null) updateBan(server, participant, effects);
     }
 
     public static void updateHearts(Player player, int hearts) {
@@ -90,12 +90,12 @@ public class Hearts {
         }
     }
 
-    public static void updateBan(MinecraftServer server, Participant data, boolean effects) {
+    public static void updateBan(MinecraftServer server, Participant participant, boolean effects) {
         boolean changed;
-        if (data.isBanned()) {
-            changed = deathban(server, data, effects);
+        if (participant.isBanned()) {
+            changed = deathban(server, participant, effects);
         } else {
-            changed = unban(server, data, effects);
+            changed = unban(server, participant, effects);
         }
 
         if (changed) {
@@ -111,8 +111,8 @@ public class Hearts {
         }
     }
 
-    public static boolean deathban(MinecraftServer server, Participant data, boolean effects) {
-        GameProfile profile = data.getGameProfile();
+    public static boolean deathban(MinecraftServer server, Participant participant, boolean effects) {
+        GameProfile profile = participant.getGameProfile();
         UserBanList bannedPlayerList = server.getPlayerList().getBans();
 
         if (!bannedPlayerList.isBanned(profile)) {
@@ -133,8 +133,8 @@ public class Hearts {
         return false;
     }
 
-    public static boolean unban(MinecraftServer server, Participant data, boolean effects) {
-        GameProfile profile = data.getGameProfile();
+    public static boolean unban(MinecraftServer server, Participant participant, boolean effects) {
+        GameProfile profile = participant.getGameProfile();
         UserBanList bannedPlayerList = server.getPlayerList().getBans();
 
         UserBanListEntry entry = bannedPlayerList.get(profile);

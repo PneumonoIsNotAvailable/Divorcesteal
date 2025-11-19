@@ -24,7 +24,7 @@ public abstract class LivingEntityMixin extends Entity {
             method = "canGlide",
             at = @At("RETURN")
     )
-    private boolean canGlideWithGamerule(boolean original) {
+    private boolean canGlideWithConfig(boolean original) {
         if (DivorcestealConfig.DISABLE_ELYTRA.getValue()) return false;
         return original;
     }
@@ -36,7 +36,7 @@ public abstract class LivingEntityMixin extends Entity {
                     target = "Lnet/minecraft/world/damagesource/DamageSource;is(Lnet/minecraft/tags/TagKey;)Z"
             )
     )
-    private boolean canUseDeathProtectorWithGamerule(DamageSource instance, TagKey<DamageType> tag, Operation<Boolean> original) {
+    private boolean canUseDeathProtectorWithConfig(DamageSource instance, TagKey<DamageType> tag, Operation<Boolean> original) {
         if (DivorcestealConfig.DISABLE_TOTEMS.getValue()) return true;
         return original.call(instance, tag);
     }
