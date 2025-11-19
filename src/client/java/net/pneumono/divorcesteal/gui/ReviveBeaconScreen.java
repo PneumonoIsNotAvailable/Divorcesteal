@@ -58,7 +58,6 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
 
     @Override
     protected void renderBg(GuiGraphics graphics, float deltaTicks, int mouseX, int mouseY) {
-        // GUI frame
         graphics.blit(
                 RenderPipelines.GUI_TEXTURED, TEXTURE,
                 this.leftPos, this.topPos,
@@ -67,17 +66,33 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
                 256, 256
         );
 
-        // Item input
-        Slot topHeartSlot = this.menu.getTopHeartSlot();
-        Slot leftHeartSlot = this.menu.getLeftHeartSlot();
-        Slot rightHeartSlot = this.menu.getRightHeartSlot();
-        Slot headSlot = this.menu.getHeadSlot();
-        drawEmptySlot(graphics, mouseX, mouseY, topHeartSlot, HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
-        drawEmptySlot(graphics, mouseX, mouseY, leftHeartSlot, HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
-        drawEmptySlot(graphics, mouseX, mouseY, rightHeartSlot, HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
-        drawEmptySlot(graphics, mouseX, mouseY, headSlot, HEAD_SLOT_TEXTURE, HEAD_SLOT_TOOLTIP);
+        renderInputSlot(graphics, mouseX, mouseY, this.menu.getTopHeartSlot(), HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
+        renderInputSlot(graphics, mouseX, mouseY, this.menu.getLeftHeartSlot(), HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
+        renderInputSlot(graphics, mouseX, mouseY, this.menu.getRightHeartSlot(), HEART_SLOT_TEXTURE, HEART_SLOT_TOOLTIP);
+        renderInputSlot(graphics, mouseX, mouseY, this.menu.getHeadSlot(), HEAD_SLOT_TEXTURE, HEAD_SLOT_TOOLTIP);
 
-        // Wanted poster
+        renderWantedPoster(graphics, mouseX, mouseY);
+
+        renderPlayerSelect(graphics, mouseX, mouseY);
+
+        renderReviveButton(graphics, mouseX, mouseY);
+    }
+
+    private void renderInputSlot(GuiGraphics graphics, int mouseX, int mouseY, Slot slot, ResourceLocation texture, Component text) {
+        if (slot.hasItem()) return;
+
+        graphics.blitSprite(
+                RenderPipelines.GUI_TEXTURED, texture,
+                this.leftPos + slot.x, this.topPos + slot.y,
+                16, 16
+        );
+
+        if (this.isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(this.font, this.font.split(text, 115), mouseX, mouseY);
+        }
+    }
+
+    private void renderWantedPoster(GuiGraphics graphics, int mouseX, int mouseY) {
         Component wantedText = Component.translatable("divorcesteal.gui.revive_beacon.wanted");
         graphics.drawString(this.font,
                 wantedText,
@@ -97,8 +112,9 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
                 graphics.setTooltipForNextFrame(this.font, this.font.split(targetTooltipText, 115), mouseX, mouseY);
             }
         }
+    }
 
-        // Player select
+    private void renderPlayerSelect(GuiGraphics graphics, int mouseX, int mouseY) {
         ResourceLocation scrollTexture = canScroll() ? SCROLLER_TEXTURE : SCROLLER_DISABLED_TEXTURE;
         int scrollOffset = (int)(39.0F * this.scrollPosition);
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, scrollTexture, this.leftPos + 218, this.topPos + 22 + scrollOffset, 12, 15);
@@ -108,48 +124,16 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
             ResolvableProfile profile = resolved(this.menu.getRevivableParticipant(playerIndex));
             if (profile == null) break;
 
-            drawPlayerSelect(
+            renderSelectablePlayer(
                     graphics,
                     mouseX, mouseY, menuX, menuY,
                     profile,
                     playerIndex == this.menu.getSelectedParticipant()
             );
         }}
-
-        // Revive button
-        if (this.menu.canRevive()) {
-            int buttonX = this.leftPos + 87;
-            int buttonY = this.topPos + 74;
-
-            boolean highlighted = isPointStrictlyWithinBounds(87, 74, 64, 11, mouseX, mouseY);
-            ResourceLocation buttonTexture = highlighted ? REVIVE_BUTTON_HIGHLIGHTED_TEXTURE : REVIVE_BUTTON_TEXTURE;
-
-            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, buttonTexture, buttonX, buttonY, 64, 11);
-
-            Component reviveText = Component.translatable("divorcesteal.gui.revive_beacon.revive");
-            graphics.drawString(this.font,
-                    reviveText,
-                    buttonX + 32 - (font.width(reviveText) / 2), buttonY + 2,
-                    highlighted ? -128 : -9937334, false
-            );
-        }
     }
 
-    private void drawEmptySlot(GuiGraphics graphics, int mouseX, int mouseY, Slot slot, ResourceLocation texture, Component text) {
-        if (slot.hasItem()) return;
-
-        graphics.blitSprite(
-                RenderPipelines.GUI_TEXTURED, texture,
-                this.leftPos + slot.x, this.topPos + slot.y,
-                16, 16
-        );
-
-        if (this.isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
-            graphics.setTooltipForNextFrame(this.font, this.font.split(text, 115), mouseX, mouseY);
-        }
-    }
-
-    private void drawPlayerSelect(
+    private void renderSelectablePlayer(
             GuiGraphics graphics,
             int mouseX, int mouseY,
             int menuX, int menuY,
@@ -181,6 +165,25 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
                     () -> Component.translatable("divorcesteal.unknown")
             );
             graphics.setTooltipForNextFrame(this.font, this.font.split(text, 115), mouseX, mouseY);
+        }
+    }
+
+    private void renderReviveButton(GuiGraphics graphics, int mouseX, int mouseY) {
+        if (this.menu.canRevive()) {
+            int buttonX = this.leftPos + 87;
+            int buttonY = this.topPos + 74;
+
+            boolean highlighted = isPointStrictlyWithinBounds(87, 74, 64, 11, mouseX, mouseY);
+            ResourceLocation buttonTexture = highlighted ? REVIVE_BUTTON_HIGHLIGHTED_TEXTURE : REVIVE_BUTTON_TEXTURE;
+
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, buttonTexture, buttonX, buttonY, 64, 11);
+
+            Component reviveText = Component.translatable("divorcesteal.gui.revive_beacon.revive");
+            graphics.drawString(this.font,
+                    reviveText,
+                    buttonX + 32 - (font.width(reviveText) / 2), buttonY + 2,
+                    highlighted ? -128 : -9937334, false
+            );
         }
     }
 
