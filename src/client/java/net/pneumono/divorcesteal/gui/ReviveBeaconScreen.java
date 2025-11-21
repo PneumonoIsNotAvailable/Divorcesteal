@@ -122,7 +122,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
         for (int menuY = 0; menuY < 3; ++menuY) { for (int menuX = 0; menuX < 3; ++menuX) {
             int playerIndex = (menuY + this.visibleTopRow) * 3 + menuX;
             ResolvableProfile profile = resolved(this.menu.getRevivableParticipant(playerIndex));
-            if (profile == null) break;
+            if (profile == null) continue;
 
             renderSelectablePlayer(
                     graphics,
