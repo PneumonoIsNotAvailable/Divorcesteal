@@ -32,7 +32,7 @@ public class HeartItem extends Item {
             level.playSound(null, user.blockPosition(), DivorcestealRegistry.USE_HEART_SOUND, SoundSource.PLAYERS);
             user.awardStat(Stats.ITEM_USED.get(this));
             user.getCooldowns().addCooldown(stack, 1);
-            stack.shrink(1);
+            stack.consume(1, user);
             return InteractionResult.SUCCESS_SERVER;
 
         } else {
