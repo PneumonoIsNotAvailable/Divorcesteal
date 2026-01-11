@@ -39,8 +39,9 @@ public class DivorcestealCommands {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> {
             dispatcher.register(literal("divorcesteal")
-                    .requires(source -> source.hasPermission(3))
+                    .requires(source -> source.hasPermission(2))
                     .then(literal("participants")
+                            .requires(source -> source.hasPermission(3))
                             .then(literal("add")
                                     .then(argument("target", StringArgumentType.word())
                                             .executes(context -> executeParticipantsAdd(context.getSource(),
@@ -49,6 +50,7 @@ public class DivorcestealCommands {
                                             .suggests(DivorcestealCommands::suggestParticipantsAdd)
                                     )
                             )
+                            .requires(source -> source.hasPermission(3))
                             .then(literal("remove")
                                     .then(argument("target", ParticipantArgumentType.participant())
                                             .executes(context -> executeParticipantsRemove(context.getSource(),
