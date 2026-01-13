@@ -45,7 +45,7 @@ public class DivorcestealEvents {
         HeartsUtil.addHeartsValidated(target, -1, true);
 
         if (
-                target.getLastHurtByMob() instanceof ServerPlayer attacker &&
+                target.getKillCredit() instanceof ServerPlayer attacker &&
                 HeartsUtil.isParticipant(attacker) &&
                 !attacker.getUUID().equals(target.getUUID())
         ) {
