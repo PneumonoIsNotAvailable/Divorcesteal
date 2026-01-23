@@ -54,7 +54,8 @@ public class DivorcestealEvents {
             headStack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(target.getGameProfile()));
             headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(attacker.getGameProfile()));
 
-            ItemEntity headItemEntity = target.drop(headStack, true, false);
+            ServerLevel level = target.level();
+            ItemEntity headItemEntity = target.spawnAtLocation(level, headStack);
             if (headItemEntity != null) {
                 headItemEntity.setNoPickUpDelay();
             }
@@ -69,7 +70,7 @@ public class DivorcestealEvents {
             if (HeartsUtil.addHeartsValidated(attacker, 1, false) == 0) {
 
                 ItemStack heartStack = new ItemStack(DivorcestealRegistry.HEART_ITEM);
-                ItemEntity heartItemEntity = target.drop(heartStack, true, false);
+                ItemEntity heartItemEntity = target.spawnAtLocation(level, heartStack);
                 if (heartItemEntity != null) {
                     heartItemEntity.setNoPickUpDelay();
                 }
