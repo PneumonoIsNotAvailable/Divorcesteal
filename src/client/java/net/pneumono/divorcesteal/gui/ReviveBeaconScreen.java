@@ -296,6 +296,6 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
 
     private ResolvableProfile profile(NameAndId nameAndId) {
         if (nameAndId == null) return null;
-        return ResolvableProfile.createUnresolved(nameAndId.id());
+        return ResolvableProfile.createUnresolved(nameAndId.name());
     }
 }
