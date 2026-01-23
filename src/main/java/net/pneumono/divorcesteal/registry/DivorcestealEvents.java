@@ -8,6 +8,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -51,7 +52,7 @@ public class DivorcestealEvents {
             ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
 
             headStack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(target.getGameProfile()));
-            headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(attacker.getGameProfile()));
+            headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(new NameAndId(attacker.getGameProfile())));
 
             ServerLevel level = target.level();
             target.spawnAtLocation(level, headStack);
