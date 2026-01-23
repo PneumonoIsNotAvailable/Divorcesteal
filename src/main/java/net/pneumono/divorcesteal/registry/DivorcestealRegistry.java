@@ -12,8 +12,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
@@ -74,12 +74,12 @@ public class DivorcestealRegistry {
     public static final SoundEvent DEATHBAN_SOUND = registerSoundEvent("event.deathban");
     public static final SoundEvent REVIVE_SOUND = registerSoundEvent("event.revive");
 
-    public static final ResourceLocation STEAL_LIFE_STAT = registerStat("steal_life");
-    public static final ResourceLocation WITHDRAW_HEART_STAT = registerStat("withdraw_heart");
-    public static final ResourceLocation REVIVE_PLAYER_STAT = registerStat("revive_player");
-    public static final ResourceLocation DEATHBAN_PLAYER_STAT = registerStat("deathban_player");
-    public static final ResourceLocation DEATHBAN_SELF_STAT = registerStat("deathban_self");
-    public static final ResourceLocation INTERACT_WITH_REVIVE_BEACON_STAT = registerStat("interact_with_revive_beacon");
+    public static final Identifier STEAL_LIFE_STAT = registerStat("steal_life");
+    public static final Identifier WITHDRAW_HEART_STAT = registerStat("withdraw_heart");
+    public static final Identifier REVIVE_PLAYER_STAT = registerStat("revive_player");
+    public static final Identifier DEATHBAN_PLAYER_STAT = registerStat("deathban_player");
+    public static final Identifier DEATHBAN_SELF_STAT = registerStat("deathban_self");
+    public static final Identifier INTERACT_WITH_REVIVE_BEACON_STAT = registerStat("interact_with_revive_beacon");
 
     private static ReviveBeaconBlock registerReviveBeaconBlock() {
         ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Divorcesteal.id("revive_beacon"));
@@ -107,14 +107,14 @@ public class DivorcestealRegistry {
     }
 
     private static SoundEvent registerSoundEvent(String name) {
-        ResourceLocation id = Divorcesteal.id(name);
+        Identifier id = Divorcesteal.id(name);
         return Registry.register(BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id));
     }
 
-    private static ResourceLocation registerStat(String name) {
-        ResourceLocation id = Divorcesteal.id(name);
+    private static Identifier registerStat(String name) {
+        Identifier id = Divorcesteal.id(name);
         Registry.register(BuiltInRegistries.CUSTOM_STAT, id, id);
-        BuiltInRegistries.CUSTOM_STAT.addAlias(ResourceLocation.withDefaultNamespace(name), id);
+        BuiltInRegistries.CUSTOM_STAT.addAlias(Identifier.withDefaultNamespace(name), id);
         Stats.CUSTOM.get(id, StatFormatter.DEFAULT);
         return id;
     }

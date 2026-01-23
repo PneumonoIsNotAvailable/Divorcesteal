@@ -1,8 +1,8 @@
 package net.pneumono.divorcesteal.gui;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -14,8 +14,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class DeathbanScreen extends DeathScreen {
-    public DeathbanScreen(@Nullable Component message, boolean isHardcore) {
-        super(message, isHardcore);
+    public DeathbanScreen(@Nullable Component message, boolean isHardcore, LocalPlayer player) {
+        super(message, isHardcore, player);
     }
 
     public static boolean showShow(Player player) {
@@ -47,10 +47,5 @@ public class DeathbanScreen extends DeathScreen {
         );
         this.exitButtons.add(this.exitToTitleButton);
         this.setButtonsActive(false);
-        this.deathScore = Component.translatable(
-                "deathScreen.score.value",
-                Component.literal(
-                        Integer.toString(Objects.requireNonNull(this.minecraft.player).getScore())
-                ).withStyle(ChatFormatting.YELLOW));
     }
 }

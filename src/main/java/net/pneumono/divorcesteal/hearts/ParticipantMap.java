@@ -2,6 +2,7 @@ package net.pneumono.divorcesteal.hearts;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
+import net.minecraft.server.players.NameAndId;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,8 +35,12 @@ public class ParticipantMap {
         return dataMap.get(uuid);
     }
 
-    public void addParticipant(GameProfile profile) {
-        dataMap.put(profile.getId(), new Participant(profile.getId(), profile.getName(), DivorcestealConfig.DEFAULT_HEARTS.getValue(), null));
+    public void addParticipant(NameAndId nameAndId) {
+        addParticipant(nameAndId.id(), nameAndId.name());
+    }
+
+    public void addParticipant(UUID uuid, String name) {
+        dataMap.put(uuid, new Participant(uuid, name, DivorcestealConfig.DEFAULT_HEARTS.getValue(), null));
     }
 
     public void removeParticipant(UUID uuid) {

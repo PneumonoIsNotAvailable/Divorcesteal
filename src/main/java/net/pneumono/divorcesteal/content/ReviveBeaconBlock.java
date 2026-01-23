@@ -24,6 +24,7 @@ import net.pneumono.divorcesteal.hearts.Participant;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,12 +45,12 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NonNull BlockPos pos, @NonNull BlockState state) {
         return new ReviveBeaconBlockEntity(pos, state);
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+    protected @NotNull InteractionResult useWithoutItem(@NonNull BlockState state, Level level, @NonNull BlockPos pos, @NonNull Player player, @NonNull BlockHitResult hit) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity) {
             KillTargetComponent killTargetComponent = blockEntity.getOrCreateTarget(player.getUUID());
             if (killTargetComponent == null) {
@@ -74,7 +75,7 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
 
     public static List<ResolvableProfile> getRevivableParticipants() {
         ParticipantMap state = HeartsUtil.getHeartDataState();
-        return state.getParticipants().stream().filter(Participant::isBanned).map(data -> new ResolvableProfile(data.getGameProfile())).toList();
+        return state.getParticipants().stream().filter(Participant::isBanned).map(data -> ResolvableProfile.createResolved(data.getGameProfile())).toList();
     }
 
     public static Optional<GameProfile> getRandomTarget(ServerLevel level, UUID except) {

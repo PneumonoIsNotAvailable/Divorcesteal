@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.item.component.TooltipProvider;
+import org.jspecify.annotations.NonNull;
 
 public record KillTargetComponent(ResolvableProfile profile) implements TooltipProvider {
     public static final Codec<KillTargetComponent> CODEC = ResolvableProfile.CODEC.xmap(
@@ -22,11 +23,11 @@ public record KillTargetComponent(ResolvableProfile profile) implements TooltipP
     );
 
     public KillTargetComponent(GameProfile profile) {
-        this(new ResolvableProfile(profile));
+        this(ResolvableProfile.createResolved(profile));
     }
 
     @Override
-    public void addToTooltip(Item.TooltipContext context, Consumer<Component> textConsumer, TooltipFlag flag, DataComponentGetter components) {
+    public void addToTooltip(Item.@NonNull TooltipContext context, Consumer<Component> textConsumer, @NonNull TooltipFlag flag, @NonNull DataComponentGetter components) {
         textConsumer.accept(Component.translatable(
                 "item.divorcesteal.revive_beacon.wanted",
                 this.profile().name().map(Component::literal).orElseGet(() -> Component.translatable("divorcesteal.unknown"))

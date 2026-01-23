@@ -13,6 +13,7 @@ import net.pneumono.divorcesteal.hearts.HeartsUtil;
 import net.pneumono.divorcesteal.hearts.Participant;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class HeartItem extends Item {
     public HeartItem(Properties settings) {
@@ -20,7 +21,7 @@ public class HeartItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResult use(Level level, Player user, InteractionHand hand) {
+    public @NotNull InteractionResult use(Level level, Player user, @NonNull InteractionHand hand) {
         ItemStack stack = user.getItemInHand(hand);
         if (level.isClientSide()) return InteractionResult.CONSUME;
 
@@ -41,7 +42,7 @@ public class HeartItem extends Item {
     }
 
     private static int getHearts(Player user) {
-        Participant participant = HeartsUtil.getHeartDataState().getParticipant(user.getGameProfile().getId());
+        Participant participant = HeartsUtil.getHeartDataState().getParticipant(user.getGameProfile().id());
         return participant == null ? -1 : participant.getHearts();
     }
 }

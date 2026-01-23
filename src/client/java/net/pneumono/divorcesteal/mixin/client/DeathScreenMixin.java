@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.pneumono.divorcesteal.gui.DeathbanScreen;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -16,10 +17,11 @@ public abstract class DeathScreenMixin extends Screen {
     }
 
     @WrapOperation(
-            method = "render",
+            method = "visitText",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/client/gui/screens/DeathScreen;title:Lnet/minecraft/network/chat/Component;"
+                    target = "Lnet/minecraft/client/gui/screens/DeathScreen;title:Lnet/minecraft/network/chat/Component;",
+                    opcode = Opcodes.GETFIELD
             )
     )
     private Component useDeathbanTitle(DeathScreen instance, Operation<Component> original) {

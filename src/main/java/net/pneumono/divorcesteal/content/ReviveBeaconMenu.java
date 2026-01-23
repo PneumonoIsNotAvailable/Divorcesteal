@@ -17,6 +17,7 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.Level;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class ReviveBeaconMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    public boolean clickMenuButton(@NonNull Player player, int id) {
         if (id >= 0 && id < this.revivableParticipants.size()) {
             this.selectedParticipant.set(id);
             return true;
@@ -96,14 +97,14 @@ public class ReviveBeaconMenu extends AbstractContainerMenu {
         if (revived != null
                 && level instanceof ServerLevel serverWorld
                 && ReviveBeaconBlock.reviveParticipant(
-                        serverWorld, pos, revived.gameProfile(), playerInventory.player)
+                        serverWorld, pos, revived.partialProfile(), playerInventory.player)
         ) {
             level.destroyBlock(pos, false);
         }
     }
 
     @Override
-    public @NotNull ItemStack quickMoveStack(Player player, int slotIndex) {
+    public @NotNull ItemStack quickMoveStack(@NonNull Player player, int slotIndex) {
         Slot slot = this.slots.get(slotIndex);
         if (!slot.hasItem()) return ItemStack.EMPTY;
 
@@ -129,7 +130,7 @@ public class ReviveBeaconMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player player) {
+    public boolean stillValid(@NonNull Player player) {
         return this.inventory.stillValid(player);
     }
 
@@ -198,8 +199,8 @@ public class ReviveBeaconMenu extends AbstractContainerMenu {
             if (!(stack.getItem() instanceof PlayerHeadItem)) return false;
 
             ResolvableProfile profileComponent = stack.get(DataComponents.PROFILE);
-            return profileComponent != null && profileComponent.gameProfile().getId().equals(
-                    ReviveBeaconMenu.this.target.gameProfile().getId()
+            return profileComponent != null && profileComponent.partialProfile().id().equals(
+                    ReviveBeaconMenu.this.target.partialProfile().id()
             );
         }
     }

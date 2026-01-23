@@ -1,6 +1,5 @@
 package net.pneumono.divorcesteal.command;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -12,9 +11,11 @@ import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -39,9 +40,9 @@ public class DivorcestealCommands {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> {
             dispatcher.register(literal("divorcesteal")
-                    .requires(source -> source.hasPermission(2))
+                    .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                     .then(literal("participants")
-                            .requires(source -> source.hasPermission(3))
+                            .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
                             .then(literal("add")
                                     .then(argument("target", StringArgumentType.word())
                                             .executes(context -> executeParticipantsAdd(context.getSource(),
@@ -50,7 +51,7 @@ public class DivorcestealCommands {
                                             .suggests(DivorcestealCommands::suggestParticipantsAdd)
                                     )
                             )
-                            .requires(source -> source.hasPermission(3))
+                            .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
                             .then(literal("remove")
                                     .then(argument("target", ParticipantArgumentType.participant())
                                             .executes(context -> executeParticipantsRemove(context.getSource(),
@@ -157,16 +158,16 @@ public class DivorcestealCommands {
     }
 
     private static int executeParticipantsAdd(CommandSourceStack source, String target) throws CommandSyntaxException {
-        GameProfile profile = Objects.requireNonNull(source.getServer().getProfileCache()).get(target)
+        NameAndId nameAndId = Objects.requireNonNull(source.getServer().services().nameToIdCache()).get(target)
                 .orElseThrow(DivorcestealExceptions.NO_PLAYER_EXCEPTION::create);
 
         ParticipantMap state = HeartsUtil.getHeartDataState();
-        if (state.getParticipant(profile.getId()) == null) {
-            state.addParticipant(profile);
+        if (state.getParticipant(nameAndId.id()) == null) {
+            state.addParticipant(nameAndId);
 
-            updateParticipant(source, state.getParticipant(profile.getId()), false);
+            updateParticipant(source, state.getParticipant(nameAndId.id()), false);
 
-            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.participant.add", profile.getName()), true);
+            source.sendSuccess(() -> Component.translatable("commands.divorcesteal.participant.add", nameAndId.name()), true);
         } else {
             throw DivorcestealExceptions.PARTICIPANT_LISTED_EXCEPTION.create();
         }

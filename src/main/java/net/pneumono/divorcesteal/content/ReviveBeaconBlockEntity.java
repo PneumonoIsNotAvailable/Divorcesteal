@@ -25,6 +25,7 @@ import net.pneumono.divorcesteal.content.component.KillTargetComponent;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.UUID;
 
@@ -72,33 +73,33 @@ public class ReviveBeaconBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    protected void loadAdditional(ValueInput input) {
+    protected void loadAdditional(@NonNull ValueInput input) {
         super.loadAdditional(input);
         ContainerHelper.loadAllItems(input, this.inventory);
         this.target = input.read("target", KillTargetComponent.CODEC).orElse(null);
     }
 
     @Override
-    protected void saveAdditional(ValueOutput output) {
+    protected void saveAdditional(@NonNull ValueOutput output) {
         super.saveAdditional(output);
         ContainerHelper.saveAllItems(output, this.inventory);
         output.storeNullable("target", KillTargetComponent.CODEC, this.target);
     }
 
     @Override
-    protected void applyImplicitComponents(DataComponentGetter components) {
+    protected void applyImplicitComponents(@NonNull DataComponentGetter components) {
         super.applyImplicitComponents(components);
         this.target = components.get(DivorcestealRegistry.KILL_TARGET_COMPONENT);
     }
 
     @Override
-    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
+    protected void collectImplicitComponents(DataComponentMap.@NonNull Builder builder) {
         super.collectImplicitComponents(builder);
         builder.set(DivorcestealRegistry.KILL_TARGET_COMPONENT, this.target);
     }
 
     @Override
-    public void removeComponentsFromTag(ValueOutput output) {
+    public void removeComponentsFromTag(@NonNull ValueOutput output) {
         super.removeComponentsFromTag(output);
         output.discard("target");
     }
@@ -119,7 +120,7 @@ public class ReviveBeaconBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    protected void setItems(NonNullList<ItemStack> inventory) {
+    protected void setItems(@NonNull NonNullList<ItemStack> inventory) {
         this.inventory = inventory;
     }
 
@@ -130,7 +131,7 @@ public class ReviveBeaconBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NonNull Provider registries) {
         return this.saveWithoutMetadata(registries);
     }
 }

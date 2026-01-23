@@ -1,7 +1,6 @@
 package net.pneumono.divorcesteal.command;
 
 import com.google.gson.JsonObject;
-import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -13,10 +12,12 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.players.NameAndId;
 import net.pneumono.divorcesteal.hearts.HeartsUtil;
 import net.pneumono.divorcesteal.hearts.ParticipantMap;
 import net.pneumono.divorcesteal.hearts.Participant;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -82,9 +83,9 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
 
         return source -> {
             ParticipantMap state = HeartsUtil.getHeartDataState();
-            GameProfile profile = Objects.requireNonNull(source.getServer().getProfileCache()).get(string)
+            NameAndId nameAndId = Objects.requireNonNull(source.getServer().services().nameToIdCache()).get(string)
                     .orElseThrow(DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION::create);
-            Participant participant = state.getParticipant(profile.getId());
+            Participant participant = state.getParticipant(nameAndId.id());
 
             if (participant != null && this.filter.test(participant)) {
                 return List.of(participant);
@@ -193,7 +194,7 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
             }
 
             @Override
-            public @NotNull ParticipantArgumentType instantiate(CommandBuildContext commandRegistryAccess) {
+            public @NotNull ParticipantArgumentType instantiate(@NonNull CommandBuildContext commandRegistryAccess) {
                 return new ParticipantArgumentType(single, filter);
             }
 

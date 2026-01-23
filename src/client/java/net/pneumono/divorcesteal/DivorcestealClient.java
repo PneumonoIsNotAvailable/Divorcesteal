@@ -3,8 +3,8 @@ package net.pneumono.divorcesteal;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
@@ -23,11 +23,11 @@ public class DivorcestealClient implements ClientModInitializer {
 
 		BlockRenderLayerMap.putBlock(DivorcestealRegistry.REVIVE_BEACON_BLOCK, ChunkSectionLayer.CUTOUT);
 
-		ResourceManagerHelper.registerBuiltinResourcePack(
+		ResourceLoader.registerBuiltinPack(
 				Divorcesteal.id("retextured_hearts"),
 				FabricLoader.getInstance().getModContainer(Divorcesteal.MOD_ID).orElseThrow(),
 				Component.translatable("divorcesteal.resource_pack.retextured_hearts"),
-				ResourcePackActivationType.NORMAL
+				PackActivationType.NORMAL
 		);
 	}
 

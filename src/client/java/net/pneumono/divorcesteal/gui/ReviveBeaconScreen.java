@@ -1,15 +1,15 @@
 package net.pneumono.divorcesteal.gui;
 
-import com.mojang.authlib.properties.PropertyMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -20,23 +20,23 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.content.ReviveBeaconMenu;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu> {
-    private static final ResourceLocation HEART_SLOT_TEXTURE = Divorcesteal.id("heart");
-    private static final ResourceLocation HEAD_SLOT_TEXTURE = ResourceLocation.withDefaultNamespace("container/slot/helmet");
+    private static final Identifier HEART_SLOT_TEXTURE = Divorcesteal.id("heart");
+    private static final Identifier HEAD_SLOT_TEXTURE = Identifier.withDefaultNamespace("container/slot/helmet");
     private static final Component HEART_SLOT_TOOLTIP = Component.translatable("divorcesteal.gui.revive_beacon.add_heart");
     private static final Component HEAD_SLOT_TOOLTIP = Component.translatable("divorcesteal.gui.revive_beacon.add_head");
-    private static final ResourceLocation PLAYER_TEXTURE = Divorcesteal.id("player");
-    private static final ResourceLocation PLAYER_HIGHLIGHTED_TEXTURE = Divorcesteal.id("player_highlighted");
-    private static final ResourceLocation PLAYER_SELECTED_TEXTURE = Divorcesteal.id("player_selected");
-    private static final ResourceLocation SCROLLER_TEXTURE = Divorcesteal.id("scroller");
-    private static final ResourceLocation SCROLLER_DISABLED_TEXTURE = Divorcesteal.id("scroller_disabled");
-    private static final ResourceLocation REVIVE_BUTTON_TEXTURE = Divorcesteal.id("revive_button");
-    private static final ResourceLocation REVIVE_BUTTON_HIGHLIGHTED_TEXTURE = Divorcesteal.id("revive_button_highlighted");
-    private static final ResourceLocation TEXTURE = Divorcesteal.id("textures/gui/revive_beacon.png");
+    private static final Identifier PLAYER_TEXTURE = Divorcesteal.id("player");
+    private static final Identifier PLAYER_HIGHLIGHTED_TEXTURE = Divorcesteal.id("player_highlighted");
+    private static final Identifier PLAYER_SELECTED_TEXTURE = Divorcesteal.id("player_selected");
+    private static final Identifier SCROLLER_TEXTURE = Divorcesteal.id("scroller");
+    private static final Identifier SCROLLER_DISABLED_TEXTURE = Divorcesteal.id("scroller_disabled");
+    private static final Identifier REVIVE_BUTTON_TEXTURE = Divorcesteal.id("revive_button");
+    private static final Identifier REVIVE_BUTTON_HIGHLIGHTED_TEXTURE = Divorcesteal.id("revive_button_highlighted");
+    private static final Identifier TEXTURE = Divorcesteal.id("textures/gui/revive_beacon.png");
 
     private float scrollPosition = 0.0F;
     private int visibleTopRow = 0;
@@ -51,7 +51,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
+    public void render(@NonNull GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
         super.render(context, mouseX, mouseY, deltaTicks);
         this.renderTooltip(context, mouseX, mouseY);
     }
@@ -78,7 +78,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
         renderReviveButton(graphics, mouseX, mouseY);
     }
 
-    private void renderInputSlot(GuiGraphics graphics, int mouseX, int mouseY, Slot slot, ResourceLocation texture, Component text) {
+    private void renderInputSlot(GuiGraphics graphics, int mouseX, int mouseY, Slot slot, Identifier texture, Component text) {
         if (slot.hasItem()) return;
 
         graphics.blitSprite(
@@ -115,7 +115,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
     }
 
     private void renderPlayerSelect(GuiGraphics graphics, int mouseX, int mouseY) {
-        ResourceLocation scrollTexture = canScroll() ? SCROLLER_TEXTURE : SCROLLER_DISABLED_TEXTURE;
+        Identifier scrollTexture = canScroll() ? SCROLLER_TEXTURE : SCROLLER_DISABLED_TEXTURE;
         int scrollOffset = (int)(39.0F * this.scrollPosition);
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, scrollTexture, this.leftPos + 218, this.topPos + 22 + scrollOffset, 12, 15);
 
@@ -145,7 +145,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
 
         boolean highlighted = this.isPointStrictlyWithinBounds(finalX - this.leftPos, finalY - this.topPos, 18, 18, mouseX, mouseY);
 
-        ResourceLocation texture;
+        Identifier texture;
         if (selected) {
             texture = PLAYER_SELECTED_TEXTURE;
         } else if (highlighted) {
@@ -174,7 +174,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
             int buttonY = this.topPos + 74;
 
             boolean highlighted = isPointStrictlyWithinBounds(87, 74, 64, 11, mouseX, mouseY);
-            ResourceLocation buttonTexture = highlighted ? REVIVE_BUTTON_HIGHLIGHTED_TEXTURE : REVIVE_BUTTON_TEXTURE;
+            Identifier buttonTexture = highlighted ? REVIVE_BUTTON_HIGHLIGHTED_TEXTURE : REVIVE_BUTTON_TEXTURE;
 
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, buttonTexture, buttonX, buttonY, 64, 11);
 
@@ -188,11 +188,11 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (handlePlayerSelectMouseClick(mouseX, mouseY)) return true;
-        if (handleReviveButtonMouseClick(mouseX, mouseY)) return true;
+    public boolean mouseClicked(MouseButtonEvent event, boolean bl) {
+        if (handlePlayerSelectMouseClick(event.x(), event.y())) return true;
+        if (handleReviveButtonMouseClick(event.x(), event.y())) return true;
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, bl);
     }
 
     private boolean handlePlayerSelectMouseClick(double mouseX, double mouseY) {
@@ -255,13 +255,13 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (!canScroll() || !this.scrollbarClicked) return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    public boolean mouseDragged(@NonNull MouseButtonEvent mouseButtonEvent, double d, double e) {
+        if (!canScroll() || !this.scrollbarClicked) return super.mouseDragged(mouseButtonEvent, d, e);
 
         int rows = this.getRows() - 3;
         int topY = this.topPos + 22;
         int bottomY = topY + 54;
-        this.scrollPosition = ((float)mouseY - topY - 7.5F) / (bottomY - topY - 15.0F);
+        this.scrollPosition = ((float)mouseButtonEvent.y() - topY - 7.5F) / (bottomY - topY - 15.0F);
         this.scrollPosition = Mth.clamp(this.scrollPosition, 0.0F, 1.0F);
         this.visibleTopRow = Math.max((int)(this.scrollPosition * rows + 0.5), 0);
         return true;
@@ -296,6 +296,6 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
     // Scuffed as hell
     private ResolvableProfile resolved(ResolvableProfile component) {
         if (component == null) return null;
-        return new ResolvableProfile(component.name(), Optional.empty(), new PropertyMap()).pollResolve();
+        return ResolvableProfile.createUnresolved(component.name().get());
     }
 }

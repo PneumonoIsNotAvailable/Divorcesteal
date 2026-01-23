@@ -3,13 +3,13 @@ package net.pneumono.divorcesteal.hearts;
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.server.players.UserBanList;
 import net.minecraft.server.players.UserBanListEntry;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Date;
 
 public class HeartsUtil {
-    public static final ResourceLocation HEARTS_MODIFIER_ID = Divorcesteal.id("hearts");
+    public static final Identifier HEARTS_MODIFIER_ID = Divorcesteal.id("hearts");
     public static final String ZERO_HEART_BAN_ID = "zero_heart_ban";
 
     public static ParticipantMap getHeartDataState() {
@@ -33,12 +33,12 @@ public class HeartsUtil {
     }
 
     public static boolean isParticipant(@Nullable Player player) {
-        return player != null && getHeartDataState().getParticipant(player.getGameProfile().getId()) != null;
+        return player != null && getHeartDataState().getParticipant(player.getGameProfile().id()) != null;
     }
 
     public static @Nullable Participant getParticipant(@Nullable Player player) {
         if (player == null) return null;
-        return getHeartDataState().getParticipant(player.getGameProfile().getId());
+        return getHeartDataState().getParticipant(player.getGameProfile().id());
     }
 
     /**
@@ -57,7 +57,7 @@ public class HeartsUtil {
 
     public static boolean revive(ServerLevel level, GameProfile profile) {
         ParticipantMap state = getHeartDataState();
-        Participant participant = state.getParticipant(profile.getId());
+        Participant participant = state.getParticipant(profile.id());
         if (participant == null || !participant.isBanned()) return false;
 
         participant.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());
@@ -69,7 +69,7 @@ public class HeartsUtil {
     public static void updateParticipant(Player player) {
         Participant participant = getParticipant(player);
         if (participant != null) {
-            updateParticipant(player, player.getServer(), participant);
+            updateParticipant(player, player.level().getServer(), participant);
         }
     }
 
@@ -112,20 +112,20 @@ public class HeartsUtil {
     }
 
     public static boolean deathban(MinecraftServer server, Participant participant, boolean effects) {
-        GameProfile profile = participant.getGameProfile();
         UserBanList bannedPlayerList = server.getPlayerList().getBans();
+        NameAndId nameAndId = new NameAndId(participant.getGameProfile());
 
-        if (!bannedPlayerList.isBanned(profile)) {
+        if (!bannedPlayerList.isBanned(nameAndId)) {
             if (effects) {
                 for (ServerPlayer globalPlayer : PlayerLookup.all(server)) {
-                    globalPlayer.playNotifySound(DivorcestealRegistry.DEATHBAN_SOUND, SoundSource.PLAYERS, 1.0F, 1.0F);
-                    Component banAnnouncement = Component.translatable("divorcesteal.deathban_global", profile.getName());
+                    globalPlayer.playSound(DivorcestealRegistry.DEATHBAN_SOUND, 1.0F, 1.0F);
+                    Component banAnnouncement = Component.translatable("divorcesteal.deathban_global", nameAndId.name());
                     globalPlayer.sendSystemMessage(banAnnouncement, false);
                 }
             }
 
             Date date = new Date();
-            UserBanListEntry bannedPlayerEntry = new UserBanListEntry(profile, date, ZERO_HEART_BAN_ID, null, "Zero-Heart Deathban (can be revoked at any time via Revive Beacons)");
+            UserBanListEntry bannedPlayerEntry = new UserBanListEntry(nameAndId, date, ZERO_HEART_BAN_ID, null, "Zero-Heart Deathban (can be revoked at any time via Revive Beacons)");
             bannedPlayerList.add(bannedPlayerEntry);
 
             return true;
@@ -134,16 +134,16 @@ public class HeartsUtil {
     }
 
     public static boolean unban(MinecraftServer server, Participant participant, boolean effects) {
-        GameProfile profile = participant.getGameProfile();
         UserBanList bannedPlayerList = server.getPlayerList().getBans();
+        NameAndId nameAndId = new NameAndId(participant.getGameProfile());
 
-        UserBanListEntry entry = bannedPlayerList.get(profile);
+        UserBanListEntry entry = bannedPlayerList.get(nameAndId);
         if (entry != null && entry.getSource().equals(HeartsUtil.ZERO_HEART_BAN_ID)) {
-            bannedPlayerList.remove(profile);
+            bannedPlayerList.remove(nameAndId);
 
             if (effects) {
                 for (ServerPlayer globalPlayer : PlayerLookup.all(server)) {
-                    globalPlayer.playNotifySound(DivorcestealRegistry.REVIVE_SOUND, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    globalPlayer.playSound(DivorcestealRegistry.REVIVE_SOUND, 1.0F, 1.0F);
                 }
             }
 

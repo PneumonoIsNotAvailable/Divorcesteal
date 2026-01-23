@@ -34,7 +34,7 @@ public class DivorcestealEvents {
     private static void join(ServerPlayer player) {
         Participant participant = HeartsUtil.getParticipant(player);
         if (participant != null) {
-            participant.setName(player.getGameProfile().getName());
+            participant.setName(player.getGameProfile().name());
             HeartsUtil.updateParticipant(player);
         }
     }
@@ -51,7 +51,7 @@ public class DivorcestealEvents {
         ) {
             ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
 
-            headStack.set(DataComponents.PROFILE, new ResolvableProfile(target.getGameProfile()));
+            headStack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(target.getGameProfile()));
             headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(attacker.getGameProfile()));
 
             ItemEntity headItemEntity = target.drop(headStack, true, false);
