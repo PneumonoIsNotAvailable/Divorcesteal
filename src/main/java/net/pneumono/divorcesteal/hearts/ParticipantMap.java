@@ -1,6 +1,5 @@
 package net.pneumono.divorcesteal.hearts;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import net.minecraft.server.players.NameAndId;
 import net.pneumono.divorcesteal.DivorcestealConfig;

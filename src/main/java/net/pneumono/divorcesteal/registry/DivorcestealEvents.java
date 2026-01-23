@@ -94,7 +94,7 @@ public class DivorcestealEvents {
                     participant.getBanDate(), DivorcestealConfig.REVIVE_DAYS.getValue()
             ).before(new Date())) {
 
-                HeartsUtil.revive(level, participant.getGameProfile());
+                HeartsUtil.revive(level, participant.getUuid());
             }
         }
     }

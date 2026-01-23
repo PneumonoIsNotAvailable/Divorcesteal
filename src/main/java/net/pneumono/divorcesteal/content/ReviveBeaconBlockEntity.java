@@ -1,6 +1,5 @@
 package net.pneumono.divorcesteal.content;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -12,6 +11,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -41,7 +41,7 @@ public class ReviveBeaconBlockEntity extends BaseContainerBlockEntity {
         if (this.target != null) return target;
 
         if (this.getLevel() instanceof ServerLevel serverLevel) {
-            GameProfile randomTarget = ReviveBeaconBlock.getRandomTarget(serverLevel, except).orElse(null);
+            NameAndId randomTarget = ReviveBeaconBlock.getRandomTarget(serverLevel, except).orElse(null);
             if (randomTarget != null) {
                 this.target = new KillTargetComponent(randomTarget);
                 setChanged();
@@ -63,7 +63,7 @@ public class ReviveBeaconBlockEntity extends BaseContainerBlockEntity {
         return new ReviveBeaconMenu(syncId, playerInventory, this,
                 ContainerLevelAccess.create(getLevel(), this.getBlockPos()),
                 ReviveBeaconBlock.getRevivableParticipants(),
-                target.profile()
+                target.nameAndId()
         );
     }
 

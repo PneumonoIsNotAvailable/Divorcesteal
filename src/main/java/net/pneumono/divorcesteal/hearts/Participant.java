@@ -1,9 +1,9 @@
 package net.pneumono.divorcesteal.hearts;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.util.ExtraCodecs;
 import net.pneumono.divorcesteal.Divorcesteal;
 import org.jetbrains.annotations.Nullable;
@@ -72,8 +72,8 @@ public class Participant {
         return this.hearts == 0;
     }
 
-    public GameProfile getGameProfile() {
-        return new GameProfile(this.uuid, this.name);
+    public NameAndId getNameAndId() {
+        return new NameAndId(this.uuid, this.name);
     }
 
     private void updateBannedState() {

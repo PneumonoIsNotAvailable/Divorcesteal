@@ -10,6 +10,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -100,7 +101,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
                 CommonColors.DARK_GRAY, false
         );
 
-        ResolvableProfile target = resolved(this.menu.getTarget());
+        ResolvableProfile target = profile(this.menu.getTarget());
         if (target != null) {
             ItemStack targetHeadStack = new ItemStack(Items.PLAYER_HEAD);
             targetHeadStack.set(DataComponents.PROFILE, target);
@@ -121,7 +122,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
 
         for (int menuY = 0; menuY < 3; ++menuY) { for (int menuX = 0; menuX < 3; ++menuX) {
             int playerIndex = (menuY + this.visibleTopRow) * 3 + menuX;
-            ResolvableProfile profile = resolved(this.menu.getRevivableParticipant(playerIndex));
+            ResolvableProfile profile = profile(this.menu.getRevivableParticipant(playerIndex));
             if (profile == null) continue;
 
             renderSelectablePlayer(
@@ -212,7 +213,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
                             mouseYOffset > 0.0 &&
                             mouseXOffset < 18.0 &&
                             mouseYOffset < 18.0 &&
-                            this.menu.clickMenuButton(this.minecraft.player, playerIndex)
+                            this.menu.clickMenuButton(Objects.requireNonNull(this.minecraft.player), playerIndex)
             ) {
                 Minecraft.getInstance().getSoundManager().play(
                         SimpleSoundInstance.forUI(DivorcestealRegistry.REVIVE_BEACON_SELECT_SOUND, 1.0F)
@@ -242,7 +243,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
         int finalY = this.topPos + 75;
         if (!(mouseX >= finalX && mouseX < finalX + 64 && mouseY >= finalY && mouseY < finalY + 11)) return false;
 
-        if (this.menu.clickMenuButton(this.minecraft.player, -2)) {
+        if (this.menu.clickMenuButton(Objects.requireNonNull(this.minecraft.player), -2)) {
             Minecraft.getInstance().getSoundManager().play(
                     SimpleSoundInstance.forUI(DivorcestealRegistry.REVIVE_BEACON_SELECT_SOUND, 1.0F)
             );
@@ -293,9 +294,8 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
         return Mth.positiveCeilDiv(this.menu.revivableParticipants.size(), 3);
     }
 
-    // Scuffed as hell
-    private ResolvableProfile resolved(ResolvableProfile component) {
-        if (component == null) return null;
-        return ResolvableProfile.createUnresolved(component.name().get());
+    private ResolvableProfile profile(NameAndId nameAndId) {
+        if (nameAndId == null) return null;
+        return ResolvableProfile.createUnresolved(nameAndId.name());
     }
 }

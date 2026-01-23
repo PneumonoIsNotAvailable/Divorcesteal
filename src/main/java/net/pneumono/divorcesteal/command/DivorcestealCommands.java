@@ -294,13 +294,13 @@ public class DivorcestealCommands {
         int successes = 0;
         boolean single = participants.size() == 1;
         if (single) {
-            if (!HeartsUtil.revive(source.getLevel(), participants.getFirst().getGameProfile())) throw DivorcestealExceptions.NOT_DEATHBANNED_EXCEPTION.create();
+            if (!HeartsUtil.revive(source.getLevel(), participants.getFirst().getUuid())) throw DivorcestealExceptions.NOT_DEATHBANNED_EXCEPTION.create();
             successes = 1;
 
         } else {
             for (Participant participant : participants) {
                 if (participant == null) continue;
-                HeartsUtil.revive(source.getLevel(), participant.getGameProfile());
+                HeartsUtil.revive(source.getLevel(), participant.getUuid());
                 successes++;
             }
         }

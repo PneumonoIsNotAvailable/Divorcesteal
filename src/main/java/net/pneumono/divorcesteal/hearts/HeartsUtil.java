@@ -1,6 +1,5 @@
 package net.pneumono.divorcesteal.hearts;
 
-import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -27,6 +26,7 @@ import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class HeartsUtil {
     public static final Identifier HEARTS_MODIFIER_ID = Divorcesteal.id("hearts");
@@ -59,9 +59,9 @@ public class HeartsUtil {
         return finalHearts - currentHearts;
     }
 
-    public static boolean revive(ServerLevel level, GameProfile profile) {
+    public static boolean revive(ServerLevel level, UUID uuid) {
         ParticipantMap state = getHeartDataState();
-        Participant participant = state.getParticipant(profile.id());
+        Participant participant = state.getParticipant(uuid);
         if (participant == null || !participant.isBanned()) return false;
 
         participant.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());
@@ -117,7 +117,7 @@ public class HeartsUtil {
 
     public static boolean deathban(MinecraftServer server, Participant participant, boolean effects) {
         UserBanList bannedPlayerList = server.getPlayerList().getBans();
-        NameAndId nameAndId = new NameAndId(participant.getGameProfile());
+        NameAndId nameAndId = participant.getNameAndId();
 
         if (!bannedPlayerList.isBanned(nameAndId)) {
             if (effects) {
@@ -139,7 +139,7 @@ public class HeartsUtil {
 
     public static boolean unban(MinecraftServer server, Participant participant, boolean effects) {
         UserBanList bannedPlayerList = server.getPlayerList().getBans();
-        NameAndId nameAndId = new NameAndId(participant.getGameProfile());
+        NameAndId nameAndId = participant.getNameAndId();
 
         UserBanListEntry entry = bannedPlayerList.get(nameAndId);
         if (entry != null && entry.getSource().equals(HeartsUtil.ZERO_HEART_BAN_ID)) {

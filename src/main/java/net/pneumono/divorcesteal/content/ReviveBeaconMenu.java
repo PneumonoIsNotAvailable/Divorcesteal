@@ -3,6 +3,7 @@ package net.pneumono.divorcesteal.content;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,8 +30,8 @@ public class ReviveBeaconMenu extends AbstractContainerMenu {
     private final Slot leftHeartSlot;
     private final Slot rightHeartSlot;
     private final Slot headSlot;
-    public List<ResolvableProfile> revivableParticipants;
-    private ResolvableProfile target;
+    public List<NameAndId> revivableParticipants;
+    private NameAndId target;
     private final DataSlot selectedParticipant = DataSlot.standalone();
 
     public ReviveBeaconMenu(int syncId, Inventory playerInventory) {
@@ -39,7 +40,7 @@ public class ReviveBeaconMenu extends AbstractContainerMenu {
 
     public ReviveBeaconMenu(
             int syncId, Inventory playerInventory, Container inventory, ContainerLevelAccess access,
-            List<ResolvableProfile> revivableParticipants, ResolvableProfile target
+            List<NameAndId> revivableParticipants, NameAndId target
     ) {
         super(DivorcestealRegistry.REVIVE_BEACON_SCREEN_HANDLER, syncId);
         this.playerInventory = playerInventory;
@@ -56,7 +57,7 @@ public class ReviveBeaconMenu extends AbstractContainerMenu {
         this.selectedParticipant.set(-1);
     }
 
-    public ResolvableProfile getRevivableParticipant(int i) {
+    public NameAndId getRevivableParticipant(int i) {
         return i >= revivableParticipants.size() ? null : this.revivableParticipants.get(i);
     }
 
@@ -93,11 +94,10 @@ public class ReviveBeaconMenu extends AbstractContainerMenu {
         if (!level.getBlockState(pos).is(DivorcestealRegistry.REVIVE_BEACON_BLOCK)) return;
 
         int selectedParticipant = getSelectedParticipant();
-        ResolvableProfile revived = selectedParticipant == -1 ? null : this.revivableParticipants.get(selectedParticipant);
+        NameAndId revived = selectedParticipant == -1 ? null : this.revivableParticipants.get(selectedParticipant);
         if (revived != null
                 && level instanceof ServerLevel serverWorld
-                && ReviveBeaconBlock.reviveParticipant(
-                        serverWorld, pos, revived.partialProfile(), playerInventory.player)
+                && ReviveBeaconBlock.reviveParticipant(serverWorld, pos, revived.id(), playerInventory.player)
         ) {
             level.destroyBlock(pos, false);
         }
@@ -134,11 +134,11 @@ public class ReviveBeaconMenu extends AbstractContainerMenu {
         return this.inventory.stillValid(player);
     }
 
-    public void setRevivableParticipants(List<ResolvableProfile> revivableParticipants) {
+    public void setRevivableParticipants(List<NameAndId> revivableParticipants) {
         this.revivableParticipants = revivableParticipants;
     }
 
-    public void setTarget(ResolvableProfile target) {
+    public void setTarget(NameAndId target) {
         this.target = target;
     }
 
@@ -146,7 +146,7 @@ public class ReviveBeaconMenu extends AbstractContainerMenu {
         return this.selectedParticipant.get();
     }
 
-    public ResolvableProfile getTarget() {
+    public NameAndId getTarget() {
         return target;
     }
 
@@ -200,7 +200,7 @@ public class ReviveBeaconMenu extends AbstractContainerMenu {
 
             ResolvableProfile profileComponent = stack.get(DataComponents.PROFILE);
             return profileComponent != null && profileComponent.partialProfile().id().equals(
-                    ReviveBeaconMenu.this.target.partialProfile().id()
+                    ReviveBeaconMenu.this.target.id()
             );
         }
     }

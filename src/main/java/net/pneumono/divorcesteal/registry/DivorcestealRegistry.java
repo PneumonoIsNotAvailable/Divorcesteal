@@ -3,7 +3,6 @@ package net.pneumono.divorcesteal.registry;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -120,8 +119,6 @@ public class DivorcestealRegistry {
     }
 
     public static void registerDivorcestealContent() {
-        PayloadTypeRegistry.playS2C().register(ReviveBeaconInfoS2CPayload.ID, ReviveBeaconInfoS2CPayload.CODEC);
-
         ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.OP_BLOCKS).register(entries -> {
             entries.accept(HEART_ITEM);
             entries.accept(REVIVE_BEACON_ITEM);

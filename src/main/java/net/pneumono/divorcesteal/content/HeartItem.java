@@ -42,7 +42,7 @@ public class HeartItem extends Item {
     }
 
     private static int getHearts(Player user) {
-        Participant participant = HeartsUtil.getHeartDataState().getParticipant(user.getGameProfile().id());
+        Participant participant = HeartsUtil.getParticipant(user);
         return participant == null ? -1 : participant.getHearts();
     }
 }

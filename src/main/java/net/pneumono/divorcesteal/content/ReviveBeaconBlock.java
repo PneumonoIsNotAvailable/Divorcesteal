@@ -1,17 +1,16 @@
 package net.pneumono.divorcesteal.content;
 
-import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -64,7 +63,7 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
             if (player instanceof ServerPlayer serverPlayer && optionalInt.isPresent()) {
                 sendBeaconUpdatePacket(serverPlayer,
                         optionalInt.getAsInt(),
-                        killTargetComponent.profile(),
+                        killTargetComponent.nameAndId(),
                         getRevivableParticipants()
                 );
             }
@@ -73,12 +72,12 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
         return InteractionResult.SUCCESS;
     }
 
-    public static List<ResolvableProfile> getRevivableParticipants() {
+    public static List<NameAndId> getRevivableParticipants() {
         ParticipantMap state = HeartsUtil.getHeartDataState();
-        return state.getParticipants().stream().filter(Participant::isBanned).map(data -> ResolvableProfile.createResolved(data.getGameProfile())).toList();
+        return state.getParticipants().stream().filter(Participant::isBanned).map(Participant::getNameAndId).toList();
     }
 
-    public static Optional<GameProfile> getRandomTarget(ServerLevel level, UUID except) {
+    public static Optional<NameAndId> getRandomTarget(ServerLevel level, UUID except) {
         ParticipantMap state = HeartsUtil.getHeartDataState();
         List<Participant> unbannedList = state.getParticipants().stream().filter(participant -> !participant.isBanned()).toList();
         List<Participant> filteredUnbannedList = unbannedList.stream().filter(participant -> !participant.getUuid().equals(except)).toList();
@@ -89,11 +88,11 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
         if (unbannedList.isEmpty()) return Optional.empty();
 
         RandomSource random = level.getRandom();
-        return Optional.of(unbannedList.get(random.nextIntBetweenInclusive(0, unbannedList.size() - 1)).getGameProfile());
+        return Optional.of(unbannedList.get(random.nextIntBetweenInclusive(0, unbannedList.size() - 1)).getNameAndId());
     }
 
-    public static boolean reviveParticipant(ServerLevel level, BlockPos pos, GameProfile participant, Player reviver) {
-        if (HeartsUtil.revive(level, participant)) {
+    public static boolean reviveParticipant(ServerLevel level, BlockPos pos, UUID uuid, Player reviver) {
+        if (HeartsUtil.revive(level, uuid)) {
             level.playSound(null, pos, DivorcestealRegistry.USE_REVIVE_BEACON_SOUND, SoundSource.PLAYERS);
             reviver.awardStat(DivorcestealRegistry.REVIVE_PLAYER_STAT);
             return true;
@@ -102,7 +101,7 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
         }
     }
 
-    public static void sendBeaconUpdatePacket(ServerPlayer player, int containerId, ResolvableProfile target, List<ResolvableProfile> revivableParticipants) {
+    public static void sendBeaconUpdatePacket(ServerPlayer player, int containerId, NameAndId target, List<NameAndId> revivableParticipants) {
         ServerPlayNetworking.send(player, new ReviveBeaconInfoS2CPayload(
                 containerId,
                 target,
