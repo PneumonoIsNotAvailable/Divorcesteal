@@ -2,7 +2,9 @@ package net.pneumono.divorcesteal.hearts;
 
 import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -10,6 +12,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.server.players.UserBanList;
 import net.minecraft.server.players.UserBanListEntry;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -118,7 +122,7 @@ public class HeartsUtil {
         if (!bannedPlayerList.isBanned(nameAndId)) {
             if (effects) {
                 for (ServerPlayer globalPlayer : PlayerLookup.all(server)) {
-                    globalPlayer.playSound(DivorcestealRegistry.DEATHBAN_SOUND, 1.0F, 1.0F);
+                    sendSound(globalPlayer, DivorcestealRegistry.DEATHBAN_SOUND);
                     Component banAnnouncement = Component.translatable("divorcesteal.deathban_global", nameAndId.name());
                     globalPlayer.sendSystemMessage(banAnnouncement, false);
                 }
@@ -143,12 +147,21 @@ public class HeartsUtil {
 
             if (effects) {
                 for (ServerPlayer globalPlayer : PlayerLookup.all(server)) {
-                    globalPlayer.playSound(DivorcestealRegistry.REVIVE_SOUND, 1.0F, 1.0F);
+                    sendSound(globalPlayer, DivorcestealRegistry.REVIVE_SOUND);
                 }
             }
 
             return true;
         }
         return false;
+    }
+
+    private static void sendSound(ServerPlayer player, SoundEvent soundEvent) {
+        player.connection.send(new ClientboundSoundPacket(
+                BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent),
+                SoundSource.PLAYERS,
+                player.getX(), player.getY(), player.getZ(),
+                1.0F, 1.0F, 1
+        ));
     }
 }
