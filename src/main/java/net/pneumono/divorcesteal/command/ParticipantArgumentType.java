@@ -14,7 +14,6 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.players.NameAndId;
 import net.pneumono.divorcesteal.hearts.HeartsUtil;
-import net.pneumono.divorcesteal.hearts.ParticipantMap;
 import net.pneumono.divorcesteal.hearts.Participant;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
@@ -73,19 +72,15 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
         String string = reader.getString().substring(start, reader.getCursor());
 
         if (!this.singleTarget && string.equals("*")) {
-            return source -> {
-                ParticipantMap state = HeartsUtil.getHeartDataState();
-                return state.getParticipants().stream().filter(this.filter::test).toList();
-            };
+            return source -> HeartsUtil.getParticipantMap().getParticipants().stream().filter(this.filter::test).toList();
         } else if (string.length() > 16) {
             throw DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION.create();
         }
 
         return source -> {
-            ParticipantMap state = HeartsUtil.getHeartDataState();
             NameAndId nameAndId = Objects.requireNonNull(source.getServer().services().nameToIdCache()).get(string)
                     .orElseThrow(DivorcestealExceptions.NO_PARTICIPANT_EXCEPTION::create);
-            Participant participant = state.getParticipant(nameAndId.id());
+            Participant participant = HeartsUtil.getParticipant(nameAndId);
 
             if (participant != null && this.filter.test(participant)) {
                 return List.of(participant);
@@ -104,10 +99,9 @@ public class ParticipantArgumentType implements ArgumentType<ParticipantArgument
         if (!(context.getSource() instanceof SharedSuggestionProvider source)) return Suggestions.empty();
         if (!(context.getSource() instanceof CommandSourceStack)) return source.customSuggestion(context);
 
-        ParticipantMap state = HeartsUtil.getHeartDataState();
         List<String> strings = new ArrayList<>();
         if (!singleTarget) strings.add("*");
-        strings.addAll(state.getParticipants()
+        strings.addAll(HeartsUtil.getParticipantMap().getParticipants()
                 .stream()
                 .filter(this.filter::test)
                 .map(Participant::getName)

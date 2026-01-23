@@ -32,17 +32,26 @@ public class HeartsUtil {
     public static final Identifier HEARTS_MODIFIER_ID = Divorcesteal.id("hearts");
     public static final String ZERO_HEART_BAN_ID = "zero_heart_ban";
 
-    public static ParticipantMap getHeartDataState() {
+    public static ParticipantMap getParticipantMap() {
         return DataSaving.getState();
     }
 
     public static boolean isParticipant(@Nullable Player player) {
-        return player != null && getHeartDataState().getParticipant(player.getGameProfile().id()) != null;
+        return player != null && getParticipantMap().getParticipant(player.getGameProfile().id()) != null;
     }
 
     public static @Nullable Participant getParticipant(@Nullable Player player) {
         if (player == null) return null;
-        return getHeartDataState().getParticipant(player.getGameProfile().id());
+        return getParticipant(player.getGameProfile().id());
+    }
+
+    public static @Nullable Participant getParticipant(@Nullable NameAndId nameAndId) {
+        if (nameAndId == null) return null;
+        return getParticipant(nameAndId.id());
+    }
+
+    public static @Nullable Participant getParticipant(@Nullable UUID uuid) {
+        return getParticipantMap().getParticipant(uuid);
     }
 
     /**
@@ -60,8 +69,8 @@ public class HeartsUtil {
     }
 
     public static boolean revive(ServerLevel level, UUID uuid) {
-        ParticipantMap state = getHeartDataState();
-        Participant participant = state.getParticipant(uuid);
+        ParticipantMap map = getParticipantMap();
+        Participant participant = map.getParticipant(uuid);
         if (participant == null || !participant.isBanned()) return false;
 
         participant.setHearts(DivorcestealConfig.REVIVE_HEARTS.getValue());

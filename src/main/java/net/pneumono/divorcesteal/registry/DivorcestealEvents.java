@@ -87,8 +87,7 @@ public class DivorcestealEvents {
 
         if (DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
 
-        ParticipantMap state = HeartsUtil.getHeartDataState();
-        for (Participant participant : state.getParticipants().stream().toList()) {
+        for (Participant participant : HeartsUtil.getParticipantMap().getParticipants()) {
 
             if (participant.getBanDate() != null && DateUtils.addDays(
                     participant.getBanDate(), DivorcestealConfig.REVIVE_DAYS.getValue()
@@ -100,7 +99,7 @@ public class DivorcestealEvents {
     }
 
     private static void serverStarting(MinecraftServer server) {
-        DataSaving.backupAndLoadHeartDataState(server);
+        DataSaving.backupAndLoadParticipantMap(server);
     }
 
     private static void afterSave(MinecraftServer server, boolean flush, boolean force) {

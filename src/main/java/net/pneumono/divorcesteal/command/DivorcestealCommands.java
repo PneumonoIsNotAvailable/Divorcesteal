@@ -161,11 +161,11 @@ public class DivorcestealCommands {
         NameAndId nameAndId = Objects.requireNonNull(source.getServer().services().nameToIdCache()).get(target)
                 .orElseThrow(DivorcestealExceptions.NO_PLAYER_EXCEPTION::create);
 
-        ParticipantMap state = HeartsUtil.getHeartDataState();
-        if (state.getParticipant(nameAndId.id()) == null) {
-            state.addParticipant(nameAndId);
+        ParticipantMap map = HeartsUtil.getParticipantMap();
+        if (map.getParticipant(nameAndId.id()) == null) {
+            map.addParticipant(nameAndId);
 
-            updateParticipant(source, state.getParticipant(nameAndId.id()), false);
+            updateParticipant(source, map.getParticipant(nameAndId.id()), false);
 
             source.sendSuccess(() -> Component.translatable("commands.divorcesteal.participant.add", nameAndId.name()), true);
         } else {
@@ -178,7 +178,7 @@ public class DivorcestealCommands {
     private static CompletableFuture<Suggestions> suggestParticipantsAdd(CommandContext<?> context, SuggestionsBuilder builder) {
         if (!(context.getSource() instanceof SharedSuggestionProvider source)) return Suggestions.empty();
 
-        List<String> invalidNames = HeartsUtil.getHeartDataState().getParticipants().stream().map(Participant::getName).toList();
+        List<String> invalidNames = HeartsUtil.getParticipantMap().getParticipants().stream().map(Participant::getName).toList();
 
         return SharedSuggestionProvider.suggest(
                 source.getOnlinePlayerNames().stream()
@@ -191,7 +191,7 @@ public class DivorcestealCommands {
     private static int executeParticipantsRemove(CommandSourceStack source, Participant participant) {
         participant.setHearts(10);
         updateParticipant(source, participant, false);
-        HeartsUtil.getHeartDataState().removeParticipant(participant.getUuid());
+        HeartsUtil.getParticipantMap().removeParticipant(participant.getUuid());
 
         source.sendSuccess(() -> Component.translatable("commands.divorcesteal.participant.remove", participant.getName()), true);
 
@@ -199,7 +199,7 @@ public class DivorcestealCommands {
     }
 
     private static int executeParticipantsList(CommandSourceStack source) {
-        List<String> names = HeartsUtil.getHeartDataState().getParticipants().stream().map(Participant::getName).toList();
+        List<String> names = HeartsUtil.getParticipantMap().getParticipants().stream().map(Participant::getName).toList();
 
         if (names.isEmpty()) {
             source.sendSuccess(() -> Component.translatable("commands.divorcesteal.participant.list.empty"), true);

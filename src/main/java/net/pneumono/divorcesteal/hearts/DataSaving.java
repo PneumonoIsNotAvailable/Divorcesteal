@@ -29,7 +29,7 @@ public class DataSaving {
         }
     }
 
-    public static void backupAndLoadHeartDataState(MinecraftServer server) {
+    public static void backupAndLoadParticipantMap(MinecraftServer server) {
         ROOT_PATH = server.getWorldPath(LevelResource.ROOT);
 
         CompletableFuture.runAsync(DataSaving::makeBackup);
