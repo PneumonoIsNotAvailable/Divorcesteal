@@ -55,7 +55,7 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
             KillTargetComponent killTargetComponent = blockEntity.getOrCreateTarget(player.getUUID());
             if (killTargetComponent == null) {
                 player.displayClientMessage(Component.translatable("block.divorcesteal.revive_beacon.fail_roll"), true);
-                return InteractionResult.FAIL;
+                return InteractionResult.SUCCESS;
             }
 
             player.awardStat(DivorcestealRegistry.INTERACT_WITH_REVIVE_BEACON_STAT);
