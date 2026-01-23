@@ -10,7 +10,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
@@ -55,10 +54,7 @@ public class DivorcestealEvents {
             headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(attacker.getGameProfile()));
 
             ServerLevel level = target.level();
-            ItemEntity headItemEntity = target.spawnAtLocation(level, headStack);
-            if (headItemEntity != null) {
-                headItemEntity.setNoPickUpDelay();
-            }
+            target.spawnAtLocation(level, headStack);
 
             Participant participant = HeartsUtil.getParticipant(target);
             if (participant != null && participant.isBanned()) {
@@ -70,10 +66,7 @@ public class DivorcestealEvents {
             if (HeartsUtil.addHeartsValidated(attacker, 1, false) == 0) {
 
                 ItemStack heartStack = new ItemStack(DivorcestealRegistry.HEART_ITEM);
-                ItemEntity heartItemEntity = target.spawnAtLocation(level, heartStack);
-                if (heartItemEntity != null) {
-                    heartItemEntity.setNoPickUpDelay();
-                }
+                target.spawnAtLocation(level, heartStack);
             }
         }
     }
