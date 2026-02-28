@@ -46,16 +46,19 @@ public class DivorcestealEvents {
 
         if (
                 target.getLastAttacker() instanceof ServerPlayer attacker &&
-                HeartsUtil.isParticipant(attacker) &&
                 !attacker.getUUID().equals(target.getUUID())
         ) {
-            ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
-
-            headStack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(target.getGameProfile()));
-            headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(new NameAndId(attacker.getGameProfile())));
-
             ServerLevel level = target.level();
-            target.spawnAtLocation(level, headStack);
+            boolean killedByParticipant = HeartsUtil.isParticipant(attacker);
+
+            if (killedByParticipant) {
+                ItemStack headStack = new ItemStack(Items.PLAYER_HEAD);
+
+                headStack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(target.getGameProfile()));
+                headStack.set(DivorcestealRegistry.KILLED_BY_COMPONENT, new KilledByComponent(new NameAndId(attacker.getGameProfile())));
+
+                target.spawnAtLocation(level, headStack);
+            }
 
             Participant participant = HeartsUtil.getParticipant(target);
             if (participant != null && participant.isBanned()) {
