@@ -16,7 +16,7 @@ import org.jspecify.annotations.NonNull;
 public class KillTargetComponent extends AbstractNameAndIdComponent implements TooltipProvider {
     public static final Codec<KillTargetComponent> CODEC = createCodec(KillTargetComponent::new);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, KillTargetComponent> PACKET_CODEC = createStreamCodec(KillTargetComponent::new);
+    public static final StreamCodec<RegistryFriendlyByteBuf, KillTargetComponent> STREAM_CODEC = createStreamCodec(KillTargetComponent::new);
 
     public KillTargetComponent(NameAndId nameAndId) {
         super(nameAndId);

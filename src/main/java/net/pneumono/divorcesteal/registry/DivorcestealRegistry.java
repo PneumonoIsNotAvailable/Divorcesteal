@@ -53,13 +53,13 @@ public class DivorcestealRegistry {
     );
 
     public static final DataComponentType<KilledByComponent> KILLED_BY_COMPONENT = registerDataComponentType(
-            "killer", KilledByComponent.CODEC, KilledByComponent.PACKET_CODEC
+            "killer", KilledByComponent.CODEC, KilledByComponent.STREAM_CODEC
     );
     public static final DataComponentType<KillTargetComponent> KILL_TARGET_COMPONENT = registerDataComponentType(
-            "kill_target", KillTargetComponent.CODEC, KillTargetComponent.PACKET_CODEC
+            "kill_target", KillTargetComponent.CODEC, KillTargetComponent.STREAM_CODEC
     );
     public static final DataComponentType<CraftedComponent> CRAFTED_COMPONENT = registerDataComponentType(
-            "crafted", CraftedComponent.CODEC, CraftedComponent.PACKET_CODEC
+            "crafted", CraftedComponent.CODEC, CraftedComponent.STREAM_CODEC
     );
 
     public static final MenuType<ReviveBeaconMenu> REVIVE_BEACON_SCREEN_HANDLER = Registry.register(BuiltInRegistries.MENU,

@@ -17,7 +17,7 @@ public class CraftedComponent implements TooltipProvider {
     public static final CraftedComponent INSTANCE = new CraftedComponent();
 
     public static final Codec<CraftedComponent> CODEC = MapCodec.unitCodec(INSTANCE);
-    public static final StreamCodec<ByteBuf, CraftedComponent> PACKET_CODEC = StreamCodec.unit(INSTANCE);
+    public static final StreamCodec<ByteBuf, CraftedComponent> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     @Override
     public void addToTooltip(Item.@NonNull TooltipContext context, Consumer<Component> textConsumer, @NonNull TooltipFlag flag, @NonNull DataComponentGetter components) {
