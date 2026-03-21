@@ -25,7 +25,7 @@ public class KillTargetComponent extends AbstractNameAndIdComponent implements T
     @Override
     public void addToTooltip(Item.@NonNull TooltipContext context, Consumer<Component> textConsumer, @NonNull TooltipFlag flag, @NonNull DataComponentGetter components) {
         textConsumer.accept(Component.translatable(
-                "item.divorcesteal.revive_beacon.wanted",
+                "block.divorcesteal.revive_beacon.wanted",
                 this.nameAndId().name()
         ).withStyle(ChatFormatting.GRAY));
     }

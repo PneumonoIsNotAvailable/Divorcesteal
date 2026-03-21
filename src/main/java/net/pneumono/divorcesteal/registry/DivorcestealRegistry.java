@@ -44,7 +44,7 @@ public class DivorcestealRegistry {
     );
     public static final BlockItem REVIVE_BEACON_ITEM = registerItem("revive_beacon",
             settings -> new BlockItem(REVIVE_BEACON_BLOCK, settings),
-            new Item.Properties().rarity(Rarity.RARE).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)
+            new Item.Properties().rarity(Rarity.RARE).component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true).useBlockDescriptionPrefix()
     );
 
     public static final BlockEntityType<ReviveBeaconBlockEntity> REVIVE_BEACON_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,

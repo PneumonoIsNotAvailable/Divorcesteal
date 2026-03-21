@@ -2,8 +2,8 @@
   "item.divorcesteal.heart": "Cat Hart",
   "item.divorcesteal.heart.crafted": "Craftd",
   "item.divorcesteal.player_head.killer": "Ded from %s",
-  "item.divorcesteal.revive_beacon": "Com Bak Shiny",
-  "item.divorcesteal.revive_beacon.wanted": "Murdr: %s",
+  "block.divorcesteal.revive_beacon": "Com Bak Shiny",
+  "block.divorcesteal.revive_beacon.wanted": "Murdr: %s",
   "block.divorcesteal.revive_beacon.fail_roll": "No cats stil livin!",
 
   "divorcesteal.gui.deathban.title": "U haz no harts!!",
