@@ -5,6 +5,15 @@
   "block.divorcesteal.revive_beacon": "Revive Beacon",
   "block.divorcesteal.revive_beacon.wanted": "Wanted: %s",
   "block.divorcesteal.revive_beacon.fail_roll": "There are no unbanned players to pick from",
+  "block.divorcesteal.gacha_beacon": "Gacha Beacon",
+  "block.divorcesteal.gacha_beacon.result": "%1$s %2$s",
+
+  "divorcesteal.gacha.rarity.common": "Common",
+  "divorcesteal.gacha.rarity.uncommon": "Uncommon",
+  "divorcesteal.gacha.rarity.rare": "Rare",
+  "divorcesteal.gacha.rarity.epic": "Epic",
+  "divorcesteal.gacha.rarity.legendary": "Legendary",
+  "divorcesteal.gacha.rarity.mythic": "Mythic",
 
   "divorcesteal.gui.deathban.title": "You ran out of hearts!",
   "divorcesteal.gui.revive_beacon.add_head": "Add Wanted Head",
@@ -28,6 +37,8 @@
   "stat.divorcesteal.revive_player": "Players Revived",
   "stat.divorcesteal.steal_life": "Lives Stolen",
   "stat.divorcesteal.withdraw_heart": "Hearts Withdrawn",
+  "stat.divorcesteal.interact_with_gacha_beacon": "Interactions with Gacha Beacon",
+  "stat.divorcesteal.spin_gacha_beacon": "Gacha Beacon Spins",
 
   "divorcesteal.resource_pack.retextured_hearts": "Retextured Hearts",
   "divorcesteal.resource_pack.retextured_hearts.description": "Gives Hearts a custom texture",

@@ -5,6 +5,15 @@
   "block.divorcesteal.revive_beacon": "Beacon o' Rescue",
   "block.divorcesteal.revive_beacon.wanted": "Wanted: %s",
   "block.divorcesteal.revive_beacon.fail_roll": "There be no survivin' crew members to choose from",
+  "block.divorcesteal.gacha_beacon": "Beacon o' Bets",
+  "block.divorcesteal.gacha_beacon.result": "%1$s %2$s",
+
+  "divorcesteal.gacha.rarity.common": "Common",
+  "divorcesteal.gacha.rarity.uncommon": "Uncommon",
+  "divorcesteal.gacha.rarity.rare": "Rare",
+  "divorcesteal.gacha.rarity.epic": "Epic",
+  "divorcesteal.gacha.rarity.legendary": "Legendary",
+  "divorcesteal.gacha.rarity.mythic": "Mythic",
 
   "divorcesteal.gui.deathban.title": "Ye have not a heart more!",
   "divorcesteal.gui.revive_beacon.add_head": "Add yer Sailor Skull",
@@ -28,6 +37,8 @@
   "stat.divorcesteal.revive_player": "Mateys saved from Davy Jones",
   "stat.divorcesteal.steal_life": "Hearts Plundered",
   "stat.divorcesteal.withdraw_heart": "Hearts Withdrawn",
+  "stat.divorcesteal.interact_with_gacha_beacon": "Beacon o' Bets us'd",
+  "stat.divorcesteal.spin_gacha_beacon": "Beacon Bets",
 
   "divorcesteal.resource_pack.retextured_hearts": "Retextured 'earts",
   "divorcesteal.resource_pack.retextured_hearts.description": "Retextures yer hearts!",

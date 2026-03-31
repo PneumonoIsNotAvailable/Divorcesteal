@@ -5,6 +5,15 @@
   "block.divorcesteal.revive_beacon": "Com Bak Shiny",
   "block.divorcesteal.revive_beacon.wanted": "Murdr: %s",
   "block.divorcesteal.revive_beacon.fail_roll": "No cats stil livin!",
+  "block.divorcesteal.gacha_beacon": "Moni Shiny",
+  "block.divorcesteal.gacha_beacon.result": "%1$s %2$s",
+
+  "divorcesteal.gacha.rarity.common": "komon",
+  "divorcesteal.gacha.rarity.uncommon": "unkomon",
+  "divorcesteal.gacha.rarity.rare": "rar",
+  "divorcesteal.gacha.rarity.epic": "epik",
+  "divorcesteal.gacha.rarity.legendary": "legenary",
+  "divorcesteal.gacha.rarity.mythic": "miffic",
 
   "divorcesteal.gui.deathban.title": "U haz no harts!!",
   "divorcesteal.gui.revive_beacon.add_head": "Putt Kat Hed",
@@ -28,6 +37,8 @@
   "stat.divorcesteal.revive_player": "Kittiez bringed bak!",
   "stat.divorcesteal.steal_life": "Hartz stealed",
   "stat.divorcesteal.withdraw_heart": "Hartz wifdrawd",
+  "stat.divorcesteal.interact_with_gacha_beacon": "Interacshuns wif Moni Shiny",
+  "stat.divorcesteal.spin_gacha_beacon": "Moni Shiny spinz",
 
   "divorcesteal.resource_pack.retextured_hearts": "Hart Lookz diffren!",
   "divorcesteal.resource_pack.retextured_hearts.description": "Makez it pwetty!",

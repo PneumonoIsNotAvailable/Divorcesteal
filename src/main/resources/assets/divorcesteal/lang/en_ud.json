@@ -5,6 +5,15 @@
   "block.divorcesteal.revive_beacon": "uoɔɐǝᗺ ǝʌᴉʌǝᴚ",
   "block.divorcesteal.revive_beacon.wanted": "%s :pǝʇuɐM",
   "block.divorcesteal.revive_beacon.fail_roll": "ɯoɹɟ ʞɔᴉd oʇ sɹǝʎɐꞁd pǝuuɐqun ou ǝɹɐ ǝɹǝɥ⟘",
+  "block.divorcesteal.gacha_beacon": "uoɔɐǝᗺ ɐɥɔɐ⅁",
+  "block.divorcesteal.gacha_beacon.result": "%2$s %1$s",
+
+  "divorcesteal.gacha.rarity.common": "uoɯɯoƆ",
+  "divorcesteal.gacha.rarity.uncommon": "uoɯɯoɔu∩",
+  "divorcesteal.gacha.rarity.rare": "ǝɹɐᴚ",
+  "divorcesteal.gacha.rarity.epic": "ɔᴉdƎ",
+  "divorcesteal.gacha.rarity.legendary": "ʎɹɐpuǝᵷǝꞀ",
+  "divorcesteal.gacha.rarity.mythic": "ɔᴉɥʇʎW",
 
   "divorcesteal.gui.deathban.title": "¡sʇɹɐǝɥ ɟo ʇno uɐɹ no⅄",
   "divorcesteal.gui.revive_beacon.add_head": "pɐǝH pǝʇuɐM ppⱯ",
@@ -28,6 +37,8 @@
   "stat.divorcesteal.revive_player": "pǝʌᴉʌǝᴚ sɹǝʎɐꞁԀ",
   "stat.divorcesteal.steal_life": "uǝꞁoʇS sǝʌᴉꞀ",
   "stat.divorcesteal.withdraw_heart": "uʍɐɹpɥʇᴉM sʇɹɐǝH",
+  "stat.divorcesteal.interact_with_gacha_beacon": "uoɔɐǝᗺ ɐɥɔɐ⅁ ɥʇᴉʍ suoᴉʇɔɐɹǝʇuI",
+  "stat.divorcesteal.spin_gacha_beacon": "suᴉdS uoɔɐǝᗺ ɐɥɔɐ⅁",
 
   "divorcesteal.resource_pack.retextured_hearts": "sʇɹɐǝH pǝɹnʇxǝʇǝᴚ",
   "divorcesteal.resource_pack.retextured_hearts.description": "ǝɹnʇxǝʇ ɯoʇsnɔ ɐ sʇɹɐǝH sǝʌᴉ⅁",

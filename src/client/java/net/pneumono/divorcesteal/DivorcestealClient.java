@@ -14,6 +14,7 @@ import net.pneumono.divorcesteal.content.ReviveBeaconMenu;
 import net.pneumono.divorcesteal.content.ReviveBeaconInfoS2CPayload;
 import net.pneumono.divorcesteal.gui.ReviveBeaconScreen;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
+import net.pneumono.gacha.GachaClientRegistry;
 
 public class DivorcestealClient implements ClientModInitializer {
 	@Override
@@ -29,6 +30,8 @@ public class DivorcestealClient implements ClientModInitializer {
 				Component.translatable("divorcesteal.resource_pack.retextured_hearts"),
 				PackActivationType.NORMAL
 		);
+
+		GachaClientRegistry.register();
 	}
 
 	private static void syncReviveBeaconTarget(ReviveBeaconInfoS2CPayload payload, ClientPlayNetworking.Context context) {

@@ -1,0 +1,18 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "divorcesteal:block/gacha_beacon"
+      },
+      {
+        "type": "minecraft:special",
+        "base": "divorcesteal:block/gacha_beacon",
+        "model": {
+          "type": "divorcesteal:gacha_beacon"
+        }
+      }
+    ]
+  }
+}

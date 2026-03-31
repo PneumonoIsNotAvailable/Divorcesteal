@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": "minecraft:poisonous_potato",
+    "+": "minecraft:beetroot",
+    "G": "minecraft:glass",
+    "P": "minecraft:popped_chorus_fruit",
+    "C": "minecraft:cracked_stone_bricks",
+    "H": "minecraft:raw_copper_block"
+  },
+  "pattern": [
+    "P+P",
+    "G#G",
+    "CHC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "divorcesteal:gacha_beacon"
+  }
+}
