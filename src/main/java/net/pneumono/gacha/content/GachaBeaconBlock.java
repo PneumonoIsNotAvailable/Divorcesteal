@@ -25,6 +25,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
+import java.util.UUID;
 
 public class GachaBeaconBlock extends BaseEntityBlock {
     public static final MapCodec<GachaBeaconBlock> CODEC = simpleCodec(GachaBeaconBlock::new);
@@ -139,7 +140,6 @@ public class GachaBeaconBlock extends BaseEntityBlock {
         return results;
     }
 
-    @Nullable
     private static GachaResult generateRandomResult(RandomSource random) {
         int rarityValue = random.nextIntBetweenInclusive(0, 63);
         GachaRarity rarity;
@@ -157,9 +157,9 @@ public class GachaBeaconBlock extends BaseEntityBlock {
             rarity = GachaRarity.COMMON;
         }
 
-        List<NameAndId> validResults = HeartsUtil.getParticipantMap().getParticipants().stream().map(Participant::getNameAndId).toList();
-
-        if (validResults.isEmpty()) return null;
+        List<NameAndId> validResults = new ArrayList<>(HeartsUtil.getParticipantMap().getParticipants().stream().map(Participant::getNameAndId).toList());
+        validResults.add(new NameAndId(UUID.fromString("4f609417-17a1-451e-b5cf-725c2bbe3ecd"), "leoonine"));
+        validResults.add(new NameAndId(UUID.fromString("8cd4bf01-840e-4201-811c-4e0b8d5b68e9"), "Pneumono_"));
 
         NameAndId nameAndId = validResults.get(random.nextIntBetweenInclusive(0, validResults.size() - 1));
 
