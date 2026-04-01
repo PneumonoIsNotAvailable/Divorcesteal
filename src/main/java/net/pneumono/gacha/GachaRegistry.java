@@ -1,5 +1,6 @@
 package net.pneumono.gacha;
 
+import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -11,6 +12,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.stats.StatFormatter;
@@ -45,6 +47,7 @@ public class GachaRegistry {
     );
 
     public static final DataComponentType<GachaResult> GACHA_DATA_COMPONENT = registerGachaDataComponentType();
+    public static final DataComponentType<GachaRoll> GACHA_ROLL_COMPONENT = registerGachaRollComponentType();
 
     public static final ParticleType<GachaRarityParticleOption> GACHA_FINISH_PARTICLE = registerGachaFinishParticle();
 
@@ -86,6 +89,13 @@ public class GachaRegistry {
         return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
                 Divorcesteal.id("gacha_data"),
                 DataComponentType.<GachaResult>builder().persistent(GachaResult.CODEC).networkSynchronized(GachaResult.STREAM_CODEC).build()
+        );
+    }
+
+    private static DataComponentType<GachaRoll> registerGachaRollComponentType() {
+        return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
+                Divorcesteal.id("gacha_roll"),
+                DataComponentType.<GachaRoll>builder().persistent(GachaRoll.CODEC).build()
         );
     }
 
