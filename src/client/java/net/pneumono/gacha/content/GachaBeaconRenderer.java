@@ -115,7 +115,7 @@ public class GachaBeaconRenderer implements BlockEntityRenderer<GachaBeaconBlock
 
             Level level = blockEntity.getLevel();
             if (level != null) {
-                state.rotation = ((level.getGameTime() + tickProgress) * 5) % 360;
+                state.rotation = ((blockEntity.getClientRenderAge() + tickProgress) * 5) % 360;
             }
         }
     }

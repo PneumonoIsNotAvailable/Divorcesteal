@@ -51,10 +51,18 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
 
     private final Map<UUID, ResolvableProfile> PROFILE_MAP = new HashMap<>();
 
+    private long age = 0;
+
     public GachaBeaconScreen(GachaBeaconMenu abstractContainerMenu, Inventory inventory, Component title) {
         super(abstractContainerMenu, inventory, title);
         this.imageHeight = 169;
         this.inventoryLabelY = 75;
+    }
+
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+        this.age++;
     }
 
     @Override
@@ -167,7 +175,7 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
 
         float rotationDegrees;
         if (this.minecraft.level != null) {
-            rotationDegrees = ((this.minecraft.level.getGameTime() + tickProgress) * 5) % 360;
+            rotationDegrees = ((this.age + tickProgress) * 5) % 360;
         } else {
             rotationDegrees = 90;
         }

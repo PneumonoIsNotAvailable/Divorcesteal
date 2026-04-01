@@ -46,6 +46,7 @@ public class GachaBeaconBlockEntity extends BlockEntity implements MenuProvider 
     // 0 once roll finishes
     private float randomSpinMultiplier = 0;
     private int spinTicks = -1;
+    private long age = 0;
 
     private final ContainerData dataAccess = new ContainerData() {
         @Override
@@ -153,6 +154,8 @@ public class GachaBeaconBlockEntity extends BlockEntity implements MenuProvider 
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, GachaBeaconBlockEntity entity) {
         boolean finishRoll = commonTick(level, pos, state, entity);
+
+        entity.age++;
 
         if (shouldPlayTickSound(entity.spinTicks, entity.randomSpinMultiplier)) {
             playTickSound(level, pos);
@@ -301,6 +304,10 @@ public class GachaBeaconBlockEntity extends BlockEntity implements MenuProvider 
                 ServerPlayNetworking.send(serverPlayer, new GachaBeaconSpinDataS2CPayload(containerId, this.possibleResults, this.randomSpinMultiplier));
             }
         }
+    }
+
+    public long getClientRenderAge() {
+        return this.age;
     }
 
     public @Nullable GachaResult getFinalResult() {
