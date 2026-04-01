@@ -131,7 +131,7 @@ public class GachaBeaconBlockEntity extends BlockEntity implements MenuProvider 
         super.collectImplicitComponents(builder);
         if (this.state == GachaBeaconState.ROLLED) {
             builder.set(GachaRegistry.GACHA_DATA_COMPONENT, this.finalResult);
-        } else {
+        } else if (this.possibleResults != null) {
             builder.set(GachaRegistry.GACHA_ROLL_COMPONENT, new GachaRoll(this.randomSpinMultiplier, this.possibleResults));
         }
     }
