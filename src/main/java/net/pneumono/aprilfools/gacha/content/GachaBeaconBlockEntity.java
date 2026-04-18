@@ -196,6 +196,7 @@ public class GachaBeaconBlockEntity extends BlockEntity implements MenuProvider 
                 entity.spinTicks = -1;
                 entity.possibleResults = null;
                 entity.randomSpinMultiplier = 0;
+                setChanged(level, pos, state);
                 return true;
             }
         }
