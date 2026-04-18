@@ -1,0 +1,15 @@
+- Added the Gacha Participant List
+  - Allows adding players to the Gacha Beacon roll pool without adding them as participants
+  - Includes the following commands:
+    - `/divorcesteal aprilfools gacha add <playername>` to add players
+    - `/divorcesteal aprilfools gacha remove <playername>` to remove players
+    - `/divorcesteal aprilfools gacha list` to list all Gacha Participants
+  - Removed the previously hardcoded leoonine and Pneumono_ additions to the roll pool
+- Added Revive Beacon Gacha config
+  - Toggles whether Gacha Beacons are craftable
+  - Adding/removing datapacks is no longer required
+- Updated in-mod Heart and Revive Beacon recipes to match the current on-server recipes
+- Removed unnecessary `has_the_recipe` criteria from Heart and Revive Beacon recipes
+- Fixed z-fighting on Gacha Beacons when using Sodium
+- Fixed Gacha Beacons not marking themselves as changed when rolls finish
+- Fixed command permission levels for `/divorcesteal participants` subcommands mistakenly being applied to their parent
