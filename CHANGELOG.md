@@ -9,6 +9,7 @@
   - Toggles whether Gacha Beacons are craftable
   - Adding/removing datapacks is no longer required
 - Updated in-mod Heart and Revive Beacon recipes to match the current on-server recipes
+- Added links to FMJ
 - Removed unnecessary `has_the_recipe` criteria from Heart and Revive Beacon recipes
 - Fixed z-fighting on Gacha Beacons when using Sodium
 - Fixed Gacha Beacons not marking themselves as changed when rolls finish
