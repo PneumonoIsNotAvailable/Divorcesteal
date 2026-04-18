@@ -1,6 +1,5 @@
-package net.pneumono.gacha;
+package net.pneumono.aprilfools.gacha;
 
-import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -12,7 +11,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.stats.StatFormatter;
@@ -29,10 +27,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+import net.pneumono.aprilfools.gacha.content.*;
 import net.pneumono.divorcesteal.Divorcesteal;
-import net.pneumono.gacha.content.*;
-import net.pneumono.gacha.networking.GachaBeaconResultS2CPayload;
-import net.pneumono.gacha.networking.GachaBeaconSpinDataS2CPayload;
+import net.pneumono.aprilfools.gacha.networking.GachaBeaconResultS2CPayload;
+import net.pneumono.aprilfools.gacha.networking.GachaBeaconSpinDataS2CPayload;
 
 public class GachaRegistry {
     public static final GachaBeaconBlock GACHA_BEACON_BLOCK = registerGachaBeaconBlock();
@@ -123,6 +121,5 @@ public class GachaRegistry {
         ComponentTooltipAppenderRegistry.addFirst(GACHA_DATA_COMPONENT);
 
         GachaDataSaving.register();
-        GachaCommands.register();
     }
 }

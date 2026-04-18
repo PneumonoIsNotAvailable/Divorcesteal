@@ -10,11 +10,11 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.pneumono.aprilfools.AprilFoolsClientRegistry;
 import net.pneumono.divorcesteal.content.ReviveBeaconMenu;
 import net.pneumono.divorcesteal.content.ReviveBeaconInfoS2CPayload;
 import net.pneumono.divorcesteal.gui.ReviveBeaconScreen;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
-import net.pneumono.gacha.GachaClientRegistry;
 
 public class DivorcestealClient implements ClientModInitializer {
 	@Override
@@ -31,7 +31,7 @@ public class DivorcestealClient implements ClientModInitializer {
 				PackActivationType.NORMAL
 		);
 
-		GachaClientRegistry.register();
+		AprilFoolsClientRegistry.register();
 	}
 
 	private static void syncReviveBeaconTarget(ReviveBeaconInfoS2CPayload payload, ClientPlayNetworking.Context context) {

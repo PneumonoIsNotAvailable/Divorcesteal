@@ -2,8 +2,8 @@ package net.pneumono.divorcesteal;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.Identifier;
+import net.pneumono.aprilfools.AprilFoolsRegistry;
 import net.pneumono.divorcesteal.command.DivorcestealCommands;
-import net.pneumono.gacha.GachaRegistry;
 import net.pneumono.divorcesteal.registry.DivorcestealEvents;
 import net.pneumono.divorcesteal.registry.DivorcestealNetworking;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
@@ -24,7 +24,7 @@ public class Divorcesteal implements ModInitializer {
 		DivorcestealNetworking.registerDivorcestealNetworking();
 		DivorcestealCommands.registerDivorcestealCommands();
 
-		GachaRegistry.register();
+		AprilFoolsRegistry.register();
 	}
 
 	public static Identifier id(String path) {

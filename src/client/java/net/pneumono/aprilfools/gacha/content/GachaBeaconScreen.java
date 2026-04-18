@@ -1,4 +1,4 @@
-package net.pneumono.gacha.content;
+package net.pneumono.aprilfools.gacha.content;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,7 +18,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
-import net.pneumono.gacha.GachaRarity;
+import net.pneumono.aprilfools.gacha.GachaRarity;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.jspecify.annotations.NonNull;

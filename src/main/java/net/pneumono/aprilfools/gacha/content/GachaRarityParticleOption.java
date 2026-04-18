@@ -1,11 +1,11 @@
-package net.pneumono.gacha.content;
+package net.pneumono.aprilfools.gacha.content;
 
 import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.codec.StreamCodec;
-import net.pneumono.gacha.GachaRarity;
+import net.pneumono.aprilfools.gacha.GachaRarity;
 import org.jspecify.annotations.NonNull;
 
 public class GachaRarityParticleOption implements ParticleOptions {

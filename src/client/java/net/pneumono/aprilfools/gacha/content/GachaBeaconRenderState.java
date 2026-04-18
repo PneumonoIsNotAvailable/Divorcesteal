@@ -1,4 +1,4 @@
-package net.pneumono.gacha.content;
+package net.pneumono.aprilfools.gacha.content;
 
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import org.jspecify.annotations.Nullable;

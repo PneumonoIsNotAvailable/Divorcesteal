@@ -1,4 +1,4 @@
-package net.pneumono.gacha;
+package net.pneumono.aprilfools.gacha;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
@@ -10,10 +10,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.pneumono.aprilfools.gacha.content.*;
 import net.pneumono.divorcesteal.Divorcesteal;
-import net.pneumono.gacha.content.*;
-import net.pneumono.gacha.networking.GachaBeaconResultS2CPayload;
-import net.pneumono.gacha.networking.GachaBeaconSpinDataS2CPayload;
+import net.pneumono.aprilfools.gacha.networking.GachaBeaconResultS2CPayload;
+import net.pneumono.aprilfools.gacha.networking.GachaBeaconSpinDataS2CPayload;
 
 public class GachaClientRegistry {
     public static final ModelLayerLocation GACHA_RARITY_CUBE = new ModelLayerLocation(Divorcesteal.id("gacha_beacon"), "main");

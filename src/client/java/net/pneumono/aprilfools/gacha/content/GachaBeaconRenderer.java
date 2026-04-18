@@ -1,4 +1,4 @@
-package net.pneumono.gacha.content;
+package net.pneumono.aprilfools.gacha.content;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -31,8 +31,8 @@ import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.pneumono.divorcesteal.Divorcesteal;
-import net.pneumono.gacha.GachaClientRegistry;
-import net.pneumono.gacha.GachaRarity;
+import net.pneumono.aprilfools.gacha.GachaClientRegistry;
+import net.pneumono.aprilfools.gacha.GachaRarity;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 

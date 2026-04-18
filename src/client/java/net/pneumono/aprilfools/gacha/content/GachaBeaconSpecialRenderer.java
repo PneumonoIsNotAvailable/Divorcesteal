@@ -1,4 +1,4 @@
-package net.pneumono.gacha.content;
+package net.pneumono.aprilfools.gacha.content;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.pneumono.gacha.GachaRegistry;
+import net.pneumono.aprilfools.gacha.GachaRegistry;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;

@@ -1,4 +1,4 @@
-package net.pneumono.gacha.content;
+package net.pneumono.aprilfools.gacha.content;
 
 public enum GachaBeaconState {
     UNROLLED,

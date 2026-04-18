@@ -1,11 +1,11 @@
-package net.pneumono.gacha.networking;
+package net.pneumono.aprilfools.gacha.networking;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.pneumono.divorcesteal.Divorcesteal;
-import net.pneumono.gacha.content.GachaResult;
+import net.pneumono.aprilfools.gacha.content.GachaResult;
 import org.jetbrains.annotations.NotNull;
 
 public record GachaBeaconResultS2CPayload(int containerId, GachaResult result) implements CustomPacketPayload {

@@ -1,4 +1,4 @@
-package net.pneumono.gacha;
+package net.pneumono.aprilfools.gacha;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;

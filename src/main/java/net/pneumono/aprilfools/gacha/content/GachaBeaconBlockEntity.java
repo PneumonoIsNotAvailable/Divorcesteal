@@ -1,4 +1,4 @@
-package net.pneumono.gacha.content;
+package net.pneumono.aprilfools.gacha.content;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
@@ -25,10 +25,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.pneumono.gacha.GachaRarity;
-import net.pneumono.gacha.GachaRegistry;
-import net.pneumono.gacha.networking.GachaBeaconResultS2CPayload;
-import net.pneumono.gacha.networking.GachaBeaconSpinDataS2CPayload;
+import net.pneumono.aprilfools.gacha.GachaRarity;
+import net.pneumono.aprilfools.gacha.GachaRegistry;
+import net.pneumono.aprilfools.gacha.networking.GachaBeaconResultS2CPayload;
+import net.pneumono.aprilfools.gacha.networking.GachaBeaconSpinDataS2CPayload;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 

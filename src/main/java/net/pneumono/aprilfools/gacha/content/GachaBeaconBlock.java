@@ -1,4 +1,4 @@
-package net.pneumono.gacha.content;
+package net.pneumono.aprilfools.gacha.content;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -17,9 +17,9 @@ import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.pneumono.divorcesteal.hearts.HeartsUtil;
 import net.pneumono.divorcesteal.hearts.Participant;
-import net.pneumono.gacha.GachaDataSaving;
-import net.pneumono.gacha.GachaRarity;
-import net.pneumono.gacha.GachaRegistry;
+import net.pneumono.aprilfools.gacha.GachaDataSaving;
+import net.pneumono.aprilfools.gacha.GachaRarity;
+import net.pneumono.aprilfools.gacha.GachaRegistry;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 

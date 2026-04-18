@@ -1,4 +1,4 @@
-package net.pneumono.gacha;
+package net.pneumono.aprilfools.gacha;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;

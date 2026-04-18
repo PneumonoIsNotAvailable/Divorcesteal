@@ -1,13 +1,10 @@
-package net.pneumono.gacha;
+package net.pneumono.aprilfools.gacha;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.players.NameAndId;
@@ -17,40 +14,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import static net.minecraft.commands.Commands.argument;
-import static net.minecraft.commands.Commands.literal;
-
 public class GachaCommands {
-    public static void register() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> {
-            dispatcher.register(literal("gachaparticipant")
-                    .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                    .then(literal("add")
-                            .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
-                            .then(argument("target", StringArgumentType.word())
-                                    .executes(context -> executeAdd(context.getSource(),
-                                            StringArgumentType.getString(context, "target")
-                                    ))
-                                    .suggests(GachaCommands::suggestAdd)
-                            )
-                    )
-                    .then(literal("remove")
-                            .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
-                            .then(argument("target", StringArgumentType.word())
-                                    .executes(context -> executeRemove(context.getSource(),
-                                            StringArgumentType.getString(context, "target")
-                                    ))
-                                    .suggests(GachaCommands::suggestRemove)
-                            )
-                    )
-                    .then(literal("list")
-                            .executes(context -> executeList(context.getSource()))
-                    )
-            );
-        });
-    }
-
-    private static int executeAdd(CommandSourceStack source, String target) throws CommandSyntaxException {
+    public static int executeAdd(CommandSourceStack source, String target) throws CommandSyntaxException {
         NameAndId nameAndId = Objects.requireNonNull(source.getServer().services().nameToIdCache()).get(target)
                 .orElseThrow(DivorcestealExceptions.NO_PLAYER_EXCEPTION::create);
 
@@ -60,7 +25,7 @@ public class GachaCommands {
         return 1;
     }
 
-    private static CompletableFuture<Suggestions> suggestAdd(CommandContext<?> context, SuggestionsBuilder builder) {
+    public static CompletableFuture<Suggestions> suggestAdd(CommandContext<?> context, SuggestionsBuilder builder) {
         if (!(context.getSource() instanceof SharedSuggestionProvider source)) return Suggestions.empty();
 
         List<String> invalidNames = GachaDataSaving.getGachaParticipantList().stream().map(NameAndId::name).toList();
@@ -73,7 +38,7 @@ public class GachaCommands {
         );
     }
 
-    private static int executeRemove(CommandSourceStack source, String target) throws CommandSyntaxException {
+    public static int executeRemove(CommandSourceStack source, String target) throws CommandSyntaxException {
         NameAndId nameAndId = Objects.requireNonNull(source.getServer().services().nameToIdCache()).get(target)
                 .orElseThrow(DivorcestealExceptions.NO_PLAYER_EXCEPTION::create);
 
@@ -86,7 +51,7 @@ public class GachaCommands {
         }
     }
 
-    private static CompletableFuture<Suggestions> suggestRemove(CommandContext<?> context, SuggestionsBuilder builder) {
+    public static CompletableFuture<Suggestions> suggestRemove(CommandContext<?> context, SuggestionsBuilder builder) {
         List<String> names = GachaDataSaving.getGachaParticipantList().stream().map(NameAndId::name).toList();
 
         return SharedSuggestionProvider.suggest(
@@ -95,7 +60,7 @@ public class GachaCommands {
         );
     }
 
-    private static int executeList(CommandSourceStack source) {
+    public static int executeList(CommandSourceStack source) {
         List<String> names = GachaDataSaving.getGachaParticipantList().stream().map(NameAndId::name).toList();
 
         if (names.isEmpty()) {

@@ -1,4 +1,4 @@
-package net.pneumono.gacha.content;
+package net.pneumono.aprilfools.gacha.content;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -13,7 +13,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipProvider;
 import net.pneumono.divorcesteal.content.component.AbstractNameAndIdComponent;
 import net.pneumono.divorcesteal.registry.DivorcestealNetworking;
-import net.pneumono.gacha.GachaRarity;
+import net.pneumono.aprilfools.gacha.GachaRarity;
 import org.jspecify.annotations.NonNull;
 
 import java.util.function.Consumer;
