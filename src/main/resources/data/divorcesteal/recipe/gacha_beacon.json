@@ -1,4 +1,12 @@
 {
+  "fabric:load_conditions": [
+    {
+      "condition": "pneumonocore:configurations",
+      "configuration": "divorcesteal:revive_beacon_gacha",
+      "operation": "EQUAL",
+      "value": "true"
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {

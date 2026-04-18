@@ -74,6 +74,7 @@
   "configs.divorcesteal.screen_title": "Divorceplunder Ship Log",
   "configs.category.divorcesteal.hearts": "Hearts",
   "configs.category.divorcesteal.rebalances": "Laws",
+  "configs.category.divorcesteal.april_fools": "April Fools Events",
   "configs.divorcesteal.crafted_heart_limit": "Limit o' Craft'd Hearts",
   "configs.divorcesteal.crafted_heart_limit.tooltip": "Th' amount o' hearts at which ye can use craft'd hearts no longer",
   "configs.divorcesteal.default_hearts": "Startin' Hearts",
@@ -88,6 +89,8 @@
   "configs.divorcesteal.revive_days.tooltip": "How many real-life days it takes fer Davy Jones to set ye free. -1 means ye be lost forever!",
   "configs.divorcesteal.revive_hearts": "Returnin' Hearts",
   "configs.divorcesteal.revive_hearts.tooltip": "Th' share o' hearts sailors keep when returnin' from Davy Jones",
+  "configs.divorcesteal.revive_beacon_gacha": "Rescue Beacon Bettin'",
+  "configs.divorcesteal.revive_beacon_gacha.tooltip": "Beacons o' Bets be craftable, and crew members rolled 'ave rarities. Scour th' seas fer th' most valuable beacons o' yer mates!",
 
   "modmenu.descriptionTranslation.divorcesteal": "Th' official mod fer Divorceplunder, not affiliated wi' th' SMP o' Stealin' Lives\n\nNow wi' support fer yer Pirate Parlance!",
   "modmenu.nameTranslation.divorcesteal": "Divorceplunder",

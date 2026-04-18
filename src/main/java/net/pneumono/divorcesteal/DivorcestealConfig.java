@@ -26,6 +26,10 @@ public class DivorcestealConfig {
     public static final BooleanConfiguration DISABLE_TOTEMS = register("disable_totems", new BooleanConfiguration(
             false, new ConfigSettings().category("rebalances").loadType(LoadType.INSTANT)
     ));
+    // Referenced in Resource Conditions for the crafting recipe and recipe advancement
+    public static final BooleanConfiguration REVIVE_BEACON_GACHA = register("revive_beacon_gacha", new BooleanConfiguration(
+            false, new ConfigSettings().category("april_fools").loadType(LoadType.RESTART)
+    ));
 
     public static <T extends AbstractConfiguration<?>> T register(String name, T config) {
         return ConfigApi.register(Divorcesteal.id(name), config);

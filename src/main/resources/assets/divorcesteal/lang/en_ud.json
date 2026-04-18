@@ -74,6 +74,7 @@
   "configs.divorcesteal.screen_title": "sᵷᴉɟuoƆ ꞁɐǝʇsǝɔɹoʌᴉᗡ",
   "configs.category.divorcesteal.hearts": "sʇɹɐǝH",
   "configs.category.divorcesteal.rebalances": "sǝɔuɐꞁɐqǝᴚ",
+  "configs.category.divorcesteal.april_fools": "sʇuǝʌƎ sꞁooℲ ꞁᴉɹdⱯ",
   "configs.divorcesteal.crafted_heart_limit": "ʇᴉɯᴉꞀ ʇɹɐǝH pǝʇɟɐɹƆ",
   "configs.divorcesteal.crafted_heart_limit.tooltip": "pǝsn ǝq ɹǝᵷuoꞁ ou uɐɔ sʇɹɐǝɥ pǝʇɟɐɹɔ ɥɔᴉɥʍ ʇɐ sʇɹɐǝɥ ɟo ɹǝqɯnu ǝɥ⟘",
   "configs.divorcesteal.default_hearts": "sʇɹɐǝH ʇꞁnɐɟǝᗡ",
@@ -88,6 +89,8 @@
   "configs.divorcesteal.revive_days.tooltip": "pǝꞁqɐsᴉp ᵷuᴉǝq ꞁɐʌᴉʌǝɹ-oʇnɐ sʇuǝsǝɹdǝɹ ⥝- ˙pǝʌᴉʌǝɹ ʎꞁꞁɐɔᴉʇɐɯoʇnɐ ǝq oʇ sǝʞɐʇ ʇᴉ sʎɐp ǝɟᴉꞁ-ꞁɐǝɹ ʎuɐɯ ʍoH",
   "configs.divorcesteal.revive_hearts": "sʇɹɐǝH ǝʌᴉʌǝᴚ",
   "configs.divorcesteal.revive_hearts.tooltip": "pǝʌᴉʌǝɹ ᵷuᴉǝq ɹǝʇɟɐ ɥʇᴉʍ ʇɹɐʇs sɹǝʎɐꞁd sʇɹɐǝɥ ɟo ɹǝqɯnu ǝɥ⟘",
+  "configs.divorcesteal.revive_beacon_gacha": "ɐɥɔɐ⅁ uoɔɐǝᗺ ǝʌᴉʌǝᴚ",
+  "configs.divorcesteal.revive_beacon_gacha.tooltip": "¡spuǝᴉɹɟ ɹnoʎ ɟo suoɔɐǝq ʎʇᴉɹɐɹ ʇsǝɥᵷᴉɥ ǝɥʇ ʇǝᵷ oʇ puᴉɹ⅁ ˙sǝᴉʇᴉɹɐɹ ǝʌɐɥ ɯǝɥʇ ʎq pǝꞁꞁoɹ sʇuɐdᴉɔᴉʇɹɐd puɐ 'ǝꞁqɐʇɟɐɹɔ ǝɹɐ suoɔɐǝᗺ ɐɥɔɐ⅁",
 
   "modmenu.descriptionTranslation.divorcesteal": "ԀWS ꞁɐǝʇsǝɟᴉꞀ ǝɥʇ ɥʇᴉʍ pǝʇɐᴉꞁᴉɟɟɐ ʇou 'ꞁɐǝʇsǝɔɹoʌᴉᗡ ɹoɟ poɯ ꞁɐᴉɔᴉɟɟo ǝɥ⟘",
   "modmenu.nameTranslation.divorcesteal": "ꞁɐǝʇsǝɔɹoʌᴉᗡ",
