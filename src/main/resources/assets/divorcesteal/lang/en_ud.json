@@ -66,6 +66,10 @@
   "commands.divorcesteal.withdraw.fail": "¡sʇɹɐǝɥ ǝɹoɯ ʎuɐ ʍɐɹpɥʇᴉʍ ʇou pꞁnoƆ",
   "commands.divorcesteal.withdraw.multiple": "sʇɹɐǝɥ %s ʍǝɹpɥʇᴉM",
   "commands.divorcesteal.withdraw.single": "ʇɹɐǝɥ ⥝ ʍǝɹpɥʇᴉM",
+  "commands.divorcesteal.gachaparticipant.add": "ʇsᴉꞀ ʇuɐdᴉɔᴉʇɹɐԀ ɐɥɔɐ⅁ oʇ %s pǝppⱯ",
+  "commands.divorcesteal.gachaparticipant.remove": "ʇsᴉꞀ ʇuɐdᴉɔᴉʇɹɐԀ ɐɥɔɐ⅁ ɯoɹɟ %s pǝʌoɯǝᴚ",
+  "commands.divorcesteal.gachaparticipant.list": "%s :sʇuɐdᴉɔᴉʇɹɐԀ ɐɥɔɐ⅁",
+  "commands.divorcesteal.gachaparticipant.list.empty": "pǝppɐ uǝǝq ǝʌɐɥ sʇuɐdᴉɔᴉʇɹɐd ɐɥɔɐᵷ oN",
 
   "configs.divorcesteal.screen_title": "sᵷᴉɟuoƆ ꞁɐǝʇsǝɔɹoʌᴉᗡ",
   "configs.category.divorcesteal.hearts": "sʇɹɐǝH",

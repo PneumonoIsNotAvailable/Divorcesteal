@@ -17,6 +17,7 @@ import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.pneumono.divorcesteal.hearts.HeartsUtil;
 import net.pneumono.divorcesteal.hearts.Participant;
+import net.pneumono.gacha.GachaDataSaving;
 import net.pneumono.gacha.GachaRarity;
 import net.pneumono.gacha.GachaRegistry;
 import org.jspecify.annotations.NonNull;
@@ -25,7 +26,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
-import java.util.UUID;
 
 public class GachaBeaconBlock extends BaseEntityBlock {
     public static final MapCodec<GachaBeaconBlock> CODEC = simpleCodec(GachaBeaconBlock::new);
@@ -87,7 +87,7 @@ public class GachaBeaconBlock extends BaseEntityBlock {
     }
 
     public static boolean canFunction(Level level) {
-        return level.isClientSide() || !HeartsUtil.getParticipantMap().getParticipants().isEmpty();
+        return level.isClientSide() || !getPossibleResults().isEmpty();
     }
 
     public static int totalTicks(float randomSpinMultiplier) {
@@ -157,12 +157,19 @@ public class GachaBeaconBlock extends BaseEntityBlock {
             rarity = GachaRarity.COMMON;
         }
 
-        List<NameAndId> validResults = new ArrayList<>(HeartsUtil.getParticipantMap().getParticipants().stream().map(Participant::getNameAndId).toList());
-        validResults.add(new NameAndId(UUID.fromString("4f609417-17a1-451e-b5cf-725c2bbe3ecd"), "leoonine"));
-        validResults.add(new NameAndId(UUID.fromString("8cd4bf01-840e-4201-811c-4e0b8d5b68e9"), "Pneumono_"));
+        List<NameAndId> validResults = getPossibleResults();
+
+        if (validResults.isEmpty()) return null;
 
         NameAndId nameAndId = validResults.get(random.nextIntBetweenInclusive(0, validResults.size() - 1));
 
         return new GachaResult(rarity, nameAndId);
+    }
+
+    public static List<NameAndId> getPossibleResults() {
+        List<NameAndId> validResults = new ArrayList<>();
+        validResults.addAll(HeartsUtil.getParticipantMap().getParticipants().stream().map(Participant::getNameAndId).toList());
+        validResults.addAll(GachaDataSaving.getGachaParticipantList());
+        return validResults;
     }
 }

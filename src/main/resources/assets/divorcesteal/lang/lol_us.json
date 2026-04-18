@@ -66,6 +66,10 @@
   "commands.divorcesteal.withdraw.fail": "Cant take more or u diez!!",
   "commands.divorcesteal.withdraw.multiple": "Tuk out %s hartz",
   "commands.divorcesteal.withdraw.single": "Tuk out 1 hart",
+  "commands.divorcesteal.gachaparticipant.add": "addid %s 2 GACHA katlist",
+  "commands.divorcesteal.gachaparticipant.remove": "removd %s from GACHA katlist",
+  "commands.divorcesteal.gachaparticipant.list": "GACHA KATZ: %s",
+  "commands.divorcesteal.gachaparticipant.list.empty": "no gacha cats :(",
 
   "configs.divorcesteal.screen_title": "Divorcesteal Changez",
   "configs.category.divorcesteal.hearts": "Harts",

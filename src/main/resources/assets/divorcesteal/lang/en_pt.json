@@ -66,6 +66,10 @@
   "commands.divorcesteal.withdraw.fail": "Ye can't withdraw any further 'earts!",
   "commands.divorcesteal.withdraw.multiple": "Withdrew %s hearts",
   "commands.divorcesteal.withdraw.single": "Withdrew 1 heart",
+  "commands.divorcesteal.gachaparticipant.add": "Added %s to th' gamblin' crew",
+  "commands.divorcesteal.gachaparticipant.remove": "Removed %s from th' gamblin' crew",
+  "commands.divorcesteal.gachaparticipant.list": "Gamblin' crew members: %s",
+  "commands.divorcesteal.gachaparticipant.list.empty": "No gamblin' crew members be upon th' deck",
 
   "configs.divorcesteal.screen_title": "Divorceplunder Ship Log",
   "configs.category.divorcesteal.hearts": "Hearts",

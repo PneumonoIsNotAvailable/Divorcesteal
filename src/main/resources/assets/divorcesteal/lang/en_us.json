@@ -66,6 +66,10 @@
   "commands.divorcesteal.withdraw.fail": "Could not withdraw any more hearts!",
   "commands.divorcesteal.withdraw.multiple": "Withdrew %s hearts",
   "commands.divorcesteal.withdraw.single": "Withdrew 1 heart",
+  "commands.divorcesteal.gachaparticipant.add": "Added %s to Gacha Participant List",
+  "commands.divorcesteal.gachaparticipant.remove": "Removed %s from Gacha Participant List",
+  "commands.divorcesteal.gachaparticipant.list": "Gacha Participants: %s",
+  "commands.divorcesteal.gachaparticipant.list.empty": "No gacha participants have been added",
 
   "configs.divorcesteal.screen_title": "Divorcesteal Configs",
   "configs.category.divorcesteal.hearts": "Hearts",

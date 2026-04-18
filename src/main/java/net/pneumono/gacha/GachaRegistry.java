@@ -121,5 +121,8 @@ public class GachaRegistry {
                 .register(entries -> entries.accept(GACHA_BEACON_ITEM));
 
         ComponentTooltipAppenderRegistry.addFirst(GACHA_DATA_COMPONENT);
+
+        GachaDataSaving.register();
+        GachaCommands.register();
     }
 }
