@@ -42,8 +42,8 @@ public class DivorcestealCommands {
             dispatcher.register(literal("divorcesteal")
                     .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                     .then(literal("participants")
-                            .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
                             .then(literal("add")
+                                    .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
                                     .then(argument("target", StringArgumentType.word())
                                             .executes(context -> executeParticipantsAdd(context.getSource(),
                                                     StringArgumentType.getString(context, "target")
@@ -51,8 +51,8 @@ public class DivorcestealCommands {
                                             .suggests(DivorcestealCommands::suggestParticipantsAdd)
                                     )
                             )
-                            .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
                             .then(literal("remove")
+                                    .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
                                     .then(argument("target", ParticipantArgumentType.participant())
                                             .executes(context -> executeParticipantsRemove(context.getSource(),
                                                     ParticipantArgumentType.getParticipant(context, "target")
