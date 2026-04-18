@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": "minecraft:end_crystal",
+    "#": "minecraft:recovery_compass",
     "+": "minecraft:nether_star",
-    "B": "minecraft:netherite_block",
+    "B": "minecraft:netherite_ingot",
     "C": "minecraft:sculk_catalyst",
     "H": "minecraft:creaking_heart",
     "P": "minecraft:dragon_breath"

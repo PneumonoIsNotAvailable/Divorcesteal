@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": "minecraft:end_crystal",
-    "I": "minecraft:netherite_ingot",
+    "#": "minecraft:wither_skeleton_skull",
+    "I": "minecraft:netherite_scrap",
     "T": "minecraft:totem_of_undying",
     "U": "minecraft:netherite_upgrade_smithing_template"
   },
