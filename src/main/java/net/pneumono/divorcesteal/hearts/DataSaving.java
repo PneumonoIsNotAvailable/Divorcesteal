@@ -60,10 +60,10 @@ public class DataSaving {
 
         Tag tag = compound.get("values");
 
-        DataResult<Pair<ParticipantMap, Tag>> result = ParticipantMap.CODEC.decode(NbtOps.INSTANCE, tag);
+        DataResult<ParticipantMap> result = ParticipantMap.CODEC.decode(NbtOps.INSTANCE, tag).map(Pair::getFirst);
         if (result.isSuccess()) {
             Divorcesteal.LOGGER.info("Successfully read hearts data");
-            return result.getOrThrow().getFirst();
+            return result.getOrThrow();
         } else {
             String message = null;
             if (result.error().isPresent()) {
@@ -97,7 +97,7 @@ public class DataSaving {
             if (result.error().isPresent()) {
                 message = result.error().get().message();
             }
-            Divorcesteal.LOGGER.error("Failed to serialize Hearts data: {}", message);
+            Divorcesteal.LOGGER.error("Failed to serialize hearts data: {}", message);
             return;
         }
 
@@ -107,7 +107,7 @@ public class DataSaving {
         try {
             NbtIo.writeCompressed(compound, path);
         } catch (IOException e) {
-            Divorcesteal.LOGGER.error("Failed to write Hearts data", e);
+            Divorcesteal.LOGGER.error("Failed to write hearts data", e);
             return;
         }
 
@@ -139,7 +139,7 @@ public class DataSaving {
 
         try {
             Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
-            Divorcesteal.LOGGER.info("Successfully backed up Hearts data to {}", destination);
+            Divorcesteal.LOGGER.info("Successfully backed up hearts data to {}", destination);
         } catch (IOException e) {
             Divorcesteal.LOGGER.error("Failed to backup Hearts data", e);
         }
