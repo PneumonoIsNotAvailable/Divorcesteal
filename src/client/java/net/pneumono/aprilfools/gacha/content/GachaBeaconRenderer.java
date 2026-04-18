@@ -176,7 +176,7 @@ public class GachaBeaconRenderer implements BlockEntityRenderer<GachaBeaconBlock
         poseStack.pushPose();
 
         poseStack.scale(-1, -1, 1);
-        poseStack.translate(-0.8125, -0.875, 0.1875);
+        poseStack.translate(-0.8125, -0.874, 0.1875);
 
         Material material = getCubeMaterial(rarity);
         TextureAtlasSprite sprite = this.materials.get(material);
