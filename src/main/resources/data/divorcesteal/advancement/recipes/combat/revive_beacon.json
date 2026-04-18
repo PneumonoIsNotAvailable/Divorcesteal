@@ -3,17 +3,10 @@
   "criteria": {
     "exists": {
       "trigger": "minecraft:tick"
-    },
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "divorcesteal:revive_beacon"
-      },
-      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_the_recipe",
       "exists"
     ]
   ],
