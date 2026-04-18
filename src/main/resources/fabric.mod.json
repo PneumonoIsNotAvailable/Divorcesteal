@@ -5,8 +5,23 @@
 	"name": "Divorcesteal",
 	"description": "The official mod for Divorcesteal, not affiliated with the Lifesteal SMP",
 	"authors": [
-		"Pneumono_"
+		"Pneumono"
 	],
+	"contact": {
+		"homepage": "https://modrinth.com/project/5WGMAZnY",
+		"sources": "https://github.com/PneumonoIsNotAvailable/Divorcesteal",
+		"issues": "https://github.com/PneumonoIsNotAvailable/Divorcesteal/issues"
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"divorcesteal.pneumono.donate": "https://ko-fi.com/pneumono",
+				"divorcesteal.pneumono.discord": "https://discord.gg/ap6wD2XUzs",
+				"divorcesteal.divorcesteal.donate": "https://ko-fi.com/divorcesteal",
+				"modmenu.modrinth": "https://modrinth.com/project/5WGMAZnY"
+			}
+		}
+	},
 	"license": "MIT",
 	"icon": "assets/divorcesteal/icon.png",
 	"environment": "*",

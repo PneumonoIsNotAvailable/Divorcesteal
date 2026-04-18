@@ -94,5 +94,8 @@
 
   "modmenu.descriptionTranslation.divorcesteal": "The official mod for Divorcesteal, not affiliated with the Lifesteal SMP",
   "modmenu.nameTranslation.divorcesteal": "Divorcesteal",
-  "modmenu.summaryTranslation.divorcesteal": "The official mod for Divorcesteal"
+  "modmenu.summaryTranslation.divorcesteal": "The official mod for Divorcesteal",
+  "divorcesteal.pneumono.donate": "Donate (Pneumono)",
+  "divorcesteal.pneumono.discord": "Discord (Pneumono)",
+  "divorcesteal.divorcesteal.donate": "Donate (Divorcesteal)"
 }

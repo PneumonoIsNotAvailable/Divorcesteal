@@ -94,5 +94,8 @@
 
   "modmenu.descriptionTranslation.divorcesteal": "Th' official mod fer Divorceplunder, not affiliated wi' th' SMP o' Stealin' Lives\n\nNow wi' support fer yer Pirate Parlance!",
   "modmenu.nameTranslation.divorcesteal": "Divorceplunder",
-  "modmenu.summaryTranslation.divorcesteal": "Th' official mod fer Divorceplunder"
+  "modmenu.summaryTranslation.divorcesteal": "Th' official mod fer Divorceplunder",
+  "divorcesteal.pneumono.donate": "Donate (Pneumono)",
+  "divorcesteal.pneumono.discord": "Discord (Pneumono)",
+  "divorcesteal.divorcesteal.donate": "Donate (Divorcesteal)"
 }
