@@ -21,3 +21,5 @@ the option to disable elytra and totems, and content from the April Fools event.
 
 This mod will be updated/backported to different versions as Divorcesteal itself requires.
 When the server moves away from a version, support for that version will be dropped.
+
+A full explanation of all features is available on the [Wiki](https://github.com/PneumonoIsNotAvailable/Divorcesteal/wiki).
