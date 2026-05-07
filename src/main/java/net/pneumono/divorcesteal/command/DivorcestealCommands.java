@@ -40,7 +40,6 @@ public class DivorcestealCommands {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> {
             dispatcher.register(literal("divorcesteal")
-                    .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                     .then(literal("participants")
                             .then(literal("add")
                                     .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
@@ -64,6 +63,7 @@ public class DivorcestealCommands {
                             )
                     )
                     .then(literal("hearts")
+                            .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                             .then(literal("get")
                                     .executes(context -> executeHeartsGet(context.getSource(),
                                             HeartsUtil.getParticipant(context.getSource().getPlayerOrException())
@@ -138,6 +138,7 @@ public class DivorcestealCommands {
                             )
                     )
                     .then(literal("revive")
+                            .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                             .then(argument("targets", ParticipantArgumentType.bannedParticipants())
                                     .executes(context -> executeRevive(context.getSource(),
                                             ParticipantArgumentType.getParticipants(context, "targets")
