@@ -12,7 +12,6 @@ public class AprilFoolsCommands {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, registrationEnvironment) -> {
             dispatcher.register(literal("divorcesteal").then(literal("aprilfools")
-                    .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                     .then(literal("gacha")
                             .then(literal("add")
                                     .requires(Commands.hasPermission(Commands.LEVEL_ADMINS))
