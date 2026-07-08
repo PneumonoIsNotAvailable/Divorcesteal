@@ -19,7 +19,7 @@ they should be excluded from the Participant List.
 The mod also adds several Divorcesteal-specific features, such as a netherite gear nerf,
 the option to disable elytra and totems, and content from the April Fools event.
 
-This mod will be updated/backported to different versions as Divorcesteal itself requires.
+This mod will only be updated/backported to different versions when it is needed by Divorcesteal itself.
 When the server moves away from a version, support for that version will be dropped.
 
 A full explanation of all features is available on the [Wiki](https://github.com/PneumonoIsNotAvailable/Divorcesteal/wiki).
