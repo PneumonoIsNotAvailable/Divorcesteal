@@ -41,12 +41,9 @@ public class DataSaving {
     }
 
     private static ParticipantMap read() {
-        Divorcesteal.LOGGER.info("Reading hearts data...");
-
         Path path = getHeartsPath();
 
         if (!path.toFile().exists()) {
-            Divorcesteal.LOGGER.info("No hearts data exists, creating empty data");
             return new ParticipantMap();
         }
 
@@ -62,7 +59,6 @@ public class DataSaving {
 
         DataResult<ParticipantMap> result = ParticipantMap.CODEC.decode(NbtOps.INSTANCE, tag).map(Pair::getFirst);
         if (result.isSuccess()) {
-            Divorcesteal.LOGGER.info("Successfully read hearts data");
             return result.getOrThrow();
         } else {
             String message = null;
@@ -76,8 +72,6 @@ public class DataSaving {
 
     // Saving is NOT done asynchronously, or else the server closes before it can finish saving heart data
     public static void save() {
-        Divorcesteal.LOGGER.info("Saving hearts data...");
-
         Path path = getHeartsPath();
 
         ParticipantMap state;
@@ -108,20 +102,14 @@ public class DataSaving {
             NbtIo.writeCompressed(compound, path);
         } catch (IOException e) {
             Divorcesteal.LOGGER.error("Failed to write hearts data", e);
-            return;
         }
-
-        Divorcesteal.LOGGER.info("Successfully saved hearts data");
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void makeBackup() {
-        Divorcesteal.LOGGER.info("Backing up hearts data...");
-
         Path source = getHeartsPath();
 
         if (!source.toFile().exists()) {
-            Divorcesteal.LOGGER.info("No hearts data exists to back up");
             return;
         }
 
@@ -139,7 +127,6 @@ public class DataSaving {
 
         try {
             Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
-            Divorcesteal.LOGGER.info("Successfully backed up hearts data to {}", destination);
         } catch (IOException e) {
             Divorcesteal.LOGGER.error("Failed to backup Hearts data", e);
         }

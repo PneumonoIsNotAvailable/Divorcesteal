@@ -39,12 +39,9 @@ public class GachaDataSaving {
     }
 
     private static List<NameAndId> read() {
-        Divorcesteal.LOGGER.info("Reading gacha data...");
-
         Path path = getPath();
 
         if (!path.toFile().exists()) {
-            Divorcesteal.LOGGER.info("No gacha data exists, creating empty data");
             return new ArrayList<>();
         }
 
@@ -60,7 +57,6 @@ public class GachaDataSaving {
 
         DataResult<List<NameAndId>> result = NameAndId.CODEC.listOf().decode(NbtOps.INSTANCE, tag).map(Pair::getFirst);
         if (result.isSuccess()) {
-            Divorcesteal.LOGGER.info("Successfully read gacha data");
             return new ArrayList<>(result.getOrThrow());
         } else {
             String message = null;
@@ -74,8 +70,6 @@ public class GachaDataSaving {
 
     // Saving is NOT done asynchronously, or else the server closes before it can finish saving gacha data
     public static void save() {
-        Divorcesteal.LOGGER.info("Saving gacha data...");
-
         Path path = getPath();
 
         List<NameAndId> list;
@@ -106,10 +100,7 @@ public class GachaDataSaving {
             NbtIo.writeCompressed(compound, path);
         } catch (IOException e) {
             Divorcesteal.LOGGER.error("Failed to write gacha data", e);
-            return;
         }
-
-        Divorcesteal.LOGGER.info("Successfully saved gacha data");
     }
 
     public static void register() {
