@@ -1,0 +1,8 @@
+{
+    "asset_id": "divorcesteal:entity/cat/duchess",
+    "spawn_conditions": [
+        {
+            "priority": 0
+        }
+    ]
+}
