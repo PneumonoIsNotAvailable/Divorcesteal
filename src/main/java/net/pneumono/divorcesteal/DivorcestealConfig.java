@@ -20,6 +20,9 @@ public class DivorcestealConfig {
     public static final BoundedIntegerConfiguration CRAFTED_HEART_LIMIT = register("crafted_heart_limit", new BoundedIntegerConfiguration(
             7, 1, 100, new ConfigSettings().category("hearts").loadType(LoadType.INSTANT)
     ));
+    public static final BooleanConfiguration ALLOW_HEART_ECHESTING = register("allow_heart_echesting", new BooleanConfiguration(
+            true, new ConfigSettings().category("hearts").loadType(LoadType.INSTANT)
+    ));
     public static final BooleanConfiguration DISABLE_ELYTRA = register("disable_elytra", new BooleanConfiguration(
             false, new ConfigSettings().category("rebalances").loadType(LoadType.INSTANT)
     ));
@@ -27,7 +30,7 @@ public class DivorcestealConfig {
             false, new ConfigSettings().category("rebalances").loadType(LoadType.INSTANT)
     ));
     public static final BooleanConfiguration NETHER_ROOF_INSTAKILL = register("nether_roof_instakill", new BooleanConfiguration(
-            true, new ConfigSettings().category("rebalances").loadType(LoadType.INSTANT)
+            false, new ConfigSettings().category("rebalances").loadType(LoadType.INSTANT)
     ));
     // Referenced in Resource Conditions for the crafting recipe and recipe advancement
     public static final BooleanConfiguration REVIVE_BEACON_GACHA = register("revive_beacon_gacha", new BooleanConfiguration(
