@@ -27,7 +27,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
                     target = "(Lnet/minecraft/network/chat/Component;ZLnet/minecraft/client/player/LocalPlayer;)Lnet/minecraft/client/gui/screens/DeathScreen;"
             )
     )
-    private DeathScreen setDeathbanScreen(Component message, boolean isHardcore, LocalPlayer player, Operation<DeathScreen> original) {
-        return DeathbanScreen.showShow(player) ? new DeathbanScreen(message, isHardcore, player) : original.call(message, isHardcore, player);
+    private DeathScreen setDeathbanScreen(Component causeOfDeath, boolean hardcore, LocalPlayer player, Operation<DeathScreen> original) {
+        return DeathbanScreen.showShow(player) ? new DeathbanScreen(causeOfDeath, hardcore, player) : original.call(causeOfDeath, hardcore, player);
     }
 }

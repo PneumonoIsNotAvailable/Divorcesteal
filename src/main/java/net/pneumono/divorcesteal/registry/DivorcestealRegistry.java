@@ -1,8 +1,8 @@
 package net.pneumono.divorcesteal.registry;
 
 import com.mojang.serialization.Codec;
-import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.item.v1.ItemComponentTooltipProviderRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -86,7 +86,7 @@ public class DivorcestealRegistry {
                 .mapColor(MapColor.COLOR_PINK)
                 .instrument(NoteBlockInstrument.HAT)
                 .strength(3.0F)
-                .lightLevel(state -> 15)
+                .lightLevel(_ -> 15)
                 .noOcclusion()
                 .isRedstoneConductor(Blocks::never)
                 .setId(key);
@@ -119,13 +119,13 @@ public class DivorcestealRegistry {
     }
 
     public static void registerDivorcestealContent() {
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.OP_BLOCKS).register(entries -> {
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.OP_BLOCKS).register(entries -> {
             entries.accept(HEART_ITEM);
             entries.accept(REVIVE_BEACON_ITEM);
         });
 
-        ComponentTooltipAppenderRegistry.addFirst(KILLED_BY_COMPONENT);
-        ComponentTooltipAppenderRegistry.addFirst(KILL_TARGET_COMPONENT);
-        ComponentTooltipAppenderRegistry.addFirst(CRAFTED_COMPONENT);
+        ItemComponentTooltipProviderRegistry.addFirst(KILLED_BY_COMPONENT);
+        ItemComponentTooltipProviderRegistry.addFirst(KILL_TARGET_COMPONENT);
+        ItemComponentTooltipProviderRegistry.addFirst(CRAFTED_COMPONENT);
     }
 }

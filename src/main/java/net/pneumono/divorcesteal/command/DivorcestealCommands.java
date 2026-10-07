@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.pneumono.divorcesteal.Divorcesteal;
@@ -333,7 +334,7 @@ public class DivorcestealCommands {
 
         ItemStack stack = new ItemStack(DivorcestealRegistry.HEART_ITEM, heartsWithdrawn);
         if (!stack.isEmpty() && !player.getInventory().add(stack)) {
-            ItemEntity itemEntity = player.drop(stack, false);
+            ItemEntity itemEntity = player.drop(stack, false, Prediction.SERVER_ONLY);
             if (itemEntity != null) {
                 itemEntity.setNoPickUpDelay();
             }

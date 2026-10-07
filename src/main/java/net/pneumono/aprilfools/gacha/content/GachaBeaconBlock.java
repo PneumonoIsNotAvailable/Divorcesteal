@@ -1,6 +1,5 @@
 package net.pneumono.aprilfools.gacha.content;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.util.RandomSource;
@@ -28,13 +27,6 @@ import java.util.List;
 import java.util.OptionalInt;
 
 public class GachaBeaconBlock extends BaseEntityBlock {
-    public static final MapCodec<GachaBeaconBlock> CODEC = simpleCodec(GachaBeaconBlock::new);
-
-    @Override
-    protected @NonNull MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
-
     public static final int POSSIBLE_RESULT_CAP = 50;
     public static final int LEVER_PULL_TICKS = 10;
     public static final int AVERAGE_CHANGES = 40;

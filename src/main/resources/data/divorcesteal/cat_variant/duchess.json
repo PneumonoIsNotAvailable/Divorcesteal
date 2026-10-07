@@ -1,5 +1,6 @@
 {
-    "asset_id": "divorcesteal:entity/cat/duchess",
+    "asset_id": "divorcesteal:entity/cat/cat_duchess",
+    "baby_asset_id": "divorcesteal:entity/cat/cat_duchess_baby",
     "spawn_conditions": [
         {
             "priority": 0

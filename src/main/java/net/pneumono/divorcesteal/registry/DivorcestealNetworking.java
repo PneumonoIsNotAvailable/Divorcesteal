@@ -18,6 +18,6 @@ public class DivorcestealNetworking {
     );
 
     public static void registerDivorcestealNetworking() {
-        PayloadTypeRegistry.playS2C().register(ReviveBeaconInfoS2CPayload.ID, ReviveBeaconInfoS2CPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ReviveBeaconInfoS2CPayload.ID, ReviveBeaconInfoS2CPayload.CODEC);
     }
 }

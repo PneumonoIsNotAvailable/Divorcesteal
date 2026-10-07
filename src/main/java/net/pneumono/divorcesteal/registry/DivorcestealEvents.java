@@ -26,7 +26,7 @@ public class DivorcestealEvents {
         ServerPlayerEvents.JOIN.register(DivorcestealEvents::join);
         ServerLivingEntityEvents.AFTER_DEATH.register(DivorcestealEvents::afterDeath);
         ServerPlayerEvents.AFTER_RESPAWN.register(DivorcestealEvents::afterRespawn);
-        ServerTickEvents.START_WORLD_TICK.register(DivorcestealEvents::startWorldTick);
+        ServerTickEvents.START_LEVEL_TICK.register(DivorcestealEvents::startWorldTick);
         ServerLifecycleEvents.SERVER_STARTING.register(DivorcestealEvents::serverStarting);
         ServerLifecycleEvents.AFTER_SAVE.register(DivorcestealEvents::afterSave);
     }

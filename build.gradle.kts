@@ -1,10 +1,10 @@
 plugins {
-	id("fabric-loom") version "1.15-SNAPSHOT"
+	id("net.fabricmc.fabric-loom")
 	id("maven-publish")
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_21
-java.targetCompatibility = JavaVersion.VERSION_21
+java.sourceCompatibility = JavaVersion.VERSION_25
+java.targetCompatibility = JavaVersion.VERSION_25
 
 version = "${project.property("mod_version")}"
 
@@ -45,17 +45,14 @@ loom {
 
 dependencies {
 	minecraft("com.mojang:minecraft:${property("minecraft_version")}")
-	mappings(loom.officialMojangMappings())
-	modImplementation("net.fabricmc:fabric-loader:${property("loader_version")}")
+
+	implementation("net.fabricmc:fabric-loader:${property("loader_version")}")
 
 	// Fabric API
-	modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}")
+	implementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}")
 
 	// Core mod
-	modImplementation("maven.modrinth:pneumono_core:${property("core_version")}")
-
-	// ModMenu
-	modImplementation("com.terraformersmc:modmenu:${property("modmenu_version")}")
+	implementation("maven.modrinth:pneumono_core:${property("core_version")}")
 }
 
 tasks {
@@ -72,7 +69,7 @@ tasks {
 	}
 
 	withType<JavaCompile> {
-		options.release.set(21)
+		options.release.set(25)
 	}
 
 	java {

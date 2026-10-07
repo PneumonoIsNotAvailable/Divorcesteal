@@ -1,7 +1,7 @@
 package net.pneumono.aprilfools.gacha;
 
-import net.fabricmc.fabric.api.item.v1.ComponentTooltipAppenderRegistry;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.item.v1.ItemComponentTooltipProviderRegistry;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
@@ -112,13 +112,13 @@ public class GachaRegistry {
     }
 
     public static void register() {
-        PayloadTypeRegistry.playS2C().register(GachaBeaconSpinDataS2CPayload.ID, GachaBeaconSpinDataS2CPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(GachaBeaconResultS2CPayload.ID, GachaBeaconResultS2CPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(GachaBeaconSpinDataS2CPayload.ID, GachaBeaconSpinDataS2CPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(GachaBeaconResultS2CPayload.ID, GachaBeaconResultS2CPayload.CODEC);
 
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.OP_BLOCKS)
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.OP_BLOCKS)
                 .register(entries -> entries.accept(GACHA_BEACON_ITEM));
 
-        ComponentTooltipAppenderRegistry.addFirst(GACHA_DATA_COMPONENT);
+        ItemComponentTooltipProviderRegistry.addFirst(GACHA_DATA_COMPONENT);
 
         GachaDataSaving.register();
     }

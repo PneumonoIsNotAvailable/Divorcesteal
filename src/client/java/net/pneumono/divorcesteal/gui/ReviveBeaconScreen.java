@@ -2,7 +2,7 @@ package net.pneumono.divorcesteal.gui;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -44,21 +44,21 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
     private boolean scrollbarClicked = false;
 
     public ReviveBeaconScreen(ReviveBeaconMenu handler, Inventory playerInventory, Component title) {
-        super(handler, playerInventory, title);
-        this.imageWidth = 238;
-        this.imageHeight = 179;
+        super(handler, playerInventory, title, 238, 179);
         this.inventoryLabelX = 39;
         this.inventoryLabelY = this.imageHeight - 93;
     }
 
     @Override
-    public void render(@NonNull GuiGraphics context, int mouseX, int mouseY, float deltaTicks) {
-        super.render(context, mouseX, mouseY, deltaTicks);
-        this.renderTooltip(context, mouseX, mouseY);
+    public void extractRenderState(@NonNull GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks) {
+        super.extractRenderState(context, mouseX, mouseY, deltaTicks);
+        extractTooltip(context, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float deltaTicks, int mouseX, int mouseY) {
+    public void extractBackground(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
+        super.extractBackground(graphics, mouseX, mouseY, deltaTicks);
+
         graphics.blit(
                 RenderPipelines.GUI_TEXTURED, TEXTURE,
                 this.leftPos, this.topPos,
@@ -79,7 +79,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
         renderReviveButton(graphics, mouseX, mouseY);
     }
 
-    private void renderInputSlot(GuiGraphics graphics, int mouseX, int mouseY, Slot slot, Identifier texture, Component text) {
+    private void renderInputSlot(GuiGraphicsExtractor graphics, int mouseX, int mouseY, Slot slot, Identifier texture, Component text) {
         if (slot.hasItem()) return;
 
         graphics.blitSprite(
@@ -93,9 +93,9 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
         }
     }
 
-    private void renderWantedPoster(GuiGraphics graphics, int mouseX, int mouseY) {
+    private void renderWantedPoster(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         Component wantedText = Component.translatable("divorcesteal.gui.revive_beacon.wanted");
-        graphics.drawString(this.font,
+        graphics.text(this.font,
                 wantedText,
                 this.leftPos + 43 - (font.width(wantedText) / 2), this.topPos + 28,
                 CommonColors.DARK_GRAY, false
@@ -105,7 +105,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
         if (target != null) {
             ItemStack targetHeadStack = new ItemStack(Items.PLAYER_HEAD);
             targetHeadStack.set(DataComponents.PROFILE, target);
-            graphics.renderItem(targetHeadStack, this.leftPos + 35, this.topPos + 41);
+            graphics.item(targetHeadStack, this.leftPos + 35, this.topPos + 41);
             if (this.isHovering(35, 41, 16, 16, mouseX, mouseY)) {
                 Component targetTooltipText = target.name().map(Component::literal).orElseGet(
                         () -> Component.translatable("divorcesteal.unknown")
@@ -115,7 +115,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
         }
     }
 
-    private void renderPlayerSelect(GuiGraphics graphics, int mouseX, int mouseY) {
+    private void renderPlayerSelect(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         Identifier scrollTexture = canScroll() ? SCROLLER_TEXTURE : SCROLLER_DISABLED_TEXTURE;
         int scrollOffset = (int)(39.0F * this.scrollPosition);
         graphics.blitSprite(RenderPipelines.GUI_TEXTURED, scrollTexture, this.leftPos + 218, this.topPos + 22 + scrollOffset, 12, 15);
@@ -135,7 +135,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
     }
 
     private void renderSelectablePlayer(
-            GuiGraphics graphics,
+            GuiGraphicsExtractor graphics,
             int mouseX, int mouseY,
             int menuX, int menuY,
             ResolvableProfile profile,
@@ -159,7 +159,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
 
         ItemStack targetHeadStack = new ItemStack(Items.PLAYER_HEAD);
         targetHeadStack.set(DataComponents.PROFILE, profile);
-        graphics.renderItem(targetHeadStack, finalX + 1, finalY + 1);
+        graphics.item(targetHeadStack, finalX + 1, finalY + 1);
 
         if (highlighted) {
             Component text = profile.name().map(Component::literal).orElseGet(
@@ -169,7 +169,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
         }
     }
 
-    private void renderReviveButton(GuiGraphics graphics, int mouseX, int mouseY) {
+    private void renderReviveButton(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         if (this.menu.canRevive()) {
             int buttonX = this.leftPos + 87;
             int buttonY = this.topPos + 74;
@@ -180,7 +180,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
             graphics.blitSprite(RenderPipelines.GUI_TEXTURED, buttonTexture, buttonX, buttonY, 64, 11);
 
             Component reviveText = Component.translatable("divorcesteal.gui.revive_beacon.revive");
-            graphics.drawString(this.font,
+            graphics.text(this.font,
                     reviveText,
                     buttonX + 32 - (font.width(reviveText) / 2), buttonY + 2,
                     highlighted ? -128 : -9937334, false
@@ -248,7 +248,7 @@ public class ReviveBeaconScreen extends AbstractContainerScreen<ReviveBeaconMenu
                     SimpleSoundInstance.forUI(DivorcestealRegistry.REVIVE_BEACON_SELECT_SOUND, 1.0F)
             );
             Objects.requireNonNull(this.minecraft.gameMode).handleInventoryButtonClick(this.menu.containerId, -2);
-            this.minecraft.setScreen(null);
+            this.minecraft.gui.setScreen(null);
             return true;
         }
 

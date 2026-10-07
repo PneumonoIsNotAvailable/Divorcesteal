@@ -1,7 +1,7 @@
 package net.pneumono.aprilfools.gacha.content;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -11,7 +11,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -54,8 +54,7 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
     private long age = 0;
 
     public GachaBeaconScreen(GachaBeaconMenu abstractContainerMenu, Inventory inventory, Component title) {
-        super(abstractContainerMenu, inventory, title);
-        this.imageHeight = 169;
+        super(abstractContainerMenu, inventory, title, 176, 169);
         this.inventoryLabelY = 75;
     }
 
@@ -84,8 +83,7 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
         return mouseX >= leverX && mouseX < leverX + 22 && mouseY >= leverY && mouseY < leverY + 22;
     }
 
-    @Override
-    protected void renderBg(@NonNull GuiGraphics graphics, float tickProgress, int mouseX, int mouseY) {
+    public void extractBackground(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float tickProgress) {
         if (this.menu.getState() != GachaBeaconState.ROLLED) {
             int spinTicks = this.menu.getSpinTicks();
             int shake = spinTicks == 3 ? 2 : 0;
@@ -95,7 +93,7 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
         }
     }
 
-    private void renderResultBg(GuiGraphics graphics, GachaResult result, float tickProgress) {
+    private void renderResultBg(GuiGraphicsExtractor graphics, GachaResult result, float tickProgress) {
         graphics.blit(
                 RenderPipelines.GUI_TEXTURED, TEXTURE,
                 this.leftPos, this.topPos,
@@ -111,7 +109,7 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
         }
     }
 
-    private void renderSpinBg(GuiGraphics graphics, int mouseX, int mouseY, int spinTicks, float tickProgress, int shake) {
+    private void renderSpinBg(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int spinTicks, float tickProgress, int shake) {
         graphics.blit(
                 RenderPipelines.GUI_TEXTURED, TEXTURE,
                 this.leftPos, this.topPos + shake,
@@ -131,7 +129,7 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
         renderLever(graphics, mouseX, mouseY, spinTicks + 1, shake);
     }
 
-    private void renderResult(GuiGraphics graphics, GachaResult result, float tickProgress) {
+    private void renderResult(GuiGraphicsExtractor graphics, GachaResult result, float tickProgress) {
         graphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED, getResultTexture(result),
                 this.leftPos + 60, this.topPos + 17,
@@ -140,7 +138,7 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
 
         renderResultPlayer(graphics, result, tickProgress);
 
-        graphics.drawCenteredString(
+        graphics.centeredText(
                 this.font, Component.translatable(result.rarity().getTranslationKey()),
                 this.leftPos + 88, this.topPos + 62,
                 CommonColors.WHITE
@@ -161,9 +159,9 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
         };
     }
 
-    private void renderResultPlayer(GuiGraphics graphics, GachaResult result, float tickProgress) {
+    private void renderResultPlayer(GuiGraphicsExtractor graphics, GachaResult result, float tickProgress) {
         AvatarRenderState state = new AvatarRenderState();
-        state.entityType = EntityType.PLAYER;
+        state.entityType = EntityTypes.PLAYER;
         state.skin = this.minecraft.playerSkinRenderCache()
                 .getOrDefault(getProfile(result.nameAndId().id())).playerSkin();
         int x0 = this.leftPos + 61;
@@ -182,14 +180,14 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
         Quaternionf angle = new Quaternionf().rotationXYZ(0, (float) (rotationDegrees * Math.PI / 180), (float) Math.PI);
 
         int angleMaybeIdk = 25;
-        graphics.submitEntityRenderState(
+        graphics.entity(
                 state,
                 angleMaybeIdk, translation, angle, null,
                 x0, y0, x1, y1
         );
     }
 
-    private void renderWheel(GuiGraphics graphics, float spinTicks, int shake) {
+    private void renderWheel(GuiGraphicsExtractor graphics, float spinTicks, int shake) {
         double change = GachaBeaconBlock.spinTickDoubleFunction(spinTicks, this.menu.getRandomSpinMultiplier());
 
         double changeDifference = change - ((int) change);
@@ -211,7 +209,7 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
         graphics.pose().popMatrix();
     }
 
-    private void renderWheelFace(GuiGraphics graphics, GachaResult result, double rotation) {
+    private void renderWheelFace(GuiGraphicsExtractor graphics, GachaResult result, double rotation) {
         graphics.pose().pushMatrix();
 
         float yOffset = (float) (27 - (DIAMETER * Math.cos(rotation - ANGLE)));
@@ -227,7 +225,7 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
             ItemStack resultHeadStack = new ItemStack(Items.PLAYER_HEAD);
             ResolvableProfile profile = getProfile(result.nameAndId().id());
             resultHeadStack.set(DataComponents.PROFILE, profile);
-            graphics.renderItem(resultHeadStack, 19, 3);
+            graphics.item(resultHeadStack, 19, 3);
         }
 
         graphics.pose().popMatrix();
@@ -257,7 +255,7 @@ public class GachaBeaconScreen extends AbstractContainerScreen<GachaBeaconMenu> 
         };
     }
 
-    private void renderLever(GuiGraphics graphics, int mouseX, int mouseY, int leverState, int shake) {
+    private void renderLever(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int leverState, int shake) {
         Identifier texture = switch (leverState) {
             case 0 -> isMouseInLeverArea(mouseX, mouseY) ? GACHA_LEVER_SELECTED_TEXTURE : GACHA_LEVER_1_TEXTURE;
             case 1 -> GACHA_LEVER_2_TEXTURE;

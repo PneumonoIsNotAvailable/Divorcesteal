@@ -31,9 +31,6 @@
 		],
 		"client": [
 			"net.pneumono.divorcesteal.DivorcestealClient"
-		],
-		"modmenu": [
-			"net.pneumono.divorcesteal.DivorcestealModMenu"
 		]
 	},
 	"mixins": [
@@ -46,8 +43,8 @@
 	"accessWidener": "divorcesteal.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.16.14",
-		"minecraft": "1.21.11",
-		"java": ">=21",
+		"minecraft": "26.3",
+		"java": ">=25",
 		"fabric-api": "*",
 		"pneumonocore": "*"
 	}

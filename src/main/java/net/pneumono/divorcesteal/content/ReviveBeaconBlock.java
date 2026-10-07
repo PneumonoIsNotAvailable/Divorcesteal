@@ -1,6 +1,5 @@
 package net.pneumono.divorcesteal.content;
 
-import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -31,15 +30,9 @@ import java.util.OptionalInt;
 import java.util.UUID;
 
 public class ReviveBeaconBlock extends BaseEntityBlock {
-    public static final MapCodec<ReviveBeaconBlock> CODEC = simpleCodec(ReviveBeaconBlock::new);
 
     public ReviveBeaconBlock(Properties settings) {
         super(settings);
-    }
-
-    @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Nullable
@@ -53,7 +46,7 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof ReviveBeaconBlockEntity blockEntity) {
             KillTargetComponent killTargetComponent = blockEntity.getOrCreateTarget(player.getUUID());
             if (killTargetComponent == null) {
-                player.displayClientMessage(Component.translatable("block.divorcesteal.revive_beacon.fail_roll"), true);
+                player.sendOverlayMessage(Component.translatable("block.divorcesteal.revive_beacon.fail_roll"));
                 return InteractionResult.SUCCESS;
             }
 

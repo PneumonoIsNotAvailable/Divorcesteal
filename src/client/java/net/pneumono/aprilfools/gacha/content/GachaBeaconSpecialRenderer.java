@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.pneumono.aprilfools.gacha.GachaRegistry;
 import org.joml.Vector3fc;
@@ -23,10 +22,9 @@ public class GachaBeaconSpecialRenderer implements SpecialModelRenderer<GachaRes
     @Override
     public void submit(
             @Nullable GachaResult data,
-            @NonNull ItemDisplayContext context,
             @NonNull PoseStack poseStack,
             @NonNull SubmitNodeCollector collector,
-            int lightCoords, int j, boolean bl, int k
+            int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor
     ) {
         if (data != null) {
             this.renderer.submitWithPlayer(
@@ -50,7 +48,7 @@ public class GachaBeaconSpecialRenderer implements SpecialModelRenderer<GachaRes
         return stack.get(GachaRegistry.GACHA_DATA_COMPONENT);
     }
 
-    public record Unbaked() implements SpecialModelRenderer.Unbaked {
+    public record Unbaked() implements SpecialModelRenderer.Unbaked<GachaResult> {
         public static final Unbaked INSTANCE = new Unbaked();
         public static final MapCodec<GachaBeaconSpecialRenderer.Unbaked> MAP_CODEC = MapCodec.unit(INSTANCE);
 
@@ -60,7 +58,7 @@ public class GachaBeaconSpecialRenderer implements SpecialModelRenderer<GachaRes
         }
 
         @Override
-        public SpecialModelRenderer<?> bake(SpecialModelRenderer.@NonNull BakingContext bakingContext) {
+        public SpecialModelRenderer<GachaResult> bake(SpecialModelRenderer.@NonNull BakingContext bakingContext) {
             return new GachaBeaconSpecialRenderer(new GachaBeaconRenderer(bakingContext));
         }
     }

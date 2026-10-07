@@ -21,11 +21,11 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.item.component.ResolvableProfile;
 import net.minecraft.world.level.Level;
@@ -39,35 +39,35 @@ import org.jspecify.annotations.Nullable;
 import java.util.*;
 
 public class GachaBeaconRenderer implements BlockEntityRenderer<GachaBeaconBlockEntity, GachaBeaconRenderState> {
-    public static final Material UNROLLED_CUBE_TEXTURE = getMaterial("unrolled");
-    public static final Material COMMON_CUBE_TEXTURE = getMaterial("common");
-    public static final Material UNCOMMON_CUBE_TEXTURE = getMaterial("uncommon");
-    public static final Material RARE_CUBE_TEXTURE = getMaterial("rare");
-    public static final Material EPIC_CUBE_TEXTURE = getMaterial("epic");
-    public static final Material LEGENDARY_CUBE_TEXTURE = getMaterial("legendary");
-    public static final Material MYTHIC_CUBE_TEXTURE = getMaterial("mythic");
+    public static final SpriteId UNROLLED_CUBE_TEXTURE = getSpriteId("unrolled");
+    public static final SpriteId COMMON_CUBE_TEXTURE = getSpriteId("common");
+    public static final SpriteId UNCOMMON_CUBE_TEXTURE = getSpriteId("uncommon");
+    public static final SpriteId RARE_CUBE_TEXTURE = getSpriteId("rare");
+    public static final SpriteId EPIC_CUBE_TEXTURE = getSpriteId("epic");
+    public static final SpriteId LEGENDARY_CUBE_TEXTURE = getSpriteId("legendary");
+    public static final SpriteId MYTHIC_CUBE_TEXTURE = getSpriteId("mythic");
 
     private final PlayerSkinRenderCache playerSkinRenderCache;
-    private final MaterialSet materials;
+    private final SpriteGetter spriteGetter;
     private final PlayerModel widePlayerModel;
     private final PlayerModel slimPlayerModel;
     private final ModelPart cube;
 
-    private static Material getMaterial(String name) {
+    private static SpriteId getSpriteId(String name) {
         return Sheets.BLOCKS_MAPPER.apply(Divorcesteal.id("gacha_beacon_" + name));
     }
 
     public GachaBeaconRenderer(BlockEntityRendererProvider.Context context) {
-        this(context.playerSkinRenderCache(), context.materials(), context.entityModelSet());
+        this(context.playerSkinRenderCache(), context.sprites(), context.entityModelSet());
     }
 
     public GachaBeaconRenderer(SpecialModelRenderer.BakingContext context) {
-        this(context.playerSkinRenderCache(), context.materials(), context.entityModelSet());
+        this(context.playerSkinRenderCache(), context.sprites(), context.entityModelSet());
     }
 
-    public GachaBeaconRenderer(PlayerSkinRenderCache cache, MaterialSet materials, EntityModelSet modelSet) {
+    public GachaBeaconRenderer(PlayerSkinRenderCache cache, SpriteGetter spriteGetter, EntityModelSet modelSet) {
         this.playerSkinRenderCache = cache;
-        this.materials = materials;
+        this.spriteGetter = spriteGetter;
         this.widePlayerModel = new PlayerModel(modelSet.bakeLayer(ModelLayers.PLAYER), false);
         this.slimPlayerModel = new PlayerModel(modelSet.bakeLayer(ModelLayers.PLAYER_SLIM), true);
         this.cube = modelSet.bakeLayer(GachaClientRegistry.GACHA_RARITY_CUBE);
@@ -153,7 +153,7 @@ public class GachaBeaconRenderer implements BlockEntityRenderer<GachaBeaconBlock
         submitCube(displayPlayer.rarity(), poseStack, collector, lightCoords, breakProgress);
         submitPlayer(
                 rotation, displayPlayer.modelType(), displayPlayer.renderType(),
-                poseStack, collector, lightCoords, breakProgress
+                poseStack, collector, lightCoords
         );
     }
 
@@ -178,15 +178,19 @@ public class GachaBeaconRenderer implements BlockEntityRenderer<GachaBeaconBlock
         poseStack.scale(-1, -1, 1);
         poseStack.translate(-0.8125, -0.874, 0.1875);
 
-        Material material = getCubeMaterial(rarity);
-        TextureAtlasSprite sprite = this.materials.get(material);
+        SpriteId spriteId = getCubeSprite(rarity);
+        TextureAtlasSprite sprite = this.spriteGetter.get(spriteId);
+        RenderType renderType = spriteId.renderType(RenderTypes::entityTranslucent);
         collector.submitModelPart(
                 this.cube, poseStack,
-                material.renderType(RenderTypes::entityTranslucent),
+                renderType,
                 lightCoords, OverlayTexture.NO_OVERLAY,
                 sprite,
-                -1, breakProgress
+                -1
         );
+        if (breakProgress != null) {
+            collector.submitCrumblingOverlay(this.cube, poseStack, renderType, lightCoords, OverlayTexture.NO_OVERLAY, -1, breakProgress);
+        }
 
         poseStack.popPose();
     }
@@ -197,15 +201,14 @@ public class GachaBeaconRenderer implements BlockEntityRenderer<GachaBeaconBlock
             RenderType renderType,
             PoseStack poseStack,
             SubmitNodeCollector collector,
-            int lightCoords,
-            ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress
+            int lightCoords
     ) {
         poseStack.pushPose();
 
         poseStack.scale(-1, -1, 1);
         poseStack.translate(-0.5, -0.5625, 0.5);
         poseStack.scale(0.25f, 0.25f, 0.25f);
-        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
+        poseStack.rotate(Axis.YP.rotationDegrees(rotation));
 
         PlayerModel model = modelType == PlayerModelType.WIDE ? this.widePlayerModel : this.slimPlayerModel;
         AvatarRenderState avatarState = new AvatarRenderState();
@@ -213,13 +216,13 @@ public class GachaBeaconRenderer implements BlockEntityRenderer<GachaBeaconBlock
                 model, avatarState,
                 poseStack, renderType,
                 lightCoords, OverlayTexture.NO_OVERLAY,
-                0, breakProgress
+                0
         );
 
         poseStack.popPose();
     }
 
-    private Material getCubeMaterial(@Nullable GachaRarity rarity) {
+    private SpriteId getCubeSprite(@Nullable GachaRarity rarity) {
         if (rarity == null) return UNROLLED_CUBE_TEXTURE;
         return switch (rarity) {
             case COMMON -> COMMON_CUBE_TEXTURE;

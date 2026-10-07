@@ -1,4 +1,4 @@
-accessWidener v2 named
+accessWidener v2 official
 
 accessible field net/minecraft/client/gui/screens/DeathScreen delayTicker I
 accessible field net/minecraft/client/gui/screens/DeathScreen exitButtons Ljava/util/List;

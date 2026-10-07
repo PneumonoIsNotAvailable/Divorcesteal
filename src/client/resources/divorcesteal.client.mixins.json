@@ -1,11 +1,11 @@
 {
     "required": true,
     "package": "net.pneumono.divorcesteal.mixin.client",
-    "compatibilityLevel": "JAVA_21",
+    "compatibilityLevel": "JAVA_25",
     "client": [
         "ClientPacketListenerMixin",
         "DeathScreenMixin",
-        "MinecraftMixin"
+        "GuiMixin"
     ],
     "injectors": {
         "defaultRequire": 1
