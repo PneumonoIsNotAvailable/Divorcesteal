@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.world.level.Level;
 import net.pneumono.divorcesteal.DivorcestealConfig;
 import net.pneumono.divorcesteal.content.component.KilledByComponent;
 import net.pneumono.divorcesteal.hearts.*;
@@ -80,17 +81,23 @@ public class DivorcestealEvents {
     }
 
     private static void startWorldTick(ServerLevel level) {
-        if (level.getGameTime() % 200 != 0) return;
+        if (DivorcestealConfig.NETHER_ROOF_INSTAKILL.getValue() && level.dimension().equals(Level.NETHER)) {
+            for (ServerPlayer player : level.players()) {
+                if (player.getY() >= 128) {
+                    player.hurtServer(level, level.damageSources().source(DivorcestealRegistry.NETHER_ROOF_DAMAGE), Float.MAX_VALUE);
+                }
+            }
+        }
 
-        if (DivorcestealConfig.REVIVE_DAYS.getValue() < 0) return;
+        if (DivorcestealConfig.REVIVE_DAYS.getValue() >= 0 && level.getGameTime() % 200 == 0) {
+            for (Participant participant : HeartsUtil.getParticipantMap().getParticipants()) {
 
-        for (Participant participant : HeartsUtil.getParticipantMap().getParticipants()) {
+                if (participant.getBanDate() != null && DateUtils.addDays(
+                        participant.getBanDate(), DivorcestealConfig.REVIVE_DAYS.getValue()
+                ).before(new Date())) {
 
-            if (participant.getBanDate() != null && DateUtils.addDays(
-                    participant.getBanDate(), DivorcestealConfig.REVIVE_DAYS.getValue()
-            ).before(new Date())) {
-
-                HeartsUtil.revive(level, participant.getUuid());
+                    HeartsUtil.revive(level, participant.getUuid());
+                }
             }
         }
     }

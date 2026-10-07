@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -66,6 +67,8 @@ public class DivorcestealRegistry {
             Divorcesteal.id("revive_beacon"),
             new MenuType<>(ReviveBeaconMenu::new, FeatureFlagSet.of())
     );
+
+    public static final ResourceKey<DamageType> NETHER_ROOF_DAMAGE = ResourceKey.create(Registries.DAMAGE_TYPE, Divorcesteal.id("nether_roof"));
 
     public static final SoundEvent USE_HEART_SOUND = registerSoundEvent("item.heart.use");
     public static final SoundEvent USE_REVIVE_BEACON_SOUND = registerSoundEvent("item.revive_beacon.use");
