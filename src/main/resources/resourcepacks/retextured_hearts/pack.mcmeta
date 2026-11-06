@@ -4,7 +4,7 @@
             "type": "translatable",
             "translate": "divorcesteal.resource_pack.retextured_hearts.description"
         },
-        "min_format": 75,
-        "max_format": 75
+        "min_format": 97,
+        "max_format": 97
     }
 }
