@@ -11,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.references.ItemIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
@@ -35,6 +36,8 @@ import net.pneumono.divorcesteal.content.component.CraftedComponent;
 import net.pneumono.divorcesteal.content.component.KillTargetComponent;
 import net.pneumono.divorcesteal.content.component.KilledByComponent;
 
+import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class DivorcestealRegistry {
@@ -82,6 +85,10 @@ public class DivorcestealRegistry {
     public static final Identifier DEATHBAN_PLAYER_STAT = registerStat("deathban_player");
     public static final Identifier DEATHBAN_SELF_STAT = registerStat("deathban_self");
     public static final Identifier INTERACT_WITH_REVIVE_BEACON_STAT = registerStat("interact_with_revive_beacon");
+
+    public static final Map<ResourceKey<Item>, Consumer<Item.Properties>> ITEM_PROPERTY_MODIFIERS = Map.of(
+            ItemIds.TIPPED_ARROW, p -> p.stacksTo(16)
+    );
 
     private static ReviveBeaconBlock registerReviveBeaconBlock() {
         ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, Divorcesteal.id("revive_beacon"));
