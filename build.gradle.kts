@@ -41,6 +41,12 @@ loom {
 			sourceSet(sourceSets["client"])
 		}
 	}
+
+	runs {
+		getByName("client") {
+			jvmArguments.add("-Ddevauth.enabled=true")
+		}
+	}
 }
 
 dependencies {
