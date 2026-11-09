@@ -18,12 +18,13 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -87,7 +88,12 @@ public class DivorcestealRegistry {
     public static final Identifier INTERACT_WITH_REVIVE_BEACON_STAT = registerStat("interact_with_revive_beacon");
 
     public static final Map<ResourceKey<Item>, Consumer<Item.Properties>> ITEM_PROPERTY_MODIFIERS = Map.of(
-            ItemIds.TIPPED_ARROW, p -> p.stacksTo(16)
+            ItemIds.TIPPED_ARROW, p -> p.stacksTo(16),
+            ItemIds.MACE, p -> p.attributes(ItemAttributeModifiers.builder()
+                    .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 1.0, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -3.4F, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                    .build()
+            )
     );
 
     private static ReviveBeaconBlock registerReviveBeaconBlock() {

@@ -11,14 +11,14 @@ public class MaceRebalance {
         double fallDistance = attacker.fallDistance;
         double damage;
         if (fallDistance <= 3.0) {
-            damage = 4.0 * fallDistance;
+            damage = 2.0 * fallDistance;
         } else if (fallDistance <= 8.0) {
-            damage = 12.0 + 2.0 * (fallDistance - 3.0);
+            damage = 6.0 + 1.5 * (fallDistance - 3.0);
         } else {
-            damage = 22.0 + fallDistance - 8.0;
+            damage = 6.0 + 7.5 + (fallDistance - 8.0);
         }
 
-        return Math.min(damage, 28);
+        return damage;
     }
 
     private static double vanilla(Entity victim, LivingEntity attacker, DamageSource source) {
@@ -31,7 +31,7 @@ public class MaceRebalance {
         } else if (fallDistance <= 8.0) {
             damage = 12.0 + 2.0 * (fallDistance - 3.0);
         } else {
-            damage = 22.0 + fallDistance - 8.0;
+            damage = 12.0 + 10.0 + (fallDistance - 8.0);
         }
 
         return damage;

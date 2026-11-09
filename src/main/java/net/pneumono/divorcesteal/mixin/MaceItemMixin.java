@@ -30,7 +30,7 @@ public abstract class MaceItemMixin {
 
             double fallDistance = attacker.fallDistance;
             cir.setReturnValue(attacker.level() instanceof ServerLevel level
-                    ? (float)(damage + EnchantmentHelper.modifyFallBasedDamage(level, attacker.getWeaponItem(), victim, damageSource, 0.0F) * fallDistance)
+                    ? (float)(damage + EnchantmentHelper.modifyFallBasedDamage(level, attacker.getWeaponItem(), victim, damageSource, 0.0F) * fallDistance / 2)
                     : (float)damage
             );
         }
