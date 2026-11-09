@@ -1,0 +1,13 @@
+{
+  "asset_id": "divorcesteal:divorce_2",
+  "author": {
+    "color": "gray",
+    "translate": "painting.divorcesteal.divorce_2.author"
+  },
+  "height": 4,
+  "title": {
+    "color": "yellow",
+    "translate": "painting.divorcesteal.divorce_2.title"
+  },
+  "width": 4
+}
