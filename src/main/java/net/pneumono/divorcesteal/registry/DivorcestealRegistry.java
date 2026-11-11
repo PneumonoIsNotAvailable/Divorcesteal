@@ -1,6 +1,8 @@
 package net.pneumono.divorcesteal.registry;
 
 import com.mojang.serialization.Codec;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.item.v1.ItemComponentTooltipProviderRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -17,6 +19,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
+import net.minecraft.util.Unit;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -73,6 +76,8 @@ public class DivorcestealRegistry {
     );
 
     public static final ResourceKey<DamageType> NETHER_ROOF_DAMAGE = ResourceKey.create(Registries.DAMAGE_TYPE, Divorcesteal.id("nether_roof"));
+
+    public static final AttachmentType<Unit> ROTATION_LOCKED = AttachmentRegistry.createPersistent(Divorcesteal.id("rotation_locked"), Unit.CODEC);
 
     public static final SoundEvent USE_HEART_SOUND = registerSoundEvent("item.heart.use");
     public static final SoundEvent USE_REVIVE_BEACON_SOUND = registerSoundEvent("item.revive_beacon.use");

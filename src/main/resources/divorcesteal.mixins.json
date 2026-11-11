@@ -4,6 +4,7 @@
     "compatibilityLevel": "JAVA_25",
     "mixins": [
         "ArmorMaterialsMixin",
+        "ItemFrameMixin",
         "ItemsMixin",
         "LivingEntityMixin",
         "MaceItemMixin",
