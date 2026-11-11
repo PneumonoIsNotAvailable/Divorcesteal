@@ -45,4 +45,9 @@ public class HeartItem extends Item {
         Participant participant = HeartsUtil.getParticipant(user);
         return participant == null ? -1 : participant.getHearts();
     }
+
+    @Override
+    public boolean canFitInsideContainerItems() {
+        return false;
+    }
 }
