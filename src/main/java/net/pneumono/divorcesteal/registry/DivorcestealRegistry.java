@@ -98,7 +98,8 @@ public class DivorcestealRegistry {
                     .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 1.0, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -3.4F, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .build()
-            )
+            ),
+            ItemIds.ENDER_PEARL, p -> p.useCooldown(6.0F)
     );
 
     private static ReviveBeaconBlock registerReviveBeaconBlock() {
