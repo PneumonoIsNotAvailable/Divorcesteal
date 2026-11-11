@@ -37,6 +37,8 @@ public class DivorcestealEvents {
         if (participant != null) {
             participant.setName(player.getGameProfile().name());
             HeartsUtil.updateParticipant(player);
+
+            participant.setLastLogin(new Date());
         }
     }
 

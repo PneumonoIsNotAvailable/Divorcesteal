@@ -20,14 +20,12 @@ import net.pneumono.divorcesteal.hearts.HeartsUtil;
 import net.pneumono.divorcesteal.hearts.ParticipantMap;
 import net.pneumono.divorcesteal.hearts.Participant;
 import net.pneumono.divorcesteal.registry.DivorcestealRegistry;
+import org.apache.commons.lang3.time.DateUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.UUID;
+import java.util.*;
 
 public class ReviveBeaconBlock extends BaseEntityBlock {
 
@@ -80,7 +78,29 @@ public class ReviveBeaconBlock extends BaseEntityBlock {
 
         if (unbannedList.isEmpty()) return Optional.empty();
 
+        List<Participant> activeList = new ArrayList<>();
+        List<Participant> inactiveList = new ArrayList<>();
+        Date currentDate = new Date();
+
+        unbannedList.forEach(participant -> {
+            Date lastLoginDate = participant.getLastLogin();
+            if (lastLoginDate != null && currentDate.before(DateUtils.addDays(lastLoginDate, 30))) {
+                activeList.add(participant);
+            } else {
+                inactiveList.add(participant);
+            }
+        });
+
         RandomSource random = level.getRandom();
+
+        if (activeList.isEmpty()) {
+            unbannedList = inactiveList;
+        } else if (inactiveList.isEmpty()) {
+            unbannedList = activeList;
+        } else {
+            unbannedList = random.nextInt(10) == 0 ? inactiveList : activeList;
+        }
+
         return Optional.of(unbannedList.get(random.nextIntBetweenInclusive(0, unbannedList.size() - 1)).getNameAndId());
     }
 

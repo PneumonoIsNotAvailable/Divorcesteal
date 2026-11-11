@@ -39,7 +39,7 @@ public class ParticipantMap {
     }
 
     public void addParticipant(UUID uuid, String name) {
-        dataMap.put(uuid, new Participant(uuid, name, DivorcestealConfig.DEFAULT_HEARTS.getValue(), null));
+        dataMap.put(uuid, new Participant(uuid, name, DivorcestealConfig.DEFAULT_HEARTS.getValue(), null, null));
     }
 
     public void removeParticipant(UUID uuid) {
