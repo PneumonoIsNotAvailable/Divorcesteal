@@ -21,9 +21,9 @@ public class DivorcestealClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(ReviveBeaconInfoS2CPayload.ID, DivorcestealClient::syncReviveBeaconTarget);
 
 		ResourceLoader.registerBuiltinPack(
-				Divorcesteal.id("retextured_hearts"),
+				Divorcesteal.id("old_hearts"),
 				FabricLoader.getInstance().getModContainer(Divorcesteal.MOD_ID).orElseThrow(),
-				Component.translatable("divorcesteal.resource_pack.retextured_hearts"),
+				Component.translatable("divorcesteal.resource_pack.old_hearts"),
 				PackActivationType.NORMAL
 		);
 

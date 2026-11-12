@@ -40,8 +40,8 @@
   "stat.divorcesteal.interact_with_gacha_beacon": "Interactions with Gacha Beacon",
   "stat.divorcesteal.spin_gacha_beacon": "Gacha Beacon Spins",
 
-  "divorcesteal.resource_pack.retextured_hearts": "Retextured Hearts",
-  "divorcesteal.resource_pack.retextured_hearts.description": "Gives Hearts a custom texture",
+  "divorcesteal.resource_pack.old_hearts": "Old Hearts",
+  "divorcesteal.resource_pack.old_hearts.description": "Reverts Hearts to the Nether Star texture",
 
   "death.attack.divorcesteal.nether_roof": "%1$s didn't read the rules channel",
   "death.attack.divorcesteal.nether_roof.player": "%1$s forgot the rules whilst fleeing %2$s",

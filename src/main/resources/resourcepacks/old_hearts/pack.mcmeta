@@ -2,7 +2,7 @@
     "pack": {
         "description": {
             "type": "translatable",
-            "translate": "divorcesteal.resource_pack.retextured_hearts.description"
+            "translate": "divorcesteal.resource_pack.old_hearts.description"
         },
         "min_format": 97,
         "max_format": 97
