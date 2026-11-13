@@ -85,7 +85,7 @@ public class DivorcestealEvents {
     private static void startWorldTick(ServerLevel level) {
         if (DivorcestealConfig.NETHER_ROOF_INSTAKILL.getValue() && level.dimension().equals(Level.NETHER)) {
             for (ServerPlayer player : level.players()) {
-                if (player.getY() >= 128) {
+                if (player.getY() >= level.getLogicalHeight()) {
                     player.hurtServer(level, level.damageSources().source(DivorcestealRegistry.NETHER_ROOF_DAMAGE), Float.MAX_VALUE);
                 }
             }
