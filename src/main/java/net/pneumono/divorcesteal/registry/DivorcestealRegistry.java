@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.item.v1.ItemComponentTooltipProviderRegistry;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -34,6 +35,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.pneumono.divorcesteal.Divorcesteal;
 import net.pneumono.divorcesteal.content.*;
 import net.pneumono.divorcesteal.content.component.CraftedComponent;
@@ -149,5 +154,47 @@ public class DivorcestealRegistry {
         ItemComponentTooltipProviderRegistry.addFirst(KILLED_BY_COMPONENT);
         ItemComponentTooltipProviderRegistry.addFirst(KILL_TARGET_COMPONENT);
         ItemComponentTooltipProviderRegistry.addFirst(CRAFTED_COMPONENT);
+
+        LootTableEvents.MODIFY.register((key, builder, source, provider) -> {
+            if (key.equals(BuiltInLootTables.BURIED_TREASURE)) {
+                builder.withPool(LootPool.lootPool()
+                        .add(LootItem.lootTableItem(Items.ECHO_SHARD).setWeight(1))
+                        .add(EmptyLootItem.emptyItem().setWeight(1))
+                );
+            } else if (key.equals(BuiltInLootTables.STRONGHOLD_LIBRARY)) {
+                builder.withPool(LootPool.lootPool()
+                        .add(LootItem.lootTableItem(Items.ECHO_SHARD).setWeight(1))
+                        .add(EmptyLootItem.emptyItem().setWeight(1))
+                ).withPool(LootPool.lootPool()
+                        .add(LootItem.lootTableItem(Items.ECHO_SHARD).setWeight(1))
+                        .add(EmptyLootItem.emptyItem().setWeight(1))
+                );
+            } else if (key.equals(BuiltInLootTables.DESERT_PYRAMID)) {
+                builder.withPool(LootPool.lootPool()
+                        .add(LootItem.lootTableItem(Items.ECHO_SHARD).setWeight(1))
+                        .add(EmptyLootItem.emptyItem().setWeight(3))
+                );
+            } else if (key.equals(BuiltInLootTables.JUNGLE_TEMPLE)) {
+                builder.withPool(LootPool.lootPool()
+                        .add(LootItem.lootTableItem(Items.ECHO_SHARD).setWeight(1))
+                        .add(EmptyLootItem.emptyItem().setWeight(1))
+                );
+            } else if (key.equals(BuiltInLootTables.WOODLAND_MANSION)) {
+                builder.withPool(LootPool.lootPool()
+                        .add(LootItem.lootTableItem(Items.ECHO_SHARD).setWeight(3))
+                        .add(EmptyLootItem.emptyItem().setWeight(1))
+                );
+            } else if (key.equals(BuiltInLootTables.BASTION_TREASURE)) {
+                builder.withPool(LootPool.lootPool()
+                        .add(LootItem.lootTableItem(Items.ECHO_SHARD).setWeight(1))
+                        .add(EmptyLootItem.emptyItem().setWeight(1))
+                );
+            } else if (key.equals(BuiltInLootTables.NETHER_BRIDGE)) {
+                builder.withPool(LootPool.lootPool()
+                        .add(LootItem.lootTableItem(Items.ECHO_SHARD).setWeight(1))
+                        .add(EmptyLootItem.emptyItem().setWeight(49))
+                );
+            }
+        });
     }
 }
