@@ -10,8 +10,8 @@
     "P": "minecraft:dragon_breath"
   },
   "pattern": [
-    "P#P",
-    "B+B",
+    "BPB",
+    "#+#",
     "CHC"
   ],
   "result": {
